@@ -15,8 +15,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     ListView packingListView;
-    private ArrayAdapter<String> arrayAdapter;
-    ArrayList<String> packingLists = new ArrayList<>();
+    private ArrayAdapter<PackingList> arrayAdapter;
+    ArrayList<PackingList> packingLists = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,18 +57,22 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == 1) {
+                PackingList newPackingList = new PackingList();
                 String newPackingListName = data.getStringExtra("packingListName");
-                packingLists.add(newPackingListName);
+                newPackingList.name = newPackingListName;
+                packingLists.add(newPackingList);
                 arrayAdapter.notifyDataSetChanged();
+            } else if (requestCode == 2) {
+
             }
         }
     }
 
     private void setListViewOnItemClickListener() {
         packingListView.setOnItemClickListener((parent, view, position, id) -> {
-            String packingListName = arrayAdapter.getItem(position);
-            Intent intent = new Intent(this, PackingList.class);
-            intent.putExtra("packingListName", packingListName);
+            PackingList packingList = arrayAdapter.getItem(position);
+            Intent intent = new Intent(this, PackingListActivity.class);
+            intent.putExtra("packingList", packingList);
             startActivityForResult(intent, 2);
         });
     }

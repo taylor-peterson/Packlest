@@ -40,7 +40,9 @@ public class CreatePackingList extends AppCompatActivity {
                     .show();
         } else {
             Intent result_intent = new Intent();
-            result_intent.putExtra("packingListName", editText.getText().toString());
+            PackingList packingList = new PackingList();
+            packingList.name = editText.getText().toString();
+            result_intent.putExtra("packingListName", packingList);
             setResult(RESULT_OK, result_intent);
             finish();
         }

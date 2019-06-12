@@ -1,78 +1,39 @@
 package com.example.packlest;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public class PackingList extends AppCompatActivity {
-    ListView itemListView;
-    private ArrayAdapter<String> arrayAdapter;
-    ArrayList<String> items = new ArrayList<>();
+public class PackingList implements Parcelable {
+    public String name;
+    public ArrayList<String> items;
+
+    public PackingList() {}
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.packing_list);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        itemListView = findViewById(R.id.listViewItems);
-        arrayAdapter = new ArrayAdapter<>(this, R.layout.listview, R.id.textView, items);
-        itemListView.setAdapter(arrayAdapter);
-
-        setListViewOnItemClickListener();
-
-        Intent intent = getIntent();
-        String packingListName = intent.getStringExtra("packingListName");
-        setTitle(packingListName);
+    public int describeContents() {
+        return 0;
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_packing_list, menu);
-        return true;
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeString(name);
+        out.writeSerializable(items);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.create_packing_list_button) {
-            Intent intent = new Intent(this, CreateItem.class);
-            startActivityForResult(intent, 3);
+    public static final Parcelable.Creator<PackingList> CREATOR = new Parcelable.Creator<PackingList>() {
+        public PackingList createFromParcel(Parcel in) {
+            return new PackingList(in);
         }
 
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == 3) {
-                String newItemName = data.getStringExtra("itemName");
-                items.add(newItemName);
-                arrayAdapter.notifyDataSetChanged();
-            }
+        public PackingList[] newArray(int size) {
+            return new PackingList[][size];
         }
-    }
+    };
 
-    private void setListViewOnItemClickListener() {
-        itemListView.setOnItemClickListener((parent, view, position, id) -> {
-            String itemName = arrayAdapter.getItem(position);
-            Intent intent = new Intent(this, CreateItem.class);
-            intent.putExtra("itemName", itemName);
-            startActivityForResult(intent, 4);
-        });
+    private PackingList(Parcel in) {
+        name = in.readString();
+        items = (ArrayList<String>)in.readSerializable();
     }
 }
