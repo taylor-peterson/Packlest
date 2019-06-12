@@ -10,9 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".CreateItem"
+            android:label="@string/title_activity_create_item"
+            android:parentActivityName=".PackingList"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.packlest.PackingList" />
+        </activity>
+        <activity
             android:name=".PackingList"
             android:label="@string/title_activity_packing_list"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".CreatePackingList"
             android:label="@string/title_activity_create_packing_list"

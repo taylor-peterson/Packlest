@@ -4,11 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.ArrayList;
+
 public class PackingList extends AppCompatActivity {
+    ListView itemListView;
+    private ArrayAdapter<String> arrayAdapter;
+    ArrayList<String> items = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +24,15 @@ public class PackingList extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        itemListView = findViewById(R.id.listViewItems);
+        arrayAdapter = new ArrayAdapter<>(this, R.layout.listview, R.id.textView, items);
+        itemListView.setAdapter(arrayAdapter);
 
+        setListViewOnItemClickListener();
+
+        Intent intent = getIntent();
+        String packingListName = intent.getStringExtra("packingListName");
+        setTitle(packingListName);
     }
 
     @Override
@@ -33,11 +48,31 @@ public class PackingList extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.create_packing_list_button) {
-            Intent intent = new Intent(this, CreatePackingList.class);
-            startActivityForResult(intent, 1);
+            Intent intent = new Intent(this, CreateItem.class);
+            startActivityForResult(intent, 3);
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 3) {
+                String newItemName = data.getStringExtra("itemName");
+                items.add(newItemName);
+                arrayAdapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    private void setListViewOnItemClickListener() {
+        itemListView.setOnItemClickListener((parent, view, position, id) -> {
+            String itemName = arrayAdapter.getItem(position);
+            Intent intent = new Intent(this, CreateItem.class);
+            intent.putExtra("itemName", itemName);
+            startActivityForResult(intent, 4);
+        });
+    }
 }
