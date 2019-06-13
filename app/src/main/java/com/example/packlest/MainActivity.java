@@ -12,11 +12,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class MainActivity extends AppCompatActivity {
     ListView packingListView;
     private ArrayAdapter<PackingList> arrayAdapter;
     ArrayList<PackingList> packingLists = new ArrayList<>();
+
+    enum REQUEST_CODES {
+        CREATE_PACKING_LIST,
+        VIEW_PACKING_LIST,
+        CREATE_ITEM,
+        MODIFY_ITEM
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             return true;
-        } else if (id == R.id.create_packing_list_button) {
-            Intent intent = new Intent(this, CreatePackingList.class);
-            startActivityForResult(intent, 1);
+        } else if (id == R.id.create_item_button) {
+            Intent intent = new Intent(this, CreatePackingListActivity.class);
+            startActivityForResult(intent, REQUEST_CODES.CREATE_PACKING_LIST.ordinal());
         }
 
         return super.onOptionsItemSelected(item);
@@ -56,15 +64,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == 1) {
-                PackingList newPackingList = new PackingList();
-                String newPackingListName = data.getStringExtra("packingListName");
-                newPackingList.name = newPackingListName;
+            if (requestCode == REQUEST_CODES.CREATE_PACKING_LIST.ordinal()) {
+                PackingList newPackingList = data.getParcelableExtra("packingList");
                 packingLists.add(newPackingList);
-                arrayAdapter.notifyDataSetChanged();
-            } else if (requestCode == 2) {
-
+            } else if (requestCode == REQUEST_CODES.VIEW_PACKING_LIST.ordinal()) {
+                PackingList packingList = data.getParcelableExtra("packingList");
+                ListIterator<PackingList> iterator= packingLists.listIterator();
+                while (iterator.hasNext()) {
+                    PackingList packingListEntry = iterator.next();
+                    if (packingListEntry.uuid.equals(packingList.uuid)) {
+                        iterator.set(packingList);
+                    }
+                }
             }
+            arrayAdapter.notifyDataSetChanged();
         }
     }
 
@@ -73,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             PackingList packingList = arrayAdapter.getItem(position);
             Intent intent = new Intent(this, PackingListActivity.class);
             intent.putExtra("packingList", packingList);
-            startActivityForResult(intent, 2);
+            startActivityForResult(intent, REQUEST_CODES.VIEW_PACKING_LIST.ordinal());
         });
     }
 }

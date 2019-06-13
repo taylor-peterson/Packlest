@@ -11,40 +11,51 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class CreatePackingList extends AppCompatActivity {
+public class CreateItemActivity extends AppCompatActivity {
 
     private EditText editText;
+    Item item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_packing_list);
+        setContentView(R.layout.create_item);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Button button_save = findViewById(R.id.button_save);
+        Button button_save = findViewById(R.id.buttonSaveCreateItem);
         button_save.setOnClickListener(this::onClick);
 
-        editText = findViewById(R.id.editText);
+        editText = findViewById(R.id.editTextCreateItem);
+
+        Intent intent = getIntent();
+        item = intent.getParcelableExtra("item");
+        if (item != null) {
+            setTitle("Edit Item");
+            editText.setText(item.name);
+        } else {
+            item = new Item();
+            setTitle("Create Item");
+        }
     }
 
     private void onClick(View e) {
-        String packingListName = editText.getText().toString();
-        if (packingListName.isEmpty()) {
+        String itemName = editText.getText().toString();
+        if (itemName.isEmpty()) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
-                    .setMessage("Packing list requires name.")
+                    .setMessage("Item requires name.")
                     .setPositiveButton("ok", (dialog, which) -> dialog.dismiss())
                     .setCancelable(false)
                     .create()
                     .show();
         } else {
             Intent result_intent = new Intent();
-            PackingList packingList = new PackingList();
-            packingList.name = editText.getText().toString();
-            result_intent.putExtra("packingListName", packingList);
+            item.name = editText.getText().toString();
+            result_intent.putExtra("item", item);
             setResult(RESULT_OK, result_intent);
             finish();
         }
     }
+
 }

@@ -3,18 +3,15 @@ package com.example.packlest;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
-public class PackingList implements Parcelable {
+public class Item  implements Parcelable {
     UUID uuid;
     public String name;
-    ArrayList<Item> items;
 
-    PackingList() {
+    Item() {
         uuid = UUID.randomUUID();
         name = "";
-        items = new ArrayList<>();
     }
 
     @Override
@@ -26,24 +23,21 @@ public class PackingList implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeSerializable(this.uuid);
         out.writeString(this.name);
-        out.writeList(this.items);
     }
 
-    public static final Parcelable.Creator<PackingList> CREATOR = new Parcelable.Creator<PackingList>() {
-        public PackingList createFromParcel(Parcel in) {
-            return new PackingList(in);
+    public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
+        public Item createFromParcel(Parcel in) {
+            return new Item(in);
         }
 
-        public PackingList[] newArray(int size) {
-            return new PackingList[size];
+        public Item[] newArray(int size) {
+            return new Item[size];
         }
     };
 
-    private PackingList(Parcel in) {
+    private Item(Parcel in) {
         uuid = (UUID)in.readSerializable();
         name = in.readString();
-        items = new ArrayList<>();
-        in.readList(items, Item.class.getClassLoader());
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.example.packlest;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -10,12 +11,13 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class PackingListActivity extends AppCompatActivity {
     ListView itemListView;
-    private ArrayAdapter<String> arrayAdapter;
-    ArrayList<String> items = new ArrayList<>();
+    private ArrayAdapter<Item> arrayAdapter;
+    PackingList packingList;
+    private static final String TAG = "PackingListActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +26,15 @@ public class PackingListActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Intent intent = getIntent();
+        packingList = intent.getParcelableExtra("packingList");
+        setTitle(packingList.name);
+
         itemListView = findViewById(R.id.listViewItems);
-        arrayAdapter = new ArrayAdapter<>(this, R.layout.listview, R.id.textView, items);
+        arrayAdapter = new ArrayAdapter<>(this, R.layout.listview, R.id.textView, packingList.items);
         itemListView.setAdapter(arrayAdapter);
 
         setListViewOnItemClickListener();
-
-        Intent intent = getIntent();
-        PackingList packingList = intent.getParcelableExtra("packingList");
-        setTitle(packingList.name);
     }
 
     @Override
@@ -47,9 +49,10 @@ public class PackingListActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             return true;
-        } else if (id == R.id.create_packing_list_button) {
-            Intent intent = new Intent(this, CreateItem.class);
-            startActivityForResult(intent, 3);
+        } else if (id == R.id.create_item_button) {
+            Log.v(TAG, "Creating new item!");
+            Intent intent = new Intent(this, CreateItemActivity.class);
+            startActivityForResult(intent, MainActivity.REQUEST_CODES.CREATE_ITEM.ordinal());
         }
 
         return super.onOptionsItemSelected(item);
@@ -59,20 +62,39 @@ public class PackingListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == 3) {
-                String newItemName = data.getStringExtra("itemName");
-                items.add(newItemName);
-                arrayAdapter.notifyDataSetChanged();
+            if (requestCode == MainActivity.REQUEST_CODES.CREATE_ITEM.ordinal()) {
+                Item newItem = data.getParcelableExtra("item");
+                packingList.items.add(newItem);
+                Log.v(TAG, "Added: " + newItem.name);
+            } else if (requestCode == MainActivity.REQUEST_CODES.MODIFY_ITEM.ordinal()) {
+                Item modifiedItem = data.getParcelableExtra("item");
+                ListIterator<Item> iterator = packingList.items.listIterator();
+                while (iterator.hasNext()) {
+                    Item itemEntry = iterator.next();
+                    if (itemEntry.uuid.equals(modifiedItem.uuid)) {
+                        iterator.set(modifiedItem);
+                        Log.v(TAG, "Modified: " + modifiedItem.name);
+                    }
+                }
             }
+            arrayAdapter.notifyDataSetChanged();
         }
     }
 
     private void setListViewOnItemClickListener() {
         itemListView.setOnItemClickListener((parent, view, position, id) -> {
-            String itemName = arrayAdapter.getItem(position);
-            Intent intent = new Intent(this, CreateItem.class);
-            intent.putExtra("itemName", itemName);
-            startActivityForResult(intent, 4);
+            Item item = arrayAdapter.getItem(position);
+            Intent intent = new Intent(this, CreateItemActivity.class);
+            intent.putExtra("item", item);
+            startActivityForResult(intent, MainActivity.REQUEST_CODES.MODIFY_ITEM.ordinal());
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra("packingList", packingList);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

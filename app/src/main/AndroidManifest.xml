@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".CreateItem"
+            android:name=".CreateItemActivity"
             android:label="@string/title_activity_create_item"
             android:parentActivityName=".PackingListActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -23,7 +23,7 @@
             android:label="@string/title_activity_packing_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CreatePackingList"
+            android:name=".CreatePackingListActivity"
             android:label="@string/title_activity_create_packing_list"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
