@@ -23,11 +23,9 @@ public class PackingListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.packing_list);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(findViewById(R.id.toolbar));
 
-        Intent intent = getIntent();
-        packingList = intent.getParcelableExtra("packingList");
+        packingList = getIntent().getParcelableExtra("packingList");
         setTitle(packingList.name);
 
         itemListView = findViewById(R.id.listViewItems);
@@ -45,14 +43,19 @@ public class PackingListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.create_item_button) {
-            Log.v(TAG, "Creating new item!");
-            Intent intent = new Intent(this, CreateItemActivity.class);
-            startActivityForResult(intent, MainActivity.REQUEST_CODES.CREATE_ITEM.ordinal());
+        switch (item.getItemId()) {
+            case R.id.create_item_button:
+                Log.v(TAG, "Creating new item!");
+                Intent intent = new Intent(this, CreateItemActivity.class);
+                startActivityForResult(intent, MainActivity.REQUEST_CODES.CREATE_ITEM.ordinal());
+                break;
+            case R.id.delete_packing_list:
+                Log.v(TAG, "Deleting packing list");
+                Intent deleteIntent = new Intent();
+                deleteIntent.putExtra("packingList", packingList);
+                setResult(MainActivity.RESULT_CODES.PACKING_LIST_DELETED.ordinal(), deleteIntent);
+                finish();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -61,24 +64,29 @@ public class PackingListActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == MainActivity.REQUEST_CODES.CREATE_ITEM.ordinal()) {
-                Item newItem = data.getParcelableExtra("item");
-                packingList.items.add(newItem);
-                Log.v(TAG, "Added: " + newItem.name);
-            } else if (requestCode == MainActivity.REQUEST_CODES.MODIFY_ITEM.ordinal()) {
-                Item modifiedItem = data.getParcelableExtra("item");
-                ListIterator<Item> iterator = packingList.items.listIterator();
-                while (iterator.hasNext()) {
-                    Item itemEntry = iterator.next();
-                    if (itemEntry.uuid.equals(modifiedItem.uuid)) {
+
+        if (requestCode == MainActivity.REQUEST_CODES.CREATE_ITEM.ordinal() && resultCode == MainActivity.RESULT_CODES.ITEM_MODIFIED.ordinal()) {
+            Item newItem = data.getParcelableExtra("item");
+            packingList.items.add(newItem);
+            Log.v(TAG, "Added: " + newItem.name);
+        } else if (requestCode == MainActivity.REQUEST_CODES.MODIFY_ITEM.ordinal()) {
+            Item modifiedItem = data.getParcelableExtra("item");
+            ListIterator<Item> iterator = packingList.items.listIterator();
+            while (iterator.hasNext()) {
+                Item itemEntry = iterator.next();
+                if (itemEntry.uuid.equals(modifiedItem.uuid)) {
+                    if (resultCode == MainActivity.RESULT_CODES.ITEM_MODIFIED.ordinal()) {
                         iterator.set(modifiedItem);
                         Log.v(TAG, "Modified: " + modifiedItem.name);
+                    } else if (resultCode == MainActivity.RESULT_CODES.ITEM_DELETED.ordinal()) {
+                        iterator.remove();
+                        Log.v(TAG, "Deleted: " + modifiedItem.name);
                     }
                 }
             }
-            arrayAdapter.notifyDataSetChanged();
         }
+
+        arrayAdapter.notifyDataSetChanged();
     }
 
     private void setListViewOnItemClickListener() {
@@ -94,7 +102,7 @@ public class PackingListActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent();
         intent.putExtra("packingList", packingList);
-        setResult(RESULT_OK, intent);
+        setResult(MainActivity.RESULT_CODES.PACKING_LIST_MODIFIED.ordinal(), intent);
         finish();
     }
 }

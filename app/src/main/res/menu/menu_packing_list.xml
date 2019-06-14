@@ -11,4 +11,25 @@
         android:icon="@android:drawable/ic_input_add"
         android:title="@string/create_packing_list"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/edit_packing_list"
+        android:title="Edit packing list"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/delete_packing_list"
+        android:title="Delete packing list"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/uncheck_all_items"
+        android:title="Uncheck all items"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/un_add_all_items"
+        android:title="Un-add all items"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sync_items"
+        android:title="Sync items"
+        app:showAsAction="never" />
+
 </menu>

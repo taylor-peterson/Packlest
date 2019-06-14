@@ -5,47 +5,40 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.widget.Button;
 import android.widget.EditText;
 
 public class CreatePackingListActivity extends AppCompatActivity {
 
-    private EditText editText;
+    private EditText editTextPackingListName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_packing_list);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(findViewById(R.id.toolbar));
+        findViewById(R.id.buttonSavePackingList).setOnClickListener(e -> onButtonSaveClick());
 
-        Button buttonSave = findViewById(R.id.buttonSave);
-        buttonSave.setOnClickListener(e -> onButtonSaveClick());
-
-        editText = findViewById(R.id.editText);
+        editTextPackingListName = findViewById(R.id.editTextPackingListName);
     }
 
     private void onButtonSaveClick() {
-        String packingListName = editText.getText().toString();
+        String packingListName = editTextPackingListName.getText().toString();
         if (packingListName.isEmpty()) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
                     .setMessage("Packing list requires name.")
-                    .setPositiveButton("ok", (dialog, which) -> dialog.dismiss())
+                    .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
                     .setCancelable(false)
                     .create()
                     .show();
         } else {
-            Intent result_intent = new Intent();
+            Intent intent = new Intent();
             PackingList packingList = new PackingList();
-            packingList.name = editText.getText().toString();
-            result_intent.putExtra("packingList", packingList);
-            setResult(RESULT_OK, result_intent);
+            packingList.name = editTextPackingListName.getText().toString();
+            intent.putExtra("packingList", packingList);
+            setResult(MainActivity.RESULT_CODES.PACKING_LIST_CREATED.ordinal(), intent);
             finish();
         }
-
-        // TODO packing list name must be unique
     }
 }

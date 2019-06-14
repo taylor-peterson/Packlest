@@ -28,7 +28,7 @@
         tools:showIn="@layout/create_packing_list">
 
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/editTextPackingListName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -41,7 +41,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/buttonSave"
+            android:id="@+id/buttonSavePackingList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

@@ -5,55 +5,80 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 public class CreateItemActivity extends AppCompatActivity {
-
-    private EditText editText;
+    private EditText editTextItemName;
     Item item;
+    private static final String TAG = "CreateItemActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_item);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(findViewById(R.id.toolbar));
+        findViewById(R.id.buttonSaveItem).setOnClickListener(this::onClick);
 
-        Button button_save = findViewById(R.id.buttonSaveCreateItem);
-        button_save.setOnClickListener(this::onClick);
+        editTextItemName = findViewById(R.id.editTextItemName);
 
-        editText = findViewById(R.id.editTextCreateItem);
-
-        Intent intent = getIntent();
-        item = intent.getParcelableExtra("item");
+        item = getIntent().getParcelableExtra("item");
         if (item != null) {
             setTitle("Edit Item");
-            editText.setText(item.name);
+            editTextItemName.setText(item.name);
         } else {
             item = new Item();
             setTitle("Create Item");
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_item, menu);
+        return true;
+    }
+
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (getTitle() == "Edit Item") {
+            menu.findItem(R.id.delete_item).setVisible(true);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.delete_item) {
+            Log.v(TAG, "Deleting item");
+            Intent deleteIntent = new Intent();
+            deleteIntent.putExtra("item", item);
+            setResult(MainActivity.RESULT_CODES.ITEM_DELETED.ordinal(), deleteIntent);
+            finish();
+        }
+
+        return super.onOptionsItemSelected(menuItem);
+    }
+
     private void onClick(View e) {
-        String itemName = editText.getText().toString();
+        String itemName = editTextItemName.getText().toString();
         if (itemName.isEmpty()) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
                     .setMessage("Item requires name.")
-                    .setPositiveButton("ok", (dialog, which) -> dialog.dismiss())
+                    .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
                     .setCancelable(false)
                     .create()
                     .show();
         } else {
-            Intent result_intent = new Intent();
-            item.name = editText.getText().toString();
-            result_intent.putExtra("item", item);
-            setResult(RESULT_OK, result_intent);
+            Intent intent = new Intent();
+            item.name = editTextItemName.getText().toString();
+            intent.putExtra("item", item);
+            setResult(MainActivity.RESULT_CODES.ITEM_MODIFIED.ordinal(), intent);
             finish();
         }
     }

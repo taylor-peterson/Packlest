@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -21,7 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -36,19 +33,24 @@ import java.util.ListIterator;
  *  - Each item can be associated with many trip parameters.
  *
  * TODO:
- * - Populate missing UID from stored data (e.g. if hand-edited)
- * - Delete lists/items
- * - Database of items at the top-level
- * - When create a packing list, select the set of tags that apply
- * - Pre-populate packing lists with all items with the selected tags
  * - Every item in a packing list has three states: unadded, added, packed
  * - Cycle through states with check-boxes/swipes
  * - Filter in menu to cycle through all/added+packed/added
+ * - Database of items at the top-level
+ * - When create a packing list, select the set of tags that apply
+ * - Pre-populate packing lists with all items with the selected tags
  * - Display items based on category
  * - Reset/Hard Reset/Sync
  * - Edit trip parameters
- * - Ability to export/inport data as json/toml/etc.
+ * - Packing list, item, and category names must be unique
+ * - Ability to export/import data as json
+ * - Populate missing UID from stored data (e.g. if hand-edited)
  * - Ability to share lists
+ * - Standardize naming (e.g. buttons, codes, ids - camelCase vs snake_case?)
+ * - Enhance logging
+ * - Testing
+ * - Documentation
+ * - Address all warnings
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -56,23 +58,32 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<PackingList> arrayAdapter;
     ArrayList<PackingList> packingLists;
 
+    private static final String DATA_FILE = "themDatas.json";
+
     enum REQUEST_CODES {
         CREATE_PACKING_LIST,
         VIEW_PACKING_LIST,
         CREATE_ITEM,
-        MODIFY_ITEM
+        MODIFY_ITEM,
+    }
+
+    enum RESULT_CODES {
+        ITEM_MODIFIED,
+        ITEM_DELETED,
+        PACKING_LIST_CREATED,
+        PACKING_LIST_MODIFIED,
+        PACKING_LIST_DELETED,
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         StringBuilder input = new StringBuilder();
         try {
-            File file = new File(getFilesDir(), "themDatas.json");
+            File file = new File(getFilesDir(), DATA_FILE);
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
             while ((line = br.readLine()) != null) {
@@ -104,13 +115,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         Gson gson = new Gson();
-        String filename = "themDatas.json";
         String fileContents = gson.toJson(packingLists);
         FileOutputStream outputStream;
 
         try {
-            Log.e("print", fileContents);
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream = openFileOutput(DATA_FILE, Context.MODE_PRIVATE);
             outputStream.write(fileContents.getBytes());
             outputStream.close();
         } catch (Exception e) {
@@ -130,9 +139,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.create_item_button) {
+        if (id == R.id.create_item_button) {
             Intent intent = new Intent(this, CreatePackingListActivity.class);
             startActivityForResult(intent, REQUEST_CODES.CREATE_PACKING_LIST.ordinal());
         }
@@ -143,22 +150,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CODES.CREATE_PACKING_LIST.ordinal()) {
-                PackingList newPackingList = data.getParcelableExtra("packingList");
-                packingLists.add(newPackingList);
-            } else if (requestCode == REQUEST_CODES.VIEW_PACKING_LIST.ordinal()) {
-                PackingList packingList = data.getParcelableExtra("packingList");
-                ListIterator<PackingList> iterator= packingLists.listIterator();
-                while (iterator.hasNext()) {
-                    PackingList packingListEntry = iterator.next();
-                    if (packingListEntry.uuid.equals(packingList.uuid)) {
+        if (data == null) return;
+        PackingList packingList = data.getParcelableExtra("packingList");
+
+        if (requestCode == REQUEST_CODES.CREATE_PACKING_LIST.ordinal() && resultCode == RESULT_CODES.PACKING_LIST_CREATED.ordinal()) {
+            packingLists.add(packingList);
+        } else if (requestCode == REQUEST_CODES.VIEW_PACKING_LIST.ordinal()) {
+            ListIterator<PackingList> iterator = packingLists.listIterator();
+            while (iterator.hasNext()) {
+                PackingList packingListEntry = iterator.next();
+                if (packingListEntry.uuid.equals(packingList.uuid)) {
+                    if (resultCode == RESULT_CODES.PACKING_LIST_MODIFIED.ordinal()) {
                         iterator.set(packingList);
+                    } else if (resultCode == RESULT_CODES.PACKING_LIST_DELETED.ordinal()) {
+                        iterator.remove();
                     }
                 }
             }
-            arrayAdapter.notifyDataSetChanged();
         }
+        arrayAdapter.notifyDataSetChanged();
     }
 
     private void setListViewOnItemClickListener() {
