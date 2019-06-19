@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -33,8 +34,7 @@ import java.util.ListIterator;
  *  - Each item can be associated with many trip parameters.
  *
  * TODO:
- * - Every item in a packing list has three states: unadded, added, packed
- * - Cycle through states with check-boxes/swipes
+ * - Add back in ability to edit items (i.e. checkbox should only respond to presses on it, not the item name)
  * - Filter in menu to cycle through all/added+packed/added
  * - Database of items at the top-level
  * - When create a packing list, select the set of tags that apply
@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     ListView packingListView;
     private ArrayAdapter<PackingList> arrayAdapter;
     ArrayList<PackingList> packingLists;
+    private static final String TAG = "mainActivity";
 
     private static final String DATA_FILE = "themDatas.json";
 
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         PACKING_LIST_MODIFIED,
         PACKING_LIST_DELETED,
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String inputJson = input.toString();
+        Log.v(TAG, inputJson);
         if (inputJson.isEmpty()) {
             packingLists = new ArrayList<>();
         } else {
@@ -116,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         Gson gson = new Gson();
         String fileContents = gson.toJson(packingLists);
+        Log.v(TAG, "Writing:" + fileContents);
         FileOutputStream outputStream;
 
         try {
@@ -153,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
         if (data == null) return;
         PackingList packingList = data.getParcelableExtra("packingList");
 
+        // TODO Currently, if the app quites while in the packing list view, any new items will not be saved.
+        // This will require modifying how data is saved: https://developer.android.com/reference/android/app/Activity#SavingPersistentState
+        // Instead of current procedure, write to file onPause in each activity.
         if (requestCode == REQUEST_CODES.CREATE_PACKING_LIST.ordinal() && resultCode == RESULT_CODES.PACKING_LIST_CREATED.ordinal()) {
             packingLists.add(packingList);
         } else if (requestCode == REQUEST_CODES.VIEW_PACKING_LIST.ordinal()) {

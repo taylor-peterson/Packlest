@@ -5,17 +5,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import java.util.ListIterator;
 
 public class PackingListActivity extends AppCompatActivity {
     ListView itemListView;
-    private ArrayAdapter<Item> arrayAdapter;
+    private ListViewItemCheckboxAdapter dataAdapter;
     PackingList packingList;
     private static final String TAG = "PackingListActivity";
 
@@ -29,8 +27,8 @@ public class PackingListActivity extends AppCompatActivity {
         setTitle(packingList.name);
 
         itemListView = findViewById(R.id.listViewItems);
-        arrayAdapter = new ArrayAdapter<>(this, R.layout.listview, R.id.textView, packingList.items);
-        itemListView.setAdapter(arrayAdapter);
+        dataAdapter = new ListViewItemCheckboxAdapter(this, packingList);
+        itemListView.setAdapter(dataAdapter);
 
         setListViewOnItemClickListener();
     }
@@ -86,21 +84,36 @@ public class PackingListActivity extends AppCompatActivity {
             }
         }
 
-        arrayAdapter.notifyDataSetChanged();
+        dataAdapter.notifyDataSetChanged();
     }
 
     private void setListViewOnItemClickListener() {
         itemListView.setOnItemClickListener((parent, view, position, id) -> {
-            Item item = arrayAdapter.getItem(position);
-            Intent intent = new Intent(this, CreateItemActivity.class);
-            intent.putExtra("item", item);
-            startActivityForResult(intent, MainActivity.REQUEST_CODES.MODIFY_ITEM.ordinal());
+            Item item = dataAdapter.getItem(position);
+            CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
+
+            // Toggle a state change whenever the button is pressed.
+            // It manages an internal state machine to do the correct thing.
+            if (itemCheckbox.isChecked()) {
+                itemCheckbox.setChecked(false);
+            } else {
+                itemCheckbox.setChecked(true);
+            }
+            item.checkbox_state = itemCheckbox.getState();
+
+            //Intent intent = new Intent(this, CreateItemActivity.class);
+            //intent.putExtra("item", item);
+            //startActivityForResult(intent, MainActivity.REQUEST_CODES.MODIFY_ITEM.ordinal());
         });
     }
 
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
+        for (Item item : packingList.items) {
+            Log.d(TAG, item.name);
+            Log.d(TAG, item.checkbox_state.name());
+        }
         intent.putExtra("packingList", packingList);
         setResult(MainActivity.RESULT_CODES.PACKING_LIST_MODIFIED.ordinal(), intent);
         finish();
