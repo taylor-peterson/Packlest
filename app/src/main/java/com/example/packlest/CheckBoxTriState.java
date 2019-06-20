@@ -34,7 +34,6 @@ public class CheckBoxTriState extends AppCompatCheckBox {
         state = CHECKBOX_STATE.UNADDED;
         updateButton();
 
-        // checkbox status is changed from uncheck to checked.
         setOnCheckedChangeListener((buttonView, isChecked) -> {
             switch (state) {
                 case UNADDED:

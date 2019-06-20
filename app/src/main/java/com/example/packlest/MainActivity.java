@@ -39,7 +39,7 @@ import java.util.ListIterator;
  * - When create a packing list, select the set of tags that apply
  * - Pre-populate packing lists with all items with the selected tags
  * - Display items based on category
- * - Reset/Hard Reset/Sync
+ * - Sync
  * - Edit trip parameters
  * - Packing list, item, and category names must be unique
  * - Ability to export/import data as json

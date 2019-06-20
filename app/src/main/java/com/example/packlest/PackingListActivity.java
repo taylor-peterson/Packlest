@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,6 +55,30 @@ public class PackingListActivity extends AppCompatActivity {
                 setResult(MainActivity.RESULT_CODES.PACKING_LIST_DELETED.ordinal(), deleteIntent);
                 finish();
                 break;
+            case R.id.un_add_all_items:
+                Log.v(TAG, "Un-adding all items");
+                for (int i = 0; i < itemListView.getCount(); i++) {
+                    View view = itemListView.getChildAt(i);
+
+                    CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
+                    itemCheckbox.setState(CheckBoxTriState.CHECKBOX_STATE.UNADDED);
+
+                    packingList.items.get(i).checkbox_state = itemCheckbox.getState();
+                }
+                break;
+            case R.id.uncheck_all_items:
+                Log.v(TAG, "Un-checking all checked items");
+                for (int i = 0; i < itemListView.getCount(); i++) {
+                    View view = itemListView.getChildAt(i);
+
+                    CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
+                    if (itemCheckbox.getState() == CheckBoxTriState.CHECKBOX_STATE.CHECKED) {
+                        itemCheckbox.setState(CheckBoxTriState.CHECKBOX_STATE.UNCHECKED);
+                        packingList.items.get(i).checkbox_state = itemCheckbox.getState();
+                    }
+
+                }
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -100,10 +125,6 @@ public class PackingListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
-        for (Item item : packingList.items) {
-            Log.d(TAG, item.name);
-            Log.d(TAG, item.checkbox_state.name());
-        }
         intent.putExtra("packingList", packingList);
         setResult(MainActivity.RESULT_CODES.PACKING_LIST_MODIFIED.ordinal(), intent);
         finish();
