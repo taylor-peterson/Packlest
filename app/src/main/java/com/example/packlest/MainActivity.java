@@ -34,7 +34,6 @@ import java.util.ListIterator;
  *  - Each item can be associated with many trip parameters.
  *
  * TODO:
- * - Add back in ability to edit items (i.e. checkbox should only respond to presses on it, not the item name)
  * - Filter in menu to cycle through all/added+packed/added
  * - Database of items at the top-level
  * - When create a packing list, select the set of tags that apply

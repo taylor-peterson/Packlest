@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class ListViewItemCheckboxAdapter extends BaseAdapter {
@@ -48,6 +49,7 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.packing_list_item, null);
 
             CheckBoxTriState listItemCheckbox = convertView.findViewById(R.id.list_view_item_checkbox);
+            listItemCheckbox.setOnClickListener(listItemCheckboxListener);
 
             TextView listItemText = convertView.findViewById(R.id.list_view_item_text);
 
@@ -67,4 +69,23 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter {
 
         return convertView;
     }
+
+    private View.OnClickListener listItemCheckboxListener = view -> {
+        View parentRow = (View) view.getParent().getParent();
+        ListView listView = (ListView) parentRow.getParent();
+        final int position = listView.getPositionForView(parentRow);
+
+        Item item = getItem(position);
+
+        CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
+
+        // Toggle a state change whenever the button is pressed.
+        // It manages an internal state machine to do the correct thing.
+        if (itemCheckbox.isChecked()) {
+            itemCheckbox.setChecked(false);
+        } else {
+            itemCheckbox.setChecked(true);
+        }
+        item.checkbox_state = itemCheckbox.getState();
+    };
 }

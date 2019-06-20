@@ -90,20 +90,10 @@ public class PackingListActivity extends AppCompatActivity {
     private void setListViewOnItemClickListener() {
         itemListView.setOnItemClickListener((parent, view, position, id) -> {
             Item item = dataAdapter.getItem(position);
-            CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
 
-            // Toggle a state change whenever the button is pressed.
-            // It manages an internal state machine to do the correct thing.
-            if (itemCheckbox.isChecked()) {
-                itemCheckbox.setChecked(false);
-            } else {
-                itemCheckbox.setChecked(true);
-            }
-            item.checkbox_state = itemCheckbox.getState();
-
-            //Intent intent = new Intent(this, CreateItemActivity.class);
-            //intent.putExtra("item", item);
-            //startActivityForResult(intent, MainActivity.REQUEST_CODES.MODIFY_ITEM.ordinal());
+            Intent intent = new Intent(this, CreateItemActivity.class);
+            intent.putExtra("item", item);
+            startActivityForResult(intent, MainActivity.REQUEST_CODES.MODIFY_ITEM.ordinal());
         });
     }
 
