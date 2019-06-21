@@ -37,7 +37,7 @@ public class CreatePackingListActivity extends AppCompatActivity {
             PackingList packingList = new PackingList();
             packingList.name = editTextPackingListName.getText().toString();
             intent.putExtra("packingList", packingList);
-            setResult(MainActivity.RESULT_CODES.PACKING_LIST_CREATED.ordinal(), intent);
+            setResult(PacklestActivity.RESULT_CODES.PACKING_LIST_CREATED.ordinal(), intent);
             finish();
         }
     }

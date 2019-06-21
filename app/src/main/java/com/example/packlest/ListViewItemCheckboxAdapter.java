@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class ListViewItemCheckboxAdapter extends BaseAdapter {
     private PackingList packingList;
@@ -18,20 +17,12 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        int ret = 0;
-        if (packingList != null) {
-            ret = packingList.items.size();
-        }
-        return ret;
+        return packingList.items.size();
     }
 
     @Override
     public Item getItem(int itemIndex) {
-        Item item = null;
-        if (packingList != null) {
-            item = packingList.items.get(itemIndex);
-        }
-        return item;
+        return packingList.items.get(itemIndex);
     }
 
     @Override
@@ -51,13 +42,9 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter {
             CheckBoxTriState listItemCheckbox = convertView.findViewById(R.id.list_view_item_checkbox);
             listItemCheckbox.setOnClickListener(listItemCheckboxListener);
 
-            TextView listItemText = convertView.findViewById(R.id.list_view_item_text);
-
             viewHolder = new ListViewItemViewHolder(convertView);
-
             viewHolder.setItemCheckbox(listItemCheckbox);
-
-            viewHolder.setItemTextView(listItemText);
+            viewHolder.setItemTextView(convertView.findViewById(R.id.list_view_item_text));
 
             convertView.setTag(viewHolder);
         }
@@ -77,6 +64,11 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter {
 
         Item item = getItem(position);
         CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
-        item.checkbox_state = itemCheckbox.getState();
+        item.checkbox_state = itemCheckbox.getState(); // TODO need to propagate this back to the global data
     };
+
+    public void updatePackingList(PackingList packingList) {
+        this.packingList = packingList;
+        notifyDataSetChanged();
+    }
 }

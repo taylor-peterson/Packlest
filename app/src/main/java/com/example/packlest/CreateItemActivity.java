@@ -57,7 +57,7 @@ public class CreateItemActivity extends AppCompatActivity {
             Log.v(TAG, "Deleting item");
             Intent deleteIntent = new Intent();
             deleteIntent.putExtra("item", item);
-            setResult(MainActivity.RESULT_CODES.ITEM_DELETED.ordinal(), deleteIntent);
+            setResult(PacklestActivity.RESULT_CODES.ITEM_DELETED.ordinal(), deleteIntent);
             finish();
         }
 
@@ -78,7 +78,7 @@ public class CreateItemActivity extends AppCompatActivity {
             Intent intent = new Intent();
             item.name = editTextItemName.getText().toString();
             intent.putExtra("item", item);
-            setResult(MainActivity.RESULT_CODES.ITEM_MODIFIED.ordinal(), intent);
+            setResult(PacklestActivity.RESULT_CODES.ITEM_MODIFIED.ordinal(), intent);
             finish();
         }
     }

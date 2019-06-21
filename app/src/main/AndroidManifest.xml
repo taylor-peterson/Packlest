@@ -8,7 +8,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".PacklestApplication">
         <activity
             android:name=".CreateItemActivity"
             android:label="@string/title_activity_create_item"
@@ -25,18 +26,18 @@
         <activity
             android:name=".CreatePackingListActivity"
             android:label="@string/title_activity_create_packing_list"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".PacklestActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".PacklestActivity" />
         </activity>
         <activity
             android:name=".Listview"
             android:label="@string/title_activity_listview"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".PacklestActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -46,5 +47,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
