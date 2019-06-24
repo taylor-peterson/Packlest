@@ -1,0 +1,29 @@
+Design Thoughts:
+- Item: a discrete thing to be brought on a trip
+- Item Categories: general item classification (e.g. clothing, climbing gear, overnight gear)
+  - Think of this as the logical grouping you'd use when laying everything out to pack.
+  - Each item is associated with *one* category.
+- Trip Parameters: parameters of a trip (e.g. activities, conditions, length of outing)
+ - Each item can be associated with many trip parameters.
+- We utilize "Save" buttons whenever editing primitives to provide a logical place for validation.
+- Activities with a "Save" button do not have knowledge of global state and just create an object.
+
+TODO:
+- Drag and drop to re-order items in a packing list
+- Reconsider how to uncheck items without cycling through un-added - e.g. oops clicked wrong thing but have filter on - long-press to reverse?
+- Database of items/parameters at the top-level
+- Packing list, item, and category names must be unique
+- When create a packing list, select the set of parameters that apply
+- Edit trip parameters
+- Pre-populate packing lists with all items with the selected parameters
+- Display items based on category
+- Sync
+- Ability to export/import data as json
+ ==========
+- Populate missing UID from stored data (e.g. if hand-edited)
+- Ability to share lists
+- Standardize naming (e.g. buttons, codes, ids - camelCase vs snake_case?)
+- Enhance logging
+- Testing
+- Documentation
+- Address all warnings

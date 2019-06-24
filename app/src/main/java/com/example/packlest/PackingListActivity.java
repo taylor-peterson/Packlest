@@ -9,25 +9,11 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.gson.Gson;
-
-import java.util.ListIterator;
-import java.util.UUID;
-
 public class PackingListActivity extends AppCompatActivity {
-    ListView itemListView;
+    private ListView itemListView;
     private ListViewItemCheckboxAdapter dataAdapter;
-    UUID packingListUUID;
-    PackingList filteredPackingList;
+    private PackingList filteredPackingList;
     private static final String TAG = "PackingListActivity";
-    FILTER_STATE filter_state;
-    Gson gson;
-
-    enum FILTER_STATE {
-        NONE,
-        ADDED_ONLY,
-        UNCHECKED_ONLY
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +21,12 @@ public class PackingListActivity extends AppCompatActivity {
         setContentView(R.layout.packing_list);
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        PackingList packingList = getIntent().getParcelableExtra("packingList");
-        packingListUUID = packingList.uuid;
-        gson = new Gson(); // We use this to (de)serialize to make deep copies.
-        filteredPackingList = gson.fromJson(gson.toJson(packingList), PackingList.class);
-        setTitle(packingList.name);
+        filteredPackingList = getIntent().getParcelableExtra("packingList");
+        setTitle(filteredPackingList.name);
 
         itemListView = findViewById(R.id.listViewItems);
         dataAdapter = new ListViewItemCheckboxAdapter(this, filteredPackingList);
         itemListView.setAdapter(dataAdapter);
-
-        filter_state = FILTER_STATE.NONE;
 
         setListViewOnItemClickListener();
     }
@@ -60,59 +41,44 @@ public class PackingListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.create_item_button:
-                Log.v(TAG, "Creating new item!");
+                Log.v(TAG, "Creating new item");
                 Intent intent = new Intent(this, CreateItemActivity.class);
-                startActivityForResult(intent, PacklestActivity.REQUEST_CODES.CREATE_ITEM.ordinal());
+                startActivityForResult(intent, REQUEST_CODES.CREATE_ITEM.ordinal());
                 break;
             case R.id.filter_items_button:
-                if (filter_state == FILTER_STATE.NONE) {
+                if (dataAdapter.filter_state == FILTER_STATE.NONE) {
                     Log.v(TAG, "Filtering out un-added items");
                     menuItem.setIcon(R.drawable.ic_filter);
                     dataAdapter.getFilter().filter(FILTER_STATE.ADDED_ONLY.name());
                     dataAdapter.filter_state = FILTER_STATE.ADDED_ONLY;
-                    filter_state = FILTER_STATE.ADDED_ONLY;
-                } else if (filter_state == FILTER_STATE.ADDED_ONLY) {
+                } else if (dataAdapter.filter_state == FILTER_STATE.ADDED_ONLY) {
                     Log.v(TAG, "Filtering out checked-items too");
                     dataAdapter.getFilter().filter(FILTER_STATE.UNCHECKED_ONLY.name());
                     dataAdapter.filter_state = FILTER_STATE.UNCHECKED_ONLY;
                     menuItem.setIcon(R.drawable.ic_filter_remove);
-                    filter_state = FILTER_STATE.UNCHECKED_ONLY;
-                } else if (filter_state == FILTER_STATE.UNCHECKED_ONLY){
+                } else if (dataAdapter.filter_state == FILTER_STATE.UNCHECKED_ONLY){
                     Log.v(TAG, "Resetting the filter");
                     dataAdapter.getFilter().filter(FILTER_STATE.NONE.name());
                     dataAdapter.filter_state = FILTER_STATE.NONE;
                     menuItem.setIcon(R.drawable.ic_filter_outline);
-                    filter_state = FILTER_STATE.NONE;
                 }
-                Log.v(TAG, filteredPackingList.items.toString());
-                dataAdapter.updatePackingList(filteredPackingList);
+                dataAdapter.notifyDataSetChanged();
                 break;
             case R.id.delete_packing_list:
                 Log.v(TAG, "Deleting packing list");
-                ListIterator<PackingList> iterator = PacklestApplication.getInstance().packingLists.listIterator();
-                while (iterator.hasNext()) {
-                    PackingList packingListEntry = iterator.next();
-                    if (packingListEntry.uuid.equals(packingListUUID)) {
-                            iterator.remove();
-                    }
-                }
+                PacklestApplication.getInstance().packlestData.deletePackingList(filteredPackingList.uuid);
                 finish();
                 break;
             case R.id.un_add_all_items:
                 Log.v(TAG, "Un-adding all items");
-                for (Item packingListItem : PacklestApplication.getInstance().getpackingListForUUID(packingListUUID).items) {
-                    packingListItem.checkbox_state = CHECKBOX_STATE.UNADDED;
-                }
-                dataAdapter.updatePackingList(PacklestApplication.getInstance().getpackingListForUUID(packingListUUID));
+                PacklestApplication.getInstance().packlestData.setCheckboxStateForAllItemsInPackingList(
+                        filteredPackingList.uuid, CHECKBOX_STATE.UNADDED);
+                syncFilteredPackingList();
                 break;
             case R.id.uncheck_all_items:
                 Log.v(TAG, "Un-checking all checked items");
-                for (Item packingListItem : PacklestApplication.getInstance().getpackingListForUUID(packingListUUID).items) {
-                    if (packingListItem.checkbox_state == CHECKBOX_STATE.CHECKED){
-                        packingListItem.checkbox_state = CHECKBOX_STATE.UNCHECKED;
-                    }
-                }
-                dataAdapter.updatePackingList(PacklestApplication.getInstance().getpackingListForUUID(packingListUUID));
+                PacklestApplication.getInstance().packlestData.uncheckAllCheckedItemsInPackingList(filteredPackingList.uuid);
+                syncFilteredPackingList();
                 break;
         }
 
@@ -124,47 +90,42 @@ public class PackingListActivity extends AppCompatActivity {
         Log.v(TAG, "Activity result");
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PacklestActivity.REQUEST_CODES.CREATE_ITEM.ordinal() && resultCode == PacklestActivity.RESULT_CODES.ITEM_MODIFIED.ordinal()) {
+        if (requestCode == REQUEST_CODES.CREATE_ITEM.ordinal() && resultCode == RESULT_CODES.ITEM_MODIFIED.ordinal()) {
             Item newItem = data.getParcelableExtra("item");
-            PacklestApplication.getInstance().getpackingListForUUID(packingListUUID).items.add(newItem);
-            //PacklestApplication.getInstance().updatePackingList(packingList);
-            Log.v(TAG, "Added: " + newItem.name);
-        } else if (requestCode == PacklestActivity.REQUEST_CODES.MODIFY_ITEM.ordinal() && resultCode != PacklestActivity.RESULT_CODES.BACK_BUTTON.ordinal()) {
+            Log.v(TAG, "Adding: " + newItem.name);
+            PacklestApplication.getInstance().packlestData.addItemToPackingList(filteredPackingList.uuid, newItem);
+        } else if (requestCode == REQUEST_CODES.MODIFY_ITEM.ordinal() && resultCode != RESULT_CODES.BACK_BUTTON.ordinal()) {
             Item modifiedItem = data.getParcelableExtra("item");
-            ListIterator<Item> iterator = PacklestApplication.getInstance().getpackingListForUUID(packingListUUID).items.listIterator();
-            while (iterator.hasNext()) {
-                Item itemEntry = iterator.next();
-                if (itemEntry.uuid.equals(modifiedItem.uuid)) {
-                    if (resultCode == PacklestActivity.RESULT_CODES.ITEM_MODIFIED.ordinal()) {
-                        iterator.set(modifiedItem);
-                        Log.v(TAG, "Modified: " + modifiedItem.name);
-                    } else if (resultCode == PacklestActivity.RESULT_CODES.ITEM_DELETED.ordinal()) {
-                        iterator.remove();
-                        Log.v(TAG, "Deleted: " + modifiedItem.name);
-                    }
-                }
+
+            if (resultCode == RESULT_CODES.ITEM_MODIFIED.ordinal()) {
+                Log.v(TAG, "Modifying: " + modifiedItem.name);
+                PacklestApplication.getInstance().packlestData.updateItemInPackingList(filteredPackingList.uuid, modifiedItem);
+            } else if (resultCode == RESULT_CODES.ITEM_DELETED.ordinal()) {
+                Log.v(TAG, "Deleting: " + modifiedItem.name);
+                PacklestApplication.getInstance().packlestData.removeItemFromPackingList(filteredPackingList.uuid, modifiedItem);
             }
         } else {
-            Log.v(TAG, "back pressed");
+            Log.v(TAG, "Back button pressed");
         }
-        dataAdapter.updatePackingList(PacklestApplication.getInstance().getpackingListForUUID(packingListUUID));
+
+        syncFilteredPackingList();
     }
 
     private void setListViewOnItemClickListener() {
         Log.v(TAG, "Item Clicked");
+        // TODO first click triggers this?
         itemListView.setOnItemClickListener((parent, view, position, id) -> {
             Item item = dataAdapter.getItem(position);
 
             Intent intent = new Intent(this, CreateItemActivity.class);
             intent.putExtra("item", item);
-            startActivityForResult(intent, PacklestActivity.REQUEST_CODES.MODIFY_ITEM.ordinal());
+            startActivityForResult(intent, REQUEST_CODES.MODIFY_ITEM.ordinal());
         });
     }
 
     @Override
     public void onBackPressed() {
         Log.v(TAG, "Back Pressed");
-        //packingList = PacklestApplication.getInstance().getUpdatedPackingList(packingList);
         finish();
     }
 
@@ -172,7 +133,16 @@ public class PackingListActivity extends AppCompatActivity {
     public void onPause() {
         Log.v(TAG, "Paused");
         super.onPause();
-        //packingList = PacklestApplication.getInstance().getUpdatedPackingList(packingList);
         PacklestApplication.getInstance().onPause();
     }
+
+    private void syncFilteredPackingList() {
+        Log.v(TAG, "Syncing filtered packing list");
+        PackingList fullPackingList = PacklestApplication.getInstance().packlestData.getPackingListForUUID(filteredPackingList.uuid);
+        filteredPackingList.name = fullPackingList.name;
+        filteredPackingList.items.clear();
+        filteredPackingList.items.addAll(fullPackingList.items);
+        dataAdapter.notifyDataSetChanged();
+    }
+
 }

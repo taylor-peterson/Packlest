@@ -1,6 +1,7 @@
 package com.example.packlest;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,10 +10,11 @@ import android.widget.Filterable;
 import android.widget.ListView;
 
 public class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
+    private static final String TAG = "PackLestListViewItemCheckboxAdapter";
     PackingList packingList;
     private Context context;
     ItemFilter filter;
-    PackingListActivity.FILTER_STATE filter_state = PackingListActivity.FILTER_STATE.NONE;
+    FILTER_STATE filter_state = FILTER_STATE.NONE;
 
     public ListViewItemCheckboxAdapter(Context context, PackingList packingList) {
         this.context = context;
@@ -54,14 +56,14 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterab
         }
 
         Item item = packingList.items.get(itemIndex);
-        CheckBoxTriState listItemCheckbox = convertView.findViewById(R.id.list_view_item_checkbox);
-        listItemCheckbox.setState(item.checkbox_state);
         viewHolder.getItemTextView().setText(item.name);
+        viewHolder.getItemCheckbox().setState(item.checkbox_state);
 
         return convertView;
     }
 
     private View.OnClickListener listItemCheckboxListener = view -> {
+        Log.v(TAG, "Item clicked");
         View parentRow = (View) view.getParent().getParent();
         ListView listView = (ListView) parentRow.getParent();
         final int position = listView.getPositionForView(parentRow);
@@ -69,15 +71,10 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterab
         Item item = getItem(position);
         CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
         item.checkbox_state = itemCheckbox.getState();
-        PacklestApplication.getInstance().updateItem(packingList, item);
+        PacklestApplication.getInstance().packlestData.updateItemInPackingList(packingList.uuid, item);
 
         getFilter().filter(filter_state.name());
     };
-
-    public void updatePackingList(PackingList packingList) {
-        this.packingList = packingList;
-        notifyDataSetChanged();
-    }
 
     @Override
     public Filter getFilter() {

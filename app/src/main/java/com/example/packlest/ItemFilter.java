@@ -3,8 +3,8 @@ package com.example.packlest;
 import android.widget.Filter;
 
 public class ItemFilter extends Filter {
-    PackingList filterlist;
-    ListViewItemCheckboxAdapter adapter;
+    private PackingList filterlist;
+    private ListViewItemCheckboxAdapter adapter;
 
     public ItemFilter(PackingList filterList, ListViewItemCheckboxAdapter adapter) {
         this.filterlist = filterList;
@@ -22,12 +22,12 @@ public class ItemFilter extends Filter {
 
             filteredPackingList.uuid = filterlist.uuid;
             filteredPackingList.name = filterlist.name;
-            for (Item item : filterlist.items) {
-                if (constraint == PackingListActivity.FILTER_STATE.ADDED_ONLY.name() && item.checkbox_state != CHECKBOX_STATE.UNADDED) {
+            for (Item item: PacklestApplication.getInstance().packlestData.getPackingListForUUID(filteredPackingList.uuid).items) {
+                if (constraint == FILTER_STATE.ADDED_ONLY.name() && item.checkbox_state != CHECKBOX_STATE.UNADDED) {
                     filteredPackingList.items.add(item);
-                } else if (constraint == PackingListActivity.FILTER_STATE.UNCHECKED_ONLY.name() && item.checkbox_state == CHECKBOX_STATE.UNCHECKED) {
+                } else if (constraint == FILTER_STATE.UNCHECKED_ONLY.name() && item.checkbox_state == CHECKBOX_STATE.UNCHECKED) {
                     filteredPackingList.items.add(item);
-                } else if (constraint == PackingListActivity.FILTER_STATE.NONE.name()) {
+                } else if (constraint == FILTER_STATE.NONE.name()) {
                     filteredPackingList.items.add(item);
                 }
             }
@@ -44,7 +44,9 @@ public class ItemFilter extends Filter {
 
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
-        adapter.packingList = (PackingList) results.values;
+        PackingList filteredPackingList = (PackingList) results.values;
+        adapter.packingList.items.clear();
+        adapter.packingList.items.addAll(filteredPackingList.items);
         adapter.notifyDataSetChanged();
     }
 }
