@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+// TODO ViewHolders are what again?
 public class ListViewItemViewHolder extends RecyclerView.ViewHolder {
     private CheckBox itemCheckbox;
     private TextView itemTextView;
@@ -14,6 +15,7 @@ public class ListViewItemViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
+    // TODO delete?
     public CheckBox getItemCheckbox() {
         return itemCheckbox;
     }

@@ -7,11 +7,6 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 
 // Code modified from https://stackoverflow.com/questions/16511535/creating-a-three-states-checkbox-on-android.
 public class CheckBoxTriState extends AppCompatCheckBox {
-    enum CHECKBOX_STATE {
-        CHECKED,
-        UNCHECKED,
-        UNADDED,
-    }
 
     private CHECKBOX_STATE state;
 

@@ -14,6 +14,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.ListIterator;
+import java.util.UUID;
 
 public class PacklestApplication extends Application {
     private static PacklestApplication singleton;
@@ -46,7 +48,6 @@ public class PacklestApplication extends Application {
         }
 
         String inputJson = input.toString();
-        Log.v(TAG, inputJson); // TODO Remove
         if (inputJson.isEmpty()) {
             packingLists = new ArrayList<>();
         } else {
@@ -71,5 +72,58 @@ public class PacklestApplication extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public PackingList getpackingListForUUID(UUID uuid) {
+        for (PackingList packingList : packingLists) {
+            if (packingList.uuid == uuid) {
+                return packingList;
+            }
+        }
+        return new PackingList();
+    }
+
+    public void updatePackingList(PackingList packingList) {
+        ListIterator<PackingList> iterator = packingLists.listIterator();
+        while (iterator.hasNext()) {
+            PackingList packingListEntry = iterator.next();
+            if (packingListEntry.uuid.equals(packingList.uuid)) {
+                iterator.set(packingList);
+                Log.v(TAG, "Modified globally: " + packingList.name);
+            }
+        }
+    }
+
+    public void updateItem(PackingList packingList, Item item) {
+        int packingListCounter = 0;
+        for (PackingList packingListEntry : packingLists) {
+            if (packingListEntry.uuid.equals(packingList.uuid)) {
+                Gson gson = new Gson();
+                Log.v(TAG, gson.toJson(packingLists));
+                int itemCounter = 0;
+                for (Item itemEntry : packingList.items) {
+                    if (itemEntry.uuid.equals(item.uuid)) {
+                        itemEntry.checkbox_state = item.checkbox_state;
+                        itemEntry.name = item.name;
+                        packingLists.get(packingListCounter).items.get(itemCounter).checkbox_state = itemEntry.checkbox_state;
+                        Log.v(TAG, "Modified globally: " + item.name);
+                        Log.v(TAG, "Modified globally: " + item.checkbox_state.toString());
+
+                    }
+                }
+                itemCounter++;
+                Log.v(TAG, gson.toJson(packingLists));
+            }
+            packingListCounter++;
+        }
+    }
+
+    public PackingList getUpdatedPackingList(PackingList packingList) {
+        for (PackingList packingListEntry : packingLists) {
+            if (packingListEntry.uuid.equals(packingList.uuid)) {
+                return packingListEntry;
+            }
+        }
+        return new PackingList();
     }
 }

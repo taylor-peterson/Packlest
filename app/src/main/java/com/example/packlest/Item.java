@@ -8,12 +8,12 @@ import java.util.UUID;
 public class Item  implements Parcelable {
     UUID uuid;
     public String name;
-    CheckBoxTriState.CHECKBOX_STATE checkbox_state;
+    CHECKBOX_STATE checkbox_state;
 
     Item() {
         uuid = UUID.randomUUID();
         name = "";
-        checkbox_state = CheckBoxTriState.CHECKBOX_STATE.UNADDED;
+        checkbox_state = CHECKBOX_STATE.UNADDED;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Item  implements Parcelable {
     private Item(Parcel in) {
         uuid = (UUID)in.readSerializable();
         name = in.readString();
-        checkbox_state = CheckBoxTriState.CHECKBOX_STATE.values()[in.readInt()];
+        checkbox_state = CHECKBOX_STATE.values()[in.readInt()];
     }
 
     @Override

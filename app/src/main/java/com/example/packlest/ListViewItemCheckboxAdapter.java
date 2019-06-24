@@ -4,11 +4,15 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListView;
 
-public class ListViewItemCheckboxAdapter extends BaseAdapter {
-    private PackingList packingList;
+public class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
+    PackingList packingList;
     private Context context;
+    ItemFilter filter;
+    PackingListActivity.FILTER_STATE filter_state = PackingListActivity.FILTER_STATE.NONE;
 
     public ListViewItemCheckboxAdapter(Context context, PackingList packingList) {
         this.context = context;
@@ -64,11 +68,22 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter {
 
         Item item = getItem(position);
         CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
-        item.checkbox_state = itemCheckbox.getState(); // TODO need to propagate this back to the global data
+        item.checkbox_state = itemCheckbox.getState();
+        PacklestApplication.getInstance().updateItem(packingList, item);
+
+        getFilter().filter(filter_state.name());
     };
 
     public void updatePackingList(PackingList packingList) {
         this.packingList = packingList;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new ItemFilter(packingList, this);
+        }
+        return filter;
     }
 }

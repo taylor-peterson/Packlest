@@ -23,7 +23,7 @@ public class CreateItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_item);
         setSupportActionBar(findViewById(R.id.toolbar));
-        findViewById(R.id.buttonSaveItem).setOnClickListener(this::onClick);
+        findViewById(R.id.buttonSaveItem).setOnClickListener(this::onClickButtonSave);
 
         editTextItemName = findViewById(R.id.editTextItemName);
 
@@ -64,7 +64,7 @@ public class CreateItemActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    private void onClick(View e) {
+    private void onClickButtonSave(View e) {
         String itemName = editTextItemName.getText().toString();
         if (itemName.isEmpty()) {
             new AlertDialog.Builder(this)

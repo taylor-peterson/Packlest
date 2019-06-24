@@ -10,8 +10,6 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.ListIterator;
-
 /*
  * Design Thoughts:
  * - Item: a discrete thing to be brought on a trip
@@ -21,11 +19,13 @@ import java.util.ListIterator;
  * - Trip Parameters: parameters of a trip (e.g. activities, conditions, length of outing)
  *  - Each item can be associated with many trip parameters.
  * - We utilize "Save" buttons whenever editing primitives to provide a logical place for validation.
+ * - Activities with a "Save" button do not have knowledge of global state and just create an object.
  *
  * TODO:
  * - Filter in menu to cycle through all/added+packed/added
- * - enums in their own files
+ * - Reconsider how to uncheck items without cyclng through unadded - e.g. oops clicked wrong thing but have filter on - long-press to reverse?
  * - Database of items/parameters/lists at the top-level
+ * - enums in their own files
  * - Packing list, item, and category names must be unique
  * - When create a packing list, select the set of parameters that apply
  * - Edit trip parameters
@@ -56,6 +56,7 @@ public class PacklestActivity extends AppCompatActivity {
     }
 
     enum RESULT_CODES {
+        BACK_BUTTON,
         ITEM_MODIFIED,
         ITEM_DELETED,
         PACKING_LIST_CREATED,
@@ -98,7 +99,6 @@ public class PacklestActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO eliminate this by modifying the data structure directly
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -107,18 +107,6 @@ public class PacklestActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_CODES.CREATE_PACKING_LIST.ordinal() && resultCode == RESULT_CODES.PACKING_LIST_CREATED.ordinal()) {
             PacklestApplication.getInstance().packingLists.add(packingList);
-        } else if (requestCode == REQUEST_CODES.VIEW_PACKING_LIST.ordinal()) {
-            ListIterator<PackingList> iterator = PacklestApplication.getInstance().packingLists.listIterator();
-            while (iterator.hasNext()) {
-                PackingList packingListEntry = iterator.next();
-                if (packingListEntry.uuid.equals(packingList.uuid)) {
-                    if (resultCode == RESULT_CODES.PACKING_LIST_MODIFIED.ordinal()) {
-                        iterator.set(packingList);
-                    } else if (resultCode == RESULT_CODES.PACKING_LIST_DELETED.ordinal()) {
-                        iterator.remove();
-                    }
-                }
-            }
         }
         arrayAdapter.notifyDataSetChanged();
     }
