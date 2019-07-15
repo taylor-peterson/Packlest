@@ -24,10 +24,10 @@ public class CreatePackingListActivity extends AppCompatActivity {
 
     private void onButtonSaveClick() {
         String packingListName = editTextPackingListName.getText().toString();
-        if (packingListName.isEmpty()) {
+        if (packingListName.isEmpty() || PacklestApplication.getInstance().packlestData.doesPackingListNameExist(packingListName)) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
-                    .setMessage("Packing list requires name.")
+                    .setMessage("Packing list requires unique name.")
                     .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
                     .setCancelable(false)
                     .create()

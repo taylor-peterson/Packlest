@@ -66,10 +66,11 @@ public class CreateItemActivity extends AppCompatActivity {
 
     private void onClickButtonSave(View e) {
         String itemName = editTextItemName.getText().toString();
-        if (itemName.isEmpty()) {
+        if (itemName.isEmpty() ||
+                (getTitle() == "Create Item" && PacklestApplication.getInstance().packlestData.doesItemNameExist(itemName))) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
-                    .setMessage("Item requires name.")
+                    .setMessage("Item requires unique name.")
                     .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
                     .setCancelable(false)
                     .create()

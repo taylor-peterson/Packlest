@@ -9,12 +9,12 @@ import java.util.UUID;
 public class PackingList implements Parcelable {
     UUID uuid;
     public String name;
-    ArrayList<Item> items;
+    ArrayList<ItemInstance> itemInstances;
 
     PackingList() {
         uuid = UUID.randomUUID();
         name = "";
-        items = new ArrayList<>();
+        itemInstances = new ArrayList<>();
     }
 
     @Override
@@ -26,7 +26,7 @@ public class PackingList implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeSerializable(this.uuid);
         out.writeString(this.name);
-        out.writeList(this.items);
+        out.writeList(this.itemInstances);
     }
 
     public static final Parcelable.Creator<PackingList> CREATOR = new Parcelable.Creator<PackingList>() {
@@ -42,8 +42,8 @@ public class PackingList implements Parcelable {
     private PackingList(Parcel in) {
         uuid = (UUID)in.readSerializable();
         name = in.readString();
-        items = new ArrayList<>();
-        in.readList(items, Item.class.getClassLoader());
+        itemInstances = new ArrayList<>();
+        in.readList(itemInstances, Item.class.getClassLoader());
     }
 
     @Override

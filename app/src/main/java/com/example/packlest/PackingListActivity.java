@@ -47,12 +47,12 @@ public class PackingListActivity extends AppCompatActivity {
                 break;
             case R.id.filter_items_button:
                 if (dataAdapter.filter_state == FILTER_STATE.NONE) {
-                    Log.v(TAG, "Filtering out un-added items");
+                    Log.v(TAG, "Filtering out un-added itemInstances");
                     menuItem.setIcon(R.drawable.ic_filter);
                     dataAdapter.getFilter().filter(FILTER_STATE.ADDED_ONLY.name());
                     dataAdapter.filter_state = FILTER_STATE.ADDED_ONLY;
                 } else if (dataAdapter.filter_state == FILTER_STATE.ADDED_ONLY) {
-                    Log.v(TAG, "Filtering out checked-items too");
+                    Log.v(TAG, "Filtering out checked-itemInstances too");
                     dataAdapter.getFilter().filter(FILTER_STATE.UNCHECKED_ONLY.name());
                     dataAdapter.filter_state = FILTER_STATE.UNCHECKED_ONLY;
                     menuItem.setIcon(R.drawable.ic_filter_remove);
@@ -70,13 +70,13 @@ public class PackingListActivity extends AppCompatActivity {
                 finish();
                 break;
             case R.id.un_add_all_items:
-                Log.v(TAG, "Un-adding all items");
+                Log.v(TAG, "Un-adding all itemInstances");
                 PacklestApplication.getInstance().packlestData.setCheckboxStateForAllItemsInPackingList(
                         filteredPackingList.uuid, CHECKBOX_STATE.UNADDED);
                 syncFilteredPackingList();
                 break;
             case R.id.uncheck_all_items:
-                Log.v(TAG, "Un-checking all checked items");
+                Log.v(TAG, "Un-checking all checked itemInstances");
                 PacklestApplication.getInstance().packlestData.uncheckAllCheckedItemsInPackingList(filteredPackingList.uuid);
                 syncFilteredPackingList();
                 break;
@@ -92,17 +92,20 @@ public class PackingListActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_CODES.CREATE_ITEM.ordinal() && resultCode == RESULT_CODES.ITEM_MODIFIED.ordinal()) {
             Item newItem = data.getParcelableExtra("item");
+            ItemInstance itemInstance = new ItemInstance(newItem.uuid);
             Log.v(TAG, "Adding: " + newItem.name);
-            PacklestApplication.getInstance().packlestData.addItemToPackingList(filteredPackingList.uuid, newItem);
+            PacklestApplication.getInstance().packlestData.addItem(newItem);
+            PacklestApplication.getInstance().packlestData.addItemToPackingList(filteredPackingList.uuid, itemInstance);
         } else if (requestCode == REQUEST_CODES.MODIFY_ITEM.ordinal() && resultCode != RESULT_CODES.BACK_BUTTON.ordinal()) {
             Item modifiedItem = data.getParcelableExtra("item");
 
             if (resultCode == RESULT_CODES.ITEM_MODIFIED.ordinal()) {
                 Log.v(TAG, "Modifying: " + modifiedItem.name);
-                PacklestApplication.getInstance().packlestData.updateItemInPackingList(filteredPackingList.uuid, modifiedItem);
+                PacklestApplication.getInstance().packlestData.updateItem(modifiedItem);
             } else if (resultCode == RESULT_CODES.ITEM_DELETED.ordinal()) {
                 Log.v(TAG, "Deleting: " + modifiedItem.name);
                 PacklestApplication.getInstance().packlestData.removeItemFromPackingList(filteredPackingList.uuid, modifiedItem);
+                PacklestApplication.getInstance().packlestData.removeItem(modifiedItem);
             }
         } else {
             Log.v(TAG, "Back button pressed");
@@ -115,7 +118,8 @@ public class PackingListActivity extends AppCompatActivity {
         Log.v(TAG, "Item Clicked");
         // TODO first click triggers this?
         itemListView.setOnItemClickListener((parent, view, position, id) -> {
-            Item item = dataAdapter.getItem(position);
+            ItemInstance itemInstance = dataAdapter.getItem(position);
+            Item item = PacklestApplication.getInstance().packlestData.items.get(itemInstance.item_uuid);
 
             Intent intent = new Intent(this, CreateItemActivity.class);
             intent.putExtra("item", item);
@@ -133,16 +137,17 @@ public class PackingListActivity extends AppCompatActivity {
     public void onPause() {
         Log.v(TAG, "Paused");
         super.onPause();
-        PacklestApplication.getInstance().onPause();
+        PacklestApplication.getInstance().persistData();
     }
 
     private void syncFilteredPackingList() {
         Log.v(TAG, "Syncing filtered packing list");
         PackingList fullPackingList = PacklestApplication.getInstance().packlestData.getPackingListForUUID(filteredPackingList.uuid);
         filteredPackingList.name = fullPackingList.name;
-        filteredPackingList.items.clear();
-        filteredPackingList.items.addAll(fullPackingList.items);
+        filteredPackingList.itemInstances.clear();
+        filteredPackingList.itemInstances.addAll(fullPackingList.itemInstances);
         dataAdapter.notifyDataSetChanged();
+        PacklestApplication.getInstance().persistData();
     }
 
 }

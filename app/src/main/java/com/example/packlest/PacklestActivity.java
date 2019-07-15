@@ -36,7 +36,7 @@ public class PacklestActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        PacklestApplication.getInstance().onPause();
+        PacklestApplication.getInstance().persistData();
     }
 
     @Override
@@ -70,6 +70,7 @@ public class PacklestActivity extends AppCompatActivity {
         packingLists.clear();
         packingLists.addAll(PacklestApplication.getInstance().packlestData.getPackingLists());
         arrayAdapter.notifyDataSetChanged();
+        PacklestApplication.getInstance().persistData();
     }
 
     private void setListViewOnItemClickListener() {

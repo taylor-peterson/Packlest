@@ -22,13 +22,13 @@ public class ItemFilter extends Filter {
 
             filteredPackingList.uuid = filterlist.uuid;
             filteredPackingList.name = filterlist.name;
-            for (Item item: PacklestApplication.getInstance().packlestData.getPackingListForUUID(filteredPackingList.uuid).items) {
-                if (constraint == FILTER_STATE.ADDED_ONLY.name() && item.checkbox_state != CHECKBOX_STATE.UNADDED) {
-                    filteredPackingList.items.add(item);
-                } else if (constraint == FILTER_STATE.UNCHECKED_ONLY.name() && item.checkbox_state == CHECKBOX_STATE.UNCHECKED) {
-                    filteredPackingList.items.add(item);
+            for (ItemInstance itemInstance: PacklestApplication.getInstance().packlestData.getPackingListForUUID(filteredPackingList.uuid).itemInstances) {
+                if (constraint == FILTER_STATE.ADDED_ONLY.name() && itemInstance.checkbox_state != CHECKBOX_STATE.UNADDED) {
+                    filteredPackingList.itemInstances.add(itemInstance);
+                } else if (constraint == FILTER_STATE.UNCHECKED_ONLY.name() && itemInstance.checkbox_state == CHECKBOX_STATE.UNCHECKED) {
+                    filteredPackingList.itemInstances.add(itemInstance);
                 } else if (constraint == FILTER_STATE.NONE.name()) {
-                    filteredPackingList.items.add(item);
+                    filteredPackingList.itemInstances.add(itemInstance);
                 }
             }
 
@@ -45,8 +45,8 @@ public class ItemFilter extends Filter {
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
         PackingList filteredPackingList = (PackingList) results.values;
-        adapter.packingList.items.clear();
-        adapter.packingList.items.addAll(filteredPackingList.items);
+        adapter.packingList.itemInstances.clear();
+        adapter.packingList.itemInstances.addAll(filteredPackingList.itemInstances);
         adapter.notifyDataSetChanged();
     }
 }

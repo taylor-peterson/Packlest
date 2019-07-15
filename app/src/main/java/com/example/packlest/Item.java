@@ -5,15 +5,13 @@ import android.os.Parcelable;
 
 import java.util.UUID;
 
-public class Item  implements Parcelable {
+public class Item implements Parcelable {
     UUID uuid;
     public String name;
-    CHECKBOX_STATE checkbox_state;
 
     Item() {
         uuid = UUID.randomUUID();
         name = "";
-        checkbox_state = CHECKBOX_STATE.UNADDED;
     }
 
     @Override
@@ -25,7 +23,6 @@ public class Item  implements Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeSerializable(this.uuid);
         out.writeString(this.name);
-        out.writeInt(this.checkbox_state.ordinal());
     }
 
     public static final Parcelable.Creator<Item> CREATOR = new Parcelable.Creator<Item>() {
@@ -41,7 +38,6 @@ public class Item  implements Parcelable {
     private Item(Parcel in) {
         uuid = (UUID)in.readSerializable();
         name = in.readString();
-        checkbox_state = CHECKBOX_STATE.values()[in.readInt()];
     }
 
     @Override

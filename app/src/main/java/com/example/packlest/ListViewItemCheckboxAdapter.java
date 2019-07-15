@@ -23,12 +23,12 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterab
 
     @Override
     public int getCount() {
-        return packingList.items.size();
+        return packingList.itemInstances.size();
     }
 
     @Override
-    public Item getItem(int itemIndex) {
-        return packingList.items.get(itemIndex);
+    public ItemInstance getItem(int itemIndex) {
+        return packingList.itemInstances.get(itemIndex);
     }
 
     @Override
@@ -55,9 +55,9 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterab
             convertView.setTag(viewHolder);
         }
 
-        Item item = packingList.items.get(itemIndex);
-        viewHolder.getItemTextView().setText(item.name);
-        viewHolder.getItemCheckbox().setState(item.checkbox_state);
+        ItemInstance itemInstance = packingList.itemInstances.get(itemIndex);
+        viewHolder.getItemTextView().setText(itemInstance.getName());
+        viewHolder.getItemCheckbox().setState(itemInstance.checkbox_state);
 
         return convertView;
     }
@@ -68,10 +68,10 @@ public class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterab
         ListView listView = (ListView) parentRow.getParent();
         final int position = listView.getPositionForView(parentRow);
 
-        Item item = getItem(position);
+        ItemInstance itemInstance = getItem(position);
         CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
-        item.checkbox_state = itemCheckbox.getState();
-        PacklestApplication.getInstance().packlestData.updateItemInPackingList(packingList.uuid, item);
+        itemInstance.checkbox_state = itemCheckbox.getState();
+        PacklestApplication.getInstance().packlestData.updateItemInPackingList(packingList.uuid, itemInstance);
 
         getFilter().filter(filter_state.name());
     };

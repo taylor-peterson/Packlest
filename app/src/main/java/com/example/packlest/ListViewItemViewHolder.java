@@ -13,7 +13,7 @@ public class ListViewItemViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    public CheckBoxTriState getItemCheckbox() {
+    CheckBoxTriState getItemCheckbox() {
         return itemCheckbox;
     }
 
