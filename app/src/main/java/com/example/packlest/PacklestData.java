@@ -40,11 +40,16 @@ public class PacklestData {
     public ArrayList<TripParameter> getTripParametersForNames(List<String> names) {
         ArrayList<TripParameter> tripParametersToReturn = new ArrayList<>();
         for (String name : names) {
+            boolean existingTripParameter = false; // TODO better way?
             for (TripParameter tripParameter : tripParameters.values()) {
                 if (tripParameter.name.equals(name)) {
                     tripParametersToReturn.add(tripParameter);
-                    continue;
+                    existingTripParameter = true;
                 }
+            }
+
+            if (existingTripParameter) {
+                continue;
             }
             TripParameter newTripParameter = new TripParameter();
             newTripParameter.name = name;
