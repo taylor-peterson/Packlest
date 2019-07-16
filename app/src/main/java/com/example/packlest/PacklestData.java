@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,11 +21,39 @@ public class PacklestData {
     private static final String TAG = "PacklestData";
     private Map<UUID, PackingList> packingLists;
     Map<UUID, Item> items; // TODO probs make private again
-    //private Map<UUID, TripParameters> categories;
+    Map<UUID, TripParameter> tripParameters;
 
     PacklestData() {
         packingLists = new HashMap<>();
         items = new HashMap<>();
+        tripParameters = new HashMap<>();
+    }
+
+    public String[] getTripParameterNames() {
+        ArrayList<String> names = new ArrayList<>();
+        for (TripParameter tripParameter : tripParameters.values()) {
+            names.add(tripParameter.name);
+        }
+        return names.toArray(new String[0]);
+    }
+
+    public ArrayList<TripParameter> getTripParametersForNames(List<String> names) {
+        ArrayList<TripParameter> tripParametersToReturn = new ArrayList<>();
+        for (String name : names) {
+            for (TripParameter tripParameter : tripParameters.values()) {
+                if (tripParameter.name.equals(name)) {
+                    tripParametersToReturn.add(tripParameter);
+                    continue;
+                }
+            }
+            TripParameter newTripParameter = new TripParameter();
+            newTripParameter.name = name;
+            // TODO items
+            // TODO if there are no items for a trip parameter, clean it up? Or add different interface instead of text field?
+            tripParameters.put(newTripParameter.uuid, newTripParameter);
+            tripParametersToReturn.add(newTripParameter);
+        }
+        return tripParametersToReturn;
     }
 
     public void loadPacklestDataFromFile(File file) {
@@ -45,7 +74,7 @@ public class PacklestData {
         String[] inputJson = input.toString().split("NEXT_HASH_MAP");
         Gson gson = new Gson();
 
-        if (inputJson.length == 2) {
+        if (inputJson.length == 3) {
             String inputPackingLists = inputJson[0];
             if (!inputPackingLists.isEmpty()) {
                 Type type = new TypeToken<HashMap<UUID, PackingList>>() {}.getType();
@@ -57,13 +86,22 @@ public class PacklestData {
                 Type type = new TypeToken<HashMap<UUID, Item>>() {}.getType();
                 items = gson.fromJson(inputItems, type);
             }
+
+            String inputTripParameters = inputJson[2];
+            if (!inputTripParameters.isEmpty()) {
+                Type type = new TypeToken<HashMap<UUID, TripParameter>>() {}.getType();
+                tripParameters = gson.fromJson(inputTripParameters, type);
+            }
         }
     }
 
     public void persistPacklestDataToFile(FileOutputStream outputStream) {
         Log.v(TAG, "Persisting packlest data to file");
         Gson gson = new Gson();
-        String fileContents = gson.toJson(packingLists) + "NEXT_HASH_MAP" + gson.toJson(items);
+        String fileContents =
+                gson.toJson(packingLists) + "NEXT_HASH_MAP" +
+                gson.toJson(items) + "NEXT_HASH_MAP" +
+                gson.toJson(tripParameters);
         Log.v(TAG, "Writing:" + fileContents);
         try {
             outputStream.write(fileContents.getBytes());
@@ -157,7 +195,11 @@ public class PacklestData {
         }
     }
 
-    public PackingList getPackingListForUUID(UUID uuid) {
+    public PackingList getPackingListForUuid(UUID uuid) {
         return packingLists.get(uuid);
+    }
+
+    public Item getItemForUuid(UUID uuid) {
+        return items.get(uuid);
     }
 }

@@ -1,12 +1,10 @@
 package com.example.packlest;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.widget.EditText;
 
 public class CreatePackingListActivity extends AppCompatActivity {
 
@@ -33,11 +31,9 @@ public class CreatePackingListActivity extends AppCompatActivity {
                     .create()
                     .show();
         } else {
-            Intent intent = new Intent();
             PackingList packingList = new PackingList();
             packingList.name = editTextPackingListName.getText().toString();
-            intent.putExtra("packingList", packingList);
-            setResult(RESULT_CODES.PACKING_LIST_CREATED.ordinal(), intent);
+            PacklestApplication.getInstance().packlestData.addPackingList(packingList);
             finish();
         }
     }

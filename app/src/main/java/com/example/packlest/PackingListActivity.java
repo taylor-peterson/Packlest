@@ -9,6 +9,8 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.UUID;
+
 public class PackingListActivity extends AppCompatActivity {
     private ListView itemListView;
     private ListViewItemCheckboxAdapter dataAdapter;
@@ -21,7 +23,8 @@ public class PackingListActivity extends AppCompatActivity {
         setContentView(R.layout.packing_list);
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        filteredPackingList = getIntent().getParcelableExtra("packingList");
+        filteredPackingList = new PackingList(PacklestApplication.getInstance().packlestData.getPackingListForUuid(
+                (UUID) getIntent().getSerializableExtra("packingListUuid")));
         setTitle(filteredPackingList.name);
 
         itemListView = findViewById(R.id.listViewItems);
@@ -43,6 +46,7 @@ public class PackingListActivity extends AppCompatActivity {
             case R.id.create_item_button:
                 Log.v(TAG, "Creating new item");
                 Intent intent = new Intent(this, CreateItemActivity.class);
+                intent.putExtra("packingListUuid", filteredPackingList.uuid);
                 startActivityForResult(intent, REQUEST_CODES.CREATE_ITEM.ordinal());
                 break;
             case R.id.filter_items_button:
@@ -89,28 +93,6 @@ public class PackingListActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v(TAG, "Activity result");
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODES.CREATE_ITEM.ordinal() && resultCode == RESULT_CODES.ITEM_MODIFIED.ordinal()) {
-            Item newItem = data.getParcelableExtra("item");
-            ItemInstance itemInstance = new ItemInstance(newItem.uuid);
-            Log.v(TAG, "Adding: " + newItem.name);
-            PacklestApplication.getInstance().packlestData.addItem(newItem);
-            PacklestApplication.getInstance().packlestData.addItemToPackingList(filteredPackingList.uuid, itemInstance);
-        } else if (requestCode == REQUEST_CODES.MODIFY_ITEM.ordinal() && resultCode != RESULT_CODES.BACK_BUTTON.ordinal()) {
-            Item modifiedItem = data.getParcelableExtra("item");
-
-            if (resultCode == RESULT_CODES.ITEM_MODIFIED.ordinal()) {
-                Log.v(TAG, "Modifying: " + modifiedItem.name);
-                PacklestApplication.getInstance().packlestData.updateItem(modifiedItem);
-            } else if (resultCode == RESULT_CODES.ITEM_DELETED.ordinal()) {
-                Log.v(TAG, "Deleting: " + modifiedItem.name);
-                PacklestApplication.getInstance().packlestData.removeItemFromPackingList(filteredPackingList.uuid, modifiedItem);
-                PacklestApplication.getInstance().packlestData.removeItem(modifiedItem);
-            }
-        } else {
-            Log.v(TAG, "Back button pressed");
-        }
-
         syncFilteredPackingList();
     }
 
@@ -122,7 +104,8 @@ public class PackingListActivity extends AppCompatActivity {
             Item item = PacklestApplication.getInstance().packlestData.items.get(itemInstance.item_uuid);
 
             Intent intent = new Intent(this, CreateItemActivity.class);
-            intent.putExtra("item", item);
+            intent.putExtra("itemUuid", item.uuid);
+            intent.putExtra("packingListUuid", filteredPackingList.uuid);
             startActivityForResult(intent, REQUEST_CODES.MODIFY_ITEM.ordinal());
         });
     }
@@ -142,7 +125,7 @@ public class PackingListActivity extends AppCompatActivity {
 
     private void syncFilteredPackingList() {
         Log.v(TAG, "Syncing filtered packing list");
-        PackingList fullPackingList = PacklestApplication.getInstance().packlestData.getPackingListForUUID(filteredPackingList.uuid);
+        PackingList fullPackingList = PacklestApplication.getInstance().packlestData.getPackingListForUuid(filteredPackingList.uuid);
         filteredPackingList.name = fullPackingList.name;
         filteredPackingList.itemInstances.clear();
         filteredPackingList.itemInstances.addAll(fullPackingList.itemInstances);

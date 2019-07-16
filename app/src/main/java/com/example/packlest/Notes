@@ -10,20 +10,21 @@ Design Thoughts:
 
 TODO:
 - Trip parameters!
- - store at top-level
- - tag items with parameters (create new ones if missing)
  - select parameters when create packing list
  - pre-populate packing list with all items with the selected parameters
 - Edit packing lists
 - Ability to export/import data as json
+- List of all items from main page; link to edit
+- List of all trip parameters from main page; link to edit
  ==========
+- Get rid of UUIDs in favor of just using names?
 - Consistent data syncing strategy (e.g. items added to/removed from trip parameter)
 - Add (uniquely named) item categories
 - Display items based on category
 - Drag and drop to re-order items in a packing list
 - Reconsider how to uncheck items without cycling through un-added - e.g. oops clicked wrong thing but have filter on - long-press to reverse?
 - Add existing item to list without having to edit trip parameters
-- Item/parameter viewer
+  - completion suggestions on item name; if user selects one or types existing name ask, load remaining details for that item?
 - Populate missing UID from stored data (e.g. if hand-edited)
 - Ability to share lists
 - Standardize naming (e.g. buttons, codes, ids - camelCase vs snake_case?)

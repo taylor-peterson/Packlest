@@ -2,14 +2,12 @@ package com.example.packlest;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
@@ -17,7 +15,6 @@ public class PacklestActivity extends AppCompatActivity {
     private ListView packingListView;
     private ArrayAdapter<PackingList> arrayAdapter;
     private ArrayList<PackingList> packingLists;
-    private static final String TAG = "PacklestActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,15 +55,6 @@ public class PacklestActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null) {
-            PackingList packingList = data.getParcelableExtra("packingList");
-
-            if (requestCode == REQUEST_CODES.CREATE_PACKING_LIST.ordinal() && resultCode == RESULT_CODES.PACKING_LIST_CREATED.ordinal()) {
-                Log.v(TAG, "Adding new packing list.");
-                PacklestApplication.getInstance().packlestData.addPackingList(packingList);
-            }
-        }
-
         packingLists.clear();
         packingLists.addAll(PacklestApplication.getInstance().packlestData.getPackingLists());
         arrayAdapter.notifyDataSetChanged();
@@ -77,7 +65,7 @@ public class PacklestActivity extends AppCompatActivity {
         packingListView.setOnItemClickListener((parent, view, position, id) -> {
             PackingList packingList = arrayAdapter.getItem(position);
             Intent intent = new Intent(this, PackingListActivity.class);
-            intent.putExtra("packingList", packingList);
+            intent.putExtra("packingListUuid", packingList.uuid);
             startActivityForResult(intent, REQUEST_CODES.VIEW_PACKING_LIST.ordinal());
         });
     }
