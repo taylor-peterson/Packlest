@@ -9,13 +9,13 @@ Design Thoughts:
 - Activities with a "Save" button do not have knowledge of global state and just create an object.
 
 TODO:
+- List of all items from main page; link to edit
+- List of all trip parameters from main page; link to edit
 - Trip parameters!
  - select parameters when create packing list
  - pre-populate packing list with all items with the selected parameters
 - Edit packing lists
 - Ability to export/import data as json
-- List of all items from main page; link to edit
-- List of all trip parameters from main page; link to edit
  ==========
 - Get rid of UUIDs in favor of just using names?
 - Consistent data syncing strategy (e.g. items added to/removed from trip parameter)
