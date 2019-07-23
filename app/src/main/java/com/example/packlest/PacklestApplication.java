@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 
-class PacklestApplication extends Application {
+public class PacklestApplication extends Application {
     private static PacklestApplication singleton;
     private static final String TAG = "PacklestApplication";
     private static final String DATA_FILE = "packlest_data.json";

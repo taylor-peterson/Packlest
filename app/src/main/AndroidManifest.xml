@@ -13,11 +13,20 @@
         <activity
             android:name=".CreateItemActivity"
             android:label="@string/title_activity_create_item"
-            android:parentActivityName=".PackingListActivity"
+            android:parentActivityName=".PacklestActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.packlest.PackingListActivity" />
+                android:value="com.example.packlest.PacklestActivity" />
+        </activity>
+        <activity
+            android:name=".CreateTripParameterActivity"
+            android:label="@string/title_activity_create_trip_parameter"
+            android:parentActivityName=".PacklestActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.packlest.PacklestActivity" />
         </activity>
         <activity
             android:name=".PackingListActivity"

@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.UUID;
 
-class PackingListActivity extends AppCompatActivity {
+public class PackingListActivity extends AppCompatActivity {
     private ListView itemListView;
     private ListViewItemCheckboxAdapter dataAdapter;
     private PackingList filteredPackingList;

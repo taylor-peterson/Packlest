@@ -17,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Arrays;
 import java.util.UUID;
 
-class CreateItemActivity extends AppCompatActivity {
+public class CreateItemActivity extends AppCompatActivity {
     private EditText editTextItemName;
     private MultiAutoCompleteTextView tripParameters;
     private Item item;
@@ -76,7 +76,7 @@ class CreateItemActivity extends AppCompatActivity {
             if (packingListUuid != null) {
                 PacklestApplication.getInstance().packlestData.removeItemFromPackingList(packingListUuid, item);
             }
-            PacklestApplication.getInstance().packlestData.removeItem(item);
+            PacklestApplication.getInstance().packlestData.deleteItem(item);
             finish();
         }
 

@@ -146,6 +146,16 @@ class PacklestData {
         return false;
     }
 
+    // TODO for these methods repeated three times, abstract?
+    boolean doesTripParameterNameExist(String name) {
+        for (TripParameter tripParameter : tripParameters.values()) {
+            if (tripParameter.name.equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void addPackingList(PackingList packingList) {
         Log.v(TAG, "Adding new packing list with name:" + packingList.name);
         packingLists.put(packingList.uuid, packingList);
@@ -153,6 +163,9 @@ class PacklestData {
 
     void addItem(Item item) {
         items.put(item.uuid, item);
+    }
+    void addTripParameter(TripParameter tripParameter) {
+        tripParameters.put(tripParameter.uuid, tripParameter);
     }
 
     void addItemToPackingList(UUID packingListUuid, ItemInstance item) {
@@ -162,6 +175,10 @@ class PacklestData {
     void updateItem(Item modifiedItem) {
         Log.v(TAG, "Modifying item");
         items.put(modifiedItem.uuid, modifiedItem);
+    }
+
+    void updateTripParameter(TripParameter tripParameter) {
+        tripParameters.put(tripParameter.uuid, tripParameter);
     }
 
     void updateItemInPackingList(UUID packingListUuid, ItemInstance modifiedItem) {
@@ -174,8 +191,11 @@ class PacklestData {
         }
     }
 
-    void removeItem(Item modifiedItem) {
+    void deleteItem(Item modifiedItem) {
         items.remove(modifiedItem.uuid);
+        // TODO ensure consistency with associated packing lists and parameters
+        // Note that doing so here will allow removing the packing list logic from the item activity
+        // and might allow simplifying the fragment abstraction further
     }
 
     void deletePackingList(UUID uuid) {
@@ -183,6 +203,10 @@ class PacklestData {
         packingLists.remove(uuid);
         // TODO will need to clean up any items that do not have parameters
         // i.e. those that would be orphaned by deleting this list
+    }
+
+    void deleteTripParameter(TripParameter tripParameter) {
+        tripParameters.remove(tripParameter.uuid);
     }
 
     void setCheckboxStateForAllItemsInPackingList(UUID uuid, CHECKBOX_STATE checkbox_state) {
@@ -211,8 +235,10 @@ class PacklestData {
     PackingList getPackingListForUuid(UUID uuid) {
         return packingLists.get(uuid);
     }
-
     Item getItemForUuid(UUID uuid) {
         return items.get(uuid);
+    }
+    TripParameter getTripParameterForUuid(UUID uuid) {
+        return tripParameters.get(uuid);
     }
 }
