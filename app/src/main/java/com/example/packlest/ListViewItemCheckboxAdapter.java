@@ -12,7 +12,7 @@ import android.widget.ListView;
 class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
     private static final String TAG = "PackLestListViewItemCheckboxAdapter";
     PackingList packingList;
-    private Context context;
+    private final Context context;
     private ItemFilter filter;
     FILTER_STATE filter_state = FILTER_STATE.NONE;
 
@@ -62,7 +62,7 @@ class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
         return convertView;
     }
 
-    private View.OnClickListener listItemCheckboxListener = view -> {
+    private final View.OnClickListener listItemCheckboxListener = view -> {
         Log.v(TAG, "Item clicked");
         View parentRow = (View) view.getParent().getParent();
         ListView listView = (ListView) parentRow.getParent();

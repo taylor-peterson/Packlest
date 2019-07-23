@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CreatePackingListActivity extends AppCompatActivity {
 
     private EditText editTextPackingListName;
-    TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +23,7 @@ public class CreatePackingListActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this);
+        TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this);
         recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
     }
 

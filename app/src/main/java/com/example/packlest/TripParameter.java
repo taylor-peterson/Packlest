@@ -3,7 +3,7 @@ package com.example.packlest;
 import java.util.UUID;
 
 class TripParameter {
-    UUID uuid;
+    final UUID uuid;
     String name;
     //Set<Item> items;
 

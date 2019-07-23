@@ -14,7 +14,7 @@ TODO:
  - pre-populate packing list with all items with the selected parameters
 - Edit packing lists
 - Data consistency
- - every view should reload its data whenever it is unpaused/started/visited
+ - every view should reload its data whenever it is resumed/started/visited
  - whenever an item/list/parameter is touched, associated data should be updated
 - Ability to export/import data as json
  ==========

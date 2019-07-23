@@ -3,8 +3,8 @@ package com.example.packlest;
 import android.widget.Filter;
 
 class ItemFilter extends Filter {
-    private PackingList filterlist;
-    private ListViewItemCheckboxAdapter adapter;
+    private final PackingList filterlist;
+    private final ListViewItemCheckboxAdapter adapter;
 
     ItemFilter(PackingList filterList, ListViewItemCheckboxAdapter adapter) {
         this.filterlist = filterList;

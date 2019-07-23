@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class TripParameterRecyclerViewAdapter extends RecyclerView.Adapter<TripParameterRecyclerViewAdapter.TripParameterRecyclerViewViewHolder> {
-    private LayoutInflater layoutInflater;
-    private ArrayList<TripParameter> tripParameters;
-    private HashMap<UUID, Boolean> tripParametersInUse;
+    private final LayoutInflater layoutInflater;
+    private final ArrayList<TripParameter> tripParameters;
+    private final HashMap<UUID, Boolean> tripParametersInUse;
 
     TripParameterRecyclerViewAdapter(Context context) {
         this.layoutInflater = LayoutInflater.from(context);
@@ -40,10 +41,10 @@ public class TripParameterRecyclerViewAdapter extends RecyclerView.Adapter<TripP
         holder.update(tripParameter.name, tripParametersInUse.get(tripParameter.uuid));
     }
 
-    Boolean toggleTripParameterUsage(int position) {
+    private Boolean toggleTripParameterUsage(int position) {
         UUID tripParameterUuid = tripParameters.get(position).uuid;
         Boolean inUse = tripParametersInUse.get(tripParameterUuid);
-        tripParametersInUse.put(tripParameterUuid, !inUse);
+        tripParametersInUse.put(tripParameterUuid, !Objects.requireNonNull(inUse));
         return !inUse;
     }
 
@@ -53,7 +54,7 @@ public class TripParameterRecyclerViewAdapter extends RecyclerView.Adapter<TripP
     }
 
     public class TripParameterRecyclerViewViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView textView;
+        final TextView textView;
         Boolean packingListUsesTripParameter;
 
         TripParameterRecyclerViewViewHolder(View view) {

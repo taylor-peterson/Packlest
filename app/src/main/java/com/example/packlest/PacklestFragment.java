@@ -17,7 +17,7 @@ import java.util.ArrayList;
 // TODO need to refresh data adapter for all arrays on activity result
 // packing list activity can edit items, which will can touch items and parameters
 // item view can touch items and parameters
-// paramaters can just touch parameters
+// parameters can just touch parameters
 abstract class PacklestFragment<I> extends Fragment {
     ListView listView;
     ArrayAdapter<I> arrayAdapter;
@@ -32,7 +32,7 @@ abstract class PacklestFragment<I> extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         arrayListItems = getArrayListItems();
-        arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.listview, R.id.textView, arrayListItems);
+        arrayAdapter = new ArrayAdapter<>(view.getContext(), R.layout.listview, R.id.textView, arrayListItems);
         listView = view.findViewById(R.id.fragmentList);
         listView.setAdapter(arrayAdapter);
 

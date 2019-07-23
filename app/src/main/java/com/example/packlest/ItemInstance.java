@@ -6,8 +6,8 @@ import java.util.UUID;
 // Each packing list might have the item in a different state (unadded/unchecked/checked).
 // This class tracks that state and links it to the global data for the item.
 class ItemInstance {
-    UUID uuid;
-    UUID item_uuid;
+    final UUID uuid;
+    final UUID item_uuid;
     CHECKBOX_STATE checkbox_state;
 
     ItemInstance(UUID item_uuid) {

@@ -3,6 +3,7 @@ package com.example.packlest;
 import android.content.Intent;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 class ItemFragment extends PacklestFragment<Item> {
     @Override
@@ -21,7 +22,7 @@ class ItemFragment extends PacklestFragment<Item> {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Item item = arrayAdapter.getItem(position);
             Intent intent = new Intent(getActivity(), CreateItemActivity.class);
-            intent.putExtra("itemUuid", item.uuid);
+            intent.putExtra("itemUuid", Objects.requireNonNull(item).uuid);
             startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
         });
     }

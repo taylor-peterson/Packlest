@@ -20,7 +20,7 @@ import java.util.UUID;
 class PacklestData {
     private static final String TAG = "PacklestData";
     private Map<UUID, PackingList> packingLists;
-    Map<UUID, Item> items; // TODO probs make private again
+    Map<UUID, Item> items; // TODO make private again
     private Map<UUID, TripParameter> tripParameters;
 
     PacklestData() {

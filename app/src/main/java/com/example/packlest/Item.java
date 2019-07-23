@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 class Item {
-    UUID uuid;
+    final UUID uuid;
     String name;
     ArrayList<TripParameter> tripParameters;
 

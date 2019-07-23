@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
@@ -14,12 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 public class CreateTripParameterActivity extends AppCompatActivity {
     private EditText editTextTripParameterName;
-    private MultiAutoCompleteTextView tripParameters;
     private TripParameter tripParameter;
     private static final String TAG = "CreateTripParameterActivity";
     private boolean newTripParameter = true;
@@ -29,11 +26,11 @@ public class CreateTripParameterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_trip_paramter);
         setSupportActionBar(findViewById(R.id.toolbar));
-        findViewById(R.id.buttonSaveTripParameter).setOnClickListener(this::onClickButtonSave);
+        findViewById(R.id.buttonSaveTripParameter).setOnClickListener(e -> onClickButtonSave());
 
         editTextTripParameterName = findViewById(R.id.editTextTripParameterName);
 
-        tripParameters = findViewById(R.id.multiAutoCompleteTextViewTripParameter);
+        MultiAutoCompleteTextView tripParameters = findViewById(R.id.multiAutoCompleteTextViewTripParameter);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, PacklestApplication.getInstance().packlestData.getTripParameterNames());
         tripParameters.setAdapter(adapter);
         tripParameters.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
@@ -77,7 +74,7 @@ public class CreateTripParameterActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    private void onClickButtonSave(View e) {
+    private void onClickButtonSave() {
         String tripParameterName = editTextTripParameterName.getText().toString();
         if (tripParameterName.isEmpty() ||
                 (newTripParameter && PacklestApplication.getInstance().packlestData.doesTripParameterNameExist(tripParameterName))) {

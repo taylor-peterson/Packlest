@@ -9,11 +9,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 
+@SuppressWarnings("WeakerAccess") // Needs to be public or the manifest complains.
 public class PacklestApplication extends Application {
     private static PacklestApplication singleton;
     private static final String TAG = "PacklestApplication";
     private static final String DATA_FILE = "packlest_data.json";
-    static int IGNORED_REQUEST_CODE = 0; // Request codes are required to get responses, but are not used by application logic.
+    static final int IGNORED_REQUEST_CODE = 0; // Request codes are required to get responses, but are not used by application logic.
 
     PacklestData packlestData;
 

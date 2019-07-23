@@ -3,10 +3,10 @@ package com.example.packlest;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class PackingList {
+class PackingList {
     UUID uuid;
     public String name;
-    ArrayList<ItemInstance> itemInstances;
+    final ArrayList<ItemInstance> itemInstances;
 
     PackingList() {
         uuid = UUID.randomUUID();

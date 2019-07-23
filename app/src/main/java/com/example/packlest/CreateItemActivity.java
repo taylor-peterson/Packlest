@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
@@ -30,7 +29,7 @@ public class CreateItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_item);
         setSupportActionBar(findViewById(R.id.toolbar));
-        findViewById(R.id.buttonSaveItem).setOnClickListener(this::onClickButtonSave);
+        findViewById(R.id.buttonSaveItem).setOnClickListener(e -> onClickButtonSave());
 
         editTextItemName = findViewById(R.id.editTextItemName);
 
@@ -83,7 +82,7 @@ public class CreateItemActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    private void onClickButtonSave(View e) {
+    private void onClickButtonSave() {
         String itemName = editTextItemName.getText().toString();
         if (itemName.isEmpty() ||
                 (newItem && PacklestApplication.getInstance().packlestData.doesItemNameExist(itemName))) {
