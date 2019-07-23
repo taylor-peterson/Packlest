@@ -6,26 +6,12 @@ import android.util.AttributeSet;
 import androidx.appcompat.widget.AppCompatCheckBox;
 
 // Code modified from https://stackoverflow.com/questions/16511535/creating-a-three-states-checkbox-on-android.
-public class CheckBoxTriState extends AppCompatCheckBox {
-
+class CheckBoxTriState extends AppCompatCheckBox {
     private CHECKBOX_STATE state;
 
-    public CheckBoxTriState(Context context) {
-        super(context);
-        init();
-    }
-
-    public CheckBoxTriState(Context context, AttributeSet attrs) {
+    CheckBoxTriState(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
-    }
 
-    public CheckBoxTriState(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    private void init() {
         state = CHECKBOX_STATE.UNADDED;
         updateButton();
 
@@ -49,9 +35,7 @@ public class CheckBoxTriState extends AppCompatCheckBox {
     private void updateButton() {
         int btnDrawable = R.drawable.ic_baseline_indeterminate_check_box_24px;
         switch (state) {
-            case UNADDED:
-                btnDrawable = R.drawable.ic_baseline_indeterminate_check_box_24px;
-                break;
+            // case UNADDED handled by initialization.
             case UNCHECKED:
                 btnDrawable = R.drawable.ic_baseline_check_box_outline_blank_24px;
                 break;
@@ -62,11 +46,11 @@ public class CheckBoxTriState extends AppCompatCheckBox {
         setButtonDrawable(btnDrawable);
     }
 
-    public CHECKBOX_STATE getState() {
+    CHECKBOX_STATE getState() {
         return state;
     }
 
-    public void setState(CHECKBOX_STATE newState) {
+    void setState(CHECKBOX_STATE newState) {
         state = newState;
         updateButton();
     }

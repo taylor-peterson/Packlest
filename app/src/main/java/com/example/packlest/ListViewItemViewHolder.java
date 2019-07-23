@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ListViewItemViewHolder extends RecyclerView.ViewHolder {
+class ListViewItemViewHolder extends RecyclerView.ViewHolder {
     private CheckBoxTriState itemCheckbox;
     private TextView itemTextView;
 

@@ -9,14 +9,14 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
 
-public class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
+class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
     private static final String TAG = "PackLestListViewItemCheckboxAdapter";
     PackingList packingList;
     private Context context;
-    ItemFilter filter;
+    private ItemFilter filter;
     FILTER_STATE filter_state = FILTER_STATE.NONE;
 
-    public ListViewItemCheckboxAdapter(Context context, PackingList packingList) {
+    ListViewItemCheckboxAdapter(Context context, PackingList packingList) {
         this.context = context;
         this.packingList = packingList;
     }

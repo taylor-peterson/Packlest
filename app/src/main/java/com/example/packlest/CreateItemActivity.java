@@ -10,13 +10,14 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Arrays;
 import java.util.UUID;
 
-public class CreateItemActivity extends AppCompatActivity {
+class CreateItemActivity extends AppCompatActivity {
     private EditText editTextItemName;
     private MultiAutoCompleteTextView tripParameters;
     private Item item;
@@ -60,6 +61,7 @@ public class CreateItemActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (!newItem) {
             menu.findItem(R.id.delete_item).setVisible(true);
@@ -68,7 +70,7 @@ public class CreateItemActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.delete_item) {
             Log.v(TAG, "Deleting item");
             if (packingListUuid != null) {

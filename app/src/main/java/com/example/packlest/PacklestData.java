@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class PacklestData {
+class PacklestData {
     private static final String TAG = "PacklestData";
     private Map<UUID, PackingList> packingLists;
     Map<UUID, Item> items; // TODO probs make private again
-    Map<UUID, TripParameter> tripParameters;
+    private Map<UUID, TripParameter> tripParameters;
 
     PacklestData() {
         packingLists = new HashMap<>();
@@ -29,7 +29,7 @@ public class PacklestData {
         tripParameters = new HashMap<>();
     }
 
-    public String[] getTripParameterNames() {
+    String[] getTripParameterNames() {
         ArrayList<String> names = new ArrayList<>();
         for (TripParameter tripParameter : tripParameters.values()) {
             names.add(tripParameter.name);
@@ -37,7 +37,7 @@ public class PacklestData {
         return names.toArray(new String[0]);
     }
 
-    public ArrayList<TripParameter> getTripParametersForNames(List<String> names) {
+    ArrayList<TripParameter> getTripParametersForNames(List<String> names) {
         ArrayList<TripParameter> tripParametersToReturn = new ArrayList<>();
         for (String name : names) {
             boolean existingTripParameter = false; // TODO better way?
@@ -61,7 +61,7 @@ public class PacklestData {
         return tripParametersToReturn;
     }
 
-    public void loadPacklestDataFromFile(File file) {
+    void loadPacklestDataFromFile(File file) {
         Log.v(TAG, "Loading packlest data from file");
         StringBuilder input = new StringBuilder();
         try {
@@ -100,7 +100,7 @@ public class PacklestData {
         }
     }
 
-    public void persistPacklestDataToFile(FileOutputStream outputStream) {
+    void persistPacklestDataToFile(FileOutputStream outputStream) {
         Log.v(TAG, "Persisting packlest data to file");
         Gson gson = new Gson();
         String fileContents =
@@ -116,19 +116,19 @@ public class PacklestData {
         }
     }
 
-    public ArrayList<PackingList> getPackingLists() {
+    ArrayList<PackingList> getPackingLists() {
         return new ArrayList<>(packingLists.values());
     }
 
-    public ArrayList<Item> getItems() {
+    ArrayList<Item> getItems() {
         return new ArrayList<>(items.values());
     }
 
-    public ArrayList<TripParameter> getTripParameters() {
+    ArrayList<TripParameter> getTripParameters() {
         return new ArrayList<>(tripParameters.values());
     }
 
-    public boolean doesPackingListNameExist(String name) {
+    boolean doesPackingListNameExist(String name) {
         for (PackingList packingList : packingLists.values()) {
             if (packingList.name.equals(name)) {
                 return true;
@@ -137,7 +137,7 @@ public class PacklestData {
         return false;
     }
 
-    public boolean doesItemNameExist(String name) {
+    boolean doesItemNameExist(String name) {
         for (Item item : items.values()) {
             if (item.name.equals(name)) {
                 return true;
@@ -146,25 +146,25 @@ public class PacklestData {
         return false;
     }
 
-    public void addPackingList(PackingList packingList) {
+    void addPackingList(PackingList packingList) {
         Log.v(TAG, "Adding new packing list with name:" + packingList.name);
         packingLists.put(packingList.uuid, packingList);
     }
 
-    public void addItem(Item item) {
+    void addItem(Item item) {
         items.put(item.uuid, item);
     }
 
-    public void addItemToPackingList(UUID packingListUuid, ItemInstance item) {
+    void addItemToPackingList(UUID packingListUuid, ItemInstance item) {
         packingLists.get(packingListUuid).itemInstances.add(item);
     }
 
-    public void updateItem(Item modifiedItem) {
+    void updateItem(Item modifiedItem) {
         Log.v(TAG, "Modifying item");
         items.put(modifiedItem.uuid, modifiedItem);
     }
 
-    public void updateItemInPackingList(UUID packingListUuid, ItemInstance modifiedItem) {
+    void updateItemInPackingList(UUID packingListUuid, ItemInstance modifiedItem) {
         Log.v(TAG, "Modifying item instance");
         for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {
             if (packingLists.get(packingListUuid).itemInstances.get(i).uuid.equals(modifiedItem.uuid)) {
@@ -174,24 +174,24 @@ public class PacklestData {
         }
     }
 
-    public void removeItem(Item modifiedItem) {
-        items.remove(modifiedItem);
+    void removeItem(Item modifiedItem) {
+        items.remove(modifiedItem.uuid);
     }
 
-    public void deletePackingList(UUID uuid) {
+    void deletePackingList(UUID uuid) {
         Log.v(TAG, "Removing packing list");
         packingLists.remove(uuid);
         // TODO will need to clean up any items that do not have parameters
         // i.e. those that would be orphaned by deleting this list
     }
 
-    public void setCheckboxStateForAllItemsInPackingList(UUID uuid, CHECKBOX_STATE checkbox_state) {
+    void setCheckboxStateForAllItemsInPackingList(UUID uuid, CHECKBOX_STATE checkbox_state) {
         for (ItemInstance itemInstance : packingLists.get(uuid).itemInstances) {
             itemInstance.checkbox_state = checkbox_state;
         }
     }
 
-    public void uncheckAllCheckedItemsInPackingList(UUID uuid) {
+    void uncheckAllCheckedItemsInPackingList(UUID uuid) {
         for (ItemInstance itemInstance : packingLists.get(uuid).itemInstances) {
             if (itemInstance.checkbox_state == CHECKBOX_STATE.CHECKED) {
                 itemInstance.checkbox_state = CHECKBOX_STATE.UNCHECKED;
@@ -199,7 +199,7 @@ public class PacklestData {
         }
     }
 
-    public void removeItemFromPackingList(UUID packingListUuid, Item item) {
+    void removeItemFromPackingList(UUID packingListUuid, Item item) {
         Log.v(TAG, "Removing item:" + item.uuid);
         for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {
             if (packingLists.get(packingListUuid).itemInstances.get(i).item_uuid.equals(item.uuid)) {
@@ -208,11 +208,11 @@ public class PacklestData {
         }
     }
 
-    public PackingList getPackingListForUuid(UUID uuid) {
+    PackingList getPackingListForUuid(UUID uuid) {
         return packingLists.get(uuid);
     }
 
-    public Item getItemForUuid(UUID uuid) {
+    Item getItemForUuid(UUID uuid) {
         return items.get(uuid);
     }
 }

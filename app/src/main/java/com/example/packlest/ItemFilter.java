@@ -2,11 +2,11 @@ package com.example.packlest;
 
 import android.widget.Filter;
 
-public class ItemFilter extends Filter {
+class ItemFilter extends Filter {
     private PackingList filterlist;
     private ListViewItemCheckboxAdapter adapter;
 
-    public ItemFilter(PackingList filterList, ListViewItemCheckboxAdapter adapter) {
+    ItemFilter(PackingList filterList, ListViewItemCheckboxAdapter adapter) {
         this.filterlist = filterList;
         this.adapter = adapter;
     }

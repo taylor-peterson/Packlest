@@ -5,7 +5,7 @@ import java.util.UUID;
 // Items may be used in multiple packing lists.
 // Each packing list might have the item in a different state (unadded/unchecked/checked).
 // This class tracks that state and links it to the global data for the item.
-public class ItemInstance {
+class ItemInstance {
     UUID uuid;
     UUID item_uuid;
     CHECKBOX_STATE checkbox_state;
@@ -21,7 +21,7 @@ public class ItemInstance {
         return getName();
     }
 
-    public String getName() {
+    String getName() {
         return PacklestApplication.getInstance().packlestData.items.get(item_uuid).name;
     }
 }

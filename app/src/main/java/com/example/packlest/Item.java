@@ -3,9 +3,9 @@ package com.example.packlest;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Item {
+class Item {
     UUID uuid;
-    public String name;
+    String name;
     ArrayList<TripParameter> tripParameters;
 
     Item() {
@@ -19,7 +19,7 @@ public class Item {
         return this.name;
     }
 
-    public String getTripParameterNames() {
+    String getTripParameterNames() {
         ArrayList<String> names = new ArrayList<>();
 
         if (tripParameters != null) {

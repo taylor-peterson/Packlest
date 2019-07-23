@@ -8,14 +8,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-public class PacklestApplication extends Application {
+
+class PacklestApplication extends Application {
     private static PacklestApplication singleton;
     private static final String TAG = "PacklestApplication";
     private static final String DATA_FILE = "packlest_data.json";
+    static int IGNORED_REQUEST_CODE = 0; // Request codes are required to get responses, but are not used by application logic.
 
-    public PacklestData packlestData;
+    PacklestData packlestData;
 
-    public static PacklestApplication getInstance() {
+    static PacklestApplication getInstance() {
         return singleton;
     }
 
@@ -30,7 +32,7 @@ public class PacklestApplication extends Application {
     }
 
     // All activities should call persistData to persist data.
-    public void persistData() {
+    void persistData() {
         Log.v(TAG, "Application pausing");
         FileOutputStream outputStream;
         try {

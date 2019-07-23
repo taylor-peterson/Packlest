@@ -2,7 +2,7 @@ package com.example.packlest;
 
 import java.util.UUID;
 
-public class TripParameter {
+class TripParameter {
     UUID uuid;
     String name;
     //Set<Item> items;

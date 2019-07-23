@@ -7,11 +7,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.UUID;
 
-public class PackingListActivity extends AppCompatActivity {
+class PackingListActivity extends AppCompatActivity {
     private ListView itemListView;
     private ListViewItemCheckboxAdapter dataAdapter;
     private PackingList filteredPackingList;
@@ -41,13 +42,13 @@ public class PackingListActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.create_item_button:
                 Log.v(TAG, "Creating new item");
                 Intent intent = new Intent(this, CreateItemActivity.class);
                 intent.putExtra("packingListUuid", filteredPackingList.uuid);
-                startActivityForResult(intent, REQUEST_CODES.CREATE_ITEM.ordinal());
+                startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
                 break;
             case R.id.filter_items_button:
                 if (dataAdapter.filter_state == FILTER_STATE.NONE) {
@@ -106,7 +107,7 @@ public class PackingListActivity extends AppCompatActivity {
             Intent intent = new Intent(this, CreateItemActivity.class);
             intent.putExtra("itemUuid", item.uuid);
             intent.putExtra("packingListUuid", filteredPackingList.uuid);
-            startActivityForResult(intent, REQUEST_CODES.MODIFY_ITEM.ordinal());
+            startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
         });
     }
 
