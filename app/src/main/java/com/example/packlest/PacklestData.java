@@ -120,6 +120,14 @@ public class PacklestData {
         return new ArrayList<>(packingLists.values());
     }
 
+    public ArrayList<Item> getItems() {
+        return new ArrayList<>(items.values());
+    }
+
+    public ArrayList<TripParameter> getTripParameters() {
+        return new ArrayList<>(tripParameters.values());
+    }
+
     public boolean doesPackingListNameExist(String name) {
         for (PackingList packingList : packingLists.values()) {
             if (packingList.name.equals(name)) {

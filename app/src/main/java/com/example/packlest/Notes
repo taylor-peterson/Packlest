@@ -9,7 +9,6 @@ Design Thoughts:
 - Activities with a "Save" button do not have knowledge of global state and just create an object.
 
 TODO:
-- List of all items from main page; link to edit
 - List of all trip parameters from main page; link to edit
 - Trip parameters!
  - select parameters when create packing list

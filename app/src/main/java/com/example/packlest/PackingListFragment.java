@@ -30,6 +30,7 @@ public class PackingListFragment extends Fragment {
         packingListView = view.findViewById(R.id.fragmentList);
         packingListView.setAdapter(arrayAdapter);
 
+        setHasOptionsMenu(true);
         setListViewOnItemClickListener();
 
         return view;

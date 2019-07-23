@@ -16,11 +16,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         if (position == 0) {
             fragment = new PackingListFragment();
         } else if (position == 1) {
-            fragment = new PackingListFragment();
-            //fragment = new ItemFragment();
+            fragment = new ItemFragment();
         } else if (position == 2) {
-            fragment = new PackingListFragment();
-            //fragment = new TripParameterFragment();
+            fragment = new TripParameterFragment();
         }
         return fragment;
     }

@@ -71,7 +71,9 @@ public class CreateItemActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.delete_item) {
             Log.v(TAG, "Deleting item");
-            PacklestApplication.getInstance().packlestData.removeItemFromPackingList(packingListUuid, item);
+            if (packingListUuid != null) {
+                PacklestApplication.getInstance().packlestData.removeItemFromPackingList(packingListUuid, item);
+            }
             PacklestApplication.getInstance().packlestData.removeItem(item);
             finish();
         }
@@ -98,7 +100,9 @@ public class CreateItemActivity extends AppCompatActivity {
                 ItemInstance itemInstance = new ItemInstance(item.uuid);
 
                 PacklestApplication.getInstance().packlestData.addItem(item);
-                PacklestApplication.getInstance().packlestData.addItemToPackingList(packingListUuid, itemInstance);
+                if (packingListUuid != null) {
+                    PacklestApplication.getInstance().packlestData.addItemToPackingList(packingListUuid, itemInstance);
+                }
             } else {
                 PacklestApplication.getInstance().packlestData.updateItem(item);
             }

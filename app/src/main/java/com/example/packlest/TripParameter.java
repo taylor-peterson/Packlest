@@ -12,4 +12,9 @@ public class TripParameter {
         name = "";
         //items = new HashSet();
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }
