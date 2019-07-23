@@ -5,10 +5,13 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class CreatePackingListActivity extends AppCompatActivity {
 
     private EditText editTextPackingListName;
+    TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +21,11 @@ public class CreatePackingListActivity extends AppCompatActivity {
         findViewById(R.id.buttonSavePackingList).setOnClickListener(e -> onButtonSaveClick());
 
         editTextPackingListName = findViewById(R.id.editTextPackingListName);
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this);
+        recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
     }
 
     private void onButtonSaveClick() {
