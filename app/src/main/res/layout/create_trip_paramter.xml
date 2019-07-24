@@ -25,7 +25,7 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".ItemEditorActivity"
-        tools:showIn="@layout/create_item">
+        tools:showIn="@layout/create_trip_paramter">
 
         <EditText
             android:id="@+id/editTextTripParameterName"

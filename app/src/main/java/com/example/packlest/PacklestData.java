@@ -37,30 +37,6 @@ class PacklestData {
         return names.toArray(new String[0]);
     }
 
-    ArrayList<TripParameter> getTripParametersForNames(List<String> names) {
-        ArrayList<TripParameter> tripParametersToReturn = new ArrayList<>();
-        for (String name : names) {
-            boolean existingTripParameter = false; // TODO better way?
-            for (TripParameter tripParameter : tripParameters.values()) {
-                if (tripParameter.name.equals(name)) {
-                    tripParametersToReturn.add(tripParameter);
-                    existingTripParameter = true;
-                }
-            }
-
-            if (existingTripParameter) {
-                continue;
-            }
-            TripParameter newTripParameter = new TripParameter();
-            newTripParameter.name = name;
-            // TODO items
-            // TODO if there are no items for a trip parameter, clean it up? Or add different interface instead of text field?
-            tripParameters.put(newTripParameter.uuid, newTripParameter);
-            tripParametersToReturn.add(newTripParameter);
-        }
-        return tripParametersToReturn;
-    }
-
     void loadPacklestDataFromFile(File file) {
         Log.v(TAG, "Loading packlest data from file");
         StringBuilder input = new StringBuilder();

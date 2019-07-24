@@ -5,52 +5,51 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.MultiAutoCompleteTextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Arrays;
 import java.util.UUID;
 
 public class ItemEditorActivity extends AppCompatActivity {
-    private EditText editTextItemName;
-    private MultiAutoCompleteTextView tripParameters;
+    private EditText editText;
+    private boolean editing = false;
+    private static final String TAG = "EditorActivity";
     private Item item;
-    private static final String TAG = "ItemEditorActivity";
     private UUID packingListUuid;
-    private boolean newItem = true;
+    TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_item);
+        setContentView(R.layout.editor);
         setSupportActionBar(findViewById(R.id.toolbar));
-        findViewById(R.id.buttonSaveItem).setOnClickListener(e -> onClickButtonSave());
+        findViewById(R.id.buttonSave).setOnClickListener(e -> onClickButtonSave());
 
-        editTextItemName = findViewById(R.id.editTextItemName);
-
-        tripParameters = findViewById(R.id.multiAutoCompleteTextView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, PacklestApplication.getInstance().packlestData.getTripParameterNames());
-        tripParameters.setAdapter(adapter);
-        tripParameters.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+        editText = findViewById(R.id.editTextEditeeName);
 
         item = PacklestApplication.getInstance().packlestData.getItemForUuid(
                 (UUID) getIntent().getSerializableExtra("itemUuid"));
         if (item != null) {
             setTitle("Edit Item");
-            newItem = false;
-            editTextItemName.setText(item.name);
-            tripParameters.setText(item.getTripParameterNames());
+            editing = true;
+            editText.setText(item.name);
         } else {
             item = new Item();
             setTitle("Create Item");
         }
 
         packingListUuid = (UUID) getIntent().getSerializableExtra("packingListUuid");
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, item.tripParameters);
+        recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
+
     }
 
     @Override
@@ -62,7 +61,7 @@ public class ItemEditorActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!newItem) {
+        if (editing) {
             menu.findItem(R.id.delete_item).setVisible(true);
         }
         return super.onPrepareOptionsMenu(menu);
@@ -83,9 +82,9 @@ public class ItemEditorActivity extends AppCompatActivity {
     }
 
     private void onClickButtonSave() {
-        String itemName = editTextItemName.getText().toString();
-        if (itemName.isEmpty() ||
-                (newItem && PacklestApplication.getInstance().packlestData.doesItemNameExist(itemName))) {
+        String name = editText.getText().toString();
+        if (name.isEmpty() ||
+                (!editing && PacklestApplication.getInstance().packlestData.doesItemNameExist(name))) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
                     .setMessage("Item requires unique name.")
@@ -94,10 +93,10 @@ public class ItemEditorActivity extends AppCompatActivity {
                     .create()
                     .show();
         } else {
-            item.name = editTextItemName.getText().toString();
-            item.tripParameters = PacklestApplication.getInstance().packlestData.getTripParametersForNames(Arrays.asList(tripParameters.getText().toString().split("\\s*,\\s*")));
+            item.name = editText.getText().toString();
+            item.tripParameters = tripParameterRecyclerViewAdapter.getTripParametersInUse();
 
-            if (newItem) {
+            if (!editing) {
                 ItemInstance itemInstance = new ItemInstance(item.uuid);
 
                 PacklestApplication.getInstance().packlestData.addItem(item);

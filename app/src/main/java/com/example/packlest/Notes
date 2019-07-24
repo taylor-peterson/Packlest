@@ -25,7 +25,6 @@ TODO:
 - Reconsider how to uncheck items without cycling through un-added - e.g. oops clicked wrong thing but have filter on - long-press to reverse?
 - Add existing item to list without having to edit trip parameters
   - completion suggestions on item name; if user selects one or types existing name ask, load remaining details for that item?
-- Populate missing UID from stored data (e.g. if hand-edited)
 - Ability to share lists
 - Standardize naming (e.g. buttons, codes, ids - camelCase vs snake_case?)
 - Enhance logging

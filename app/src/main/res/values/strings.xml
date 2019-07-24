@@ -4,7 +4,7 @@
     <string name="create_packing_list">Create Packing List</string>
     <string name="title_activity_create_packing_list">Create Packing List</string>
     <string name="title_activity_create_trip_parameter">Create Trip Parameter</string>
-    <string name="packing_list_name">Packing list name…</string>
+    <string name="editee_name">Name…</string>
     <string name="save">save</string>
     <string name="title_activity_packing_list">PackingList</string>
     <string name="title_activity_create_item">CreateItem</string>

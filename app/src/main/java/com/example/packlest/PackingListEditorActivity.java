@@ -15,37 +15,36 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.UUID;
 
-// TODO obviously, there's a lot of duplicated code between the editor activities...
-// try to abstract that away.
 public class PackingListEditorActivity extends AppCompatActivity {
-    private EditText editTextPackingListName;
+    private EditText editText;
     private boolean editing = false;
+    private static final String TAG = "EditorActivity";
     private PackingList packingList;
-    private static final String TAG = "PackingListEditorActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_packing_list);
+        setContentView(R.layout.editor);
         setSupportActionBar(findViewById(R.id.toolbar));
-        findViewById(R.id.buttonSavePackingList).setOnClickListener(e -> onButtonSaveClick());
+        findViewById(R.id.buttonSave).setOnClickListener(e -> onButtonSaveClick());
 
-        editTextPackingListName = findViewById(R.id.editTextPackingListName);
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this);
-        recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
+        editText = findViewById(R.id.editTextEditeeName);
 
         packingList = PacklestApplication.getInstance().packlestData.getPackingListForUuid(
                 (UUID) getIntent().getSerializableExtra("packingListUuid"));
         if (packingList != null) {
             setTitle("Edit Packing List");
             editing = true;
-            editTextPackingListName.setText(packingList.name);
+            editText.setText(packingList.name);
         } else {
             packingList = new PackingList();
         }
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, packingList.tripParameters);
+        recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
+
     }
 
     @Override
@@ -75,9 +74,9 @@ public class PackingListEditorActivity extends AppCompatActivity {
     }
 
     private void onButtonSaveClick() {
-        String packingListName = editTextPackingListName.getText().toString();
-        if (packingListName.isEmpty() ||
-                (!editing && PacklestApplication.getInstance().packlestData.doesPackingListNameExist(packingListName))) {
+        String name = editText.getText().toString();
+        if (name.isEmpty() ||
+                (!editing && PacklestApplication.getInstance().packlestData.doesPackingListNameExist(name))) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
                     .setMessage("Packing list requires unique name.")
@@ -86,7 +85,7 @@ public class PackingListEditorActivity extends AppCompatActivity {
                     .create()
                     .show();
         } else {
-            packingList.name = editTextPackingListName.getText().toString();
+            packingList.name = editText.getText().toString();
 
             if (editing) {
                 PacklestApplication.getInstance().packlestData.updatePackingList(packingList);

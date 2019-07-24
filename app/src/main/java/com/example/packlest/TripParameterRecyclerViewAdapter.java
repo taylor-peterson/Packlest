@@ -19,13 +19,27 @@ public class TripParameterRecyclerViewAdapter extends RecyclerView.Adapter<TripP
     private final ArrayList<TripParameter> tripParameters;
     private final HashMap<UUID, Boolean> tripParametersInUse;
 
-    TripParameterRecyclerViewAdapter(Context context) {
+    TripParameterRecyclerViewAdapter(Context context, ArrayList<TripParameter> tripParametersUsed) {
         this.layoutInflater = LayoutInflater.from(context);
         this.tripParameters = PacklestApplication.getInstance().packlestData.getTripParameters();
         tripParametersInUse = new HashMap<>();
         for (TripParameter tripParameter : tripParameters) {
             tripParametersInUse.put(tripParameter.uuid, false);
         }
+
+        for (TripParameter tripParameter : tripParametersUsed) {
+            tripParametersInUse.put(tripParameter.uuid, true);
+        }
+    }
+
+    ArrayList<TripParameter> getTripParametersInUse() {
+        ArrayList<TripParameter> tripParametersInUseList = new ArrayList<>();
+        for (TripParameter tripParameter : tripParameters) {
+            if (tripParametersInUse.get(tripParameter.uuid)) {
+                tripParametersInUseList.add(tripParameter);
+            }
+        }
+        return tripParametersInUseList;
     }
 
     @Override
