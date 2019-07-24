@@ -13,7 +13,7 @@ class PackingListFragment extends PacklestFragment<PackingList> {
 
     @Override
     void startCreateActivity() {
-        Intent intent = new Intent(getActivity(), CreatePackingListActivity.class);
+        Intent intent = new Intent(getActivity(), PackingListEditorActivity.class);
         startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
     }
 

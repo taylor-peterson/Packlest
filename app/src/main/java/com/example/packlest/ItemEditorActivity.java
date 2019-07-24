@@ -16,11 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class CreateItemActivity extends AppCompatActivity {
+public class ItemEditorActivity extends AppCompatActivity {
     private EditText editTextItemName;
     private MultiAutoCompleteTextView tripParameters;
     private Item item;
-    private static final String TAG = "CreateItemActivity";
+    private static final String TAG = "ItemEditorActivity";
     private UUID packingListUuid;
     private boolean newItem = true;
 

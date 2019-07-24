@@ -13,7 +13,7 @@ class TripParameterFragment extends PacklestFragment<TripParameter> {
 
     @Override
     public void startCreateActivity() {
-        Intent intent = new Intent(getActivity(), CreateTripParameterActivity.class);
+        Intent intent = new Intent(getActivity(), TripParameterEditorActivity.class);
         startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
     }
 
@@ -22,7 +22,7 @@ class TripParameterFragment extends PacklestFragment<TripParameter> {
     void setListViewOnItemClickListener() {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             TripParameter tripParameter = arrayAdapter.getItem(position);
-            Intent intent = new Intent(getActivity(), CreateTripParameterActivity.class);
+            Intent intent = new Intent(getActivity(), TripParameterEditorActivity.class);
             intent.putExtra("tripParameterUuid", Objects.requireNonNull(tripParameter).uuid);
             startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
         });

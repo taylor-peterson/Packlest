@@ -181,6 +181,10 @@ class PacklestData {
         tripParameters.put(tripParameter.uuid, tripParameter);
     }
 
+    void updatePackingList(PackingList packingList) {
+        packingLists.put(packingList.uuid, packingList);
+    }
+
     void updateItemInPackingList(UUID packingListUuid, ItemInstance modifiedItem) {
         Log.v(TAG, "Modifying item instance");
         for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {

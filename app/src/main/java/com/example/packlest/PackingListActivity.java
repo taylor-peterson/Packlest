@@ -46,7 +46,7 @@ public class PackingListActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case R.id.create_item_button:
                 Log.v(TAG, "Creating new item");
-                Intent intent = new Intent(this, CreateItemActivity.class);
+                Intent intent = new Intent(this, ItemEditorActivity.class);
                 intent.putExtra("packingListUuid", filteredPackingList.uuid);
                 startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
                 break;
@@ -68,6 +68,12 @@ public class PackingListActivity extends AppCompatActivity {
                     menuItem.setIcon(R.drawable.ic_filter_outline);
                 }
                 dataAdapter.notifyDataSetChanged();
+                break;
+            case R.id.edit_packing_list:
+                Log.v(TAG, "Editing packing list");
+                intent = new Intent(this, PackingListEditorActivity.class);
+                intent.putExtra("packingListUuid", filteredPackingList.uuid);
+                startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
                 break;
             case R.id.delete_packing_list:
                 Log.v(TAG, "Deleting packing list");
@@ -104,7 +110,7 @@ public class PackingListActivity extends AppCompatActivity {
             ItemInstance itemInstance = dataAdapter.getItem(position);
             Item item = PacklestApplication.getInstance().packlestData.items.get(itemInstance.item_uuid);
 
-            Intent intent = new Intent(this, CreateItemActivity.class);
+            Intent intent = new Intent(this, ItemEditorActivity.class);
             intent.putExtra("itemUuid", item.uuid);
             intent.putExtra("packingListUuid", filteredPackingList.uuid);
             startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
@@ -130,6 +136,7 @@ public class PackingListActivity extends AppCompatActivity {
         filteredPackingList.name = fullPackingList.name;
         filteredPackingList.itemInstances.clear();
         filteredPackingList.itemInstances.addAll(fullPackingList.itemInstances);
+        setTitle(filteredPackingList.name);
         dataAdapter.notifyDataSetChanged();
         PacklestApplication.getInstance().persistData();
     }

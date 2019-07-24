@@ -12,7 +12,6 @@ TODO:
 - Trip parameters!
  - select parameters when create packing list
  - pre-populate packing list with all items with the selected parameters
-- Edit packing lists
 - Data consistency
  - every view should reload its data whenever it is resumed/started/visited
  - whenever an item/list/parameter is touched, associated data should be updated
@@ -33,3 +32,4 @@ TODO:
 - Testing
 - Documentation
 - Address all warnings
+- Undo Toast for deletions?

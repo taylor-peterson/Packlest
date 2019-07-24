@@ -15,10 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.UUID;
 
-public class CreateTripParameterActivity extends AppCompatActivity {
+public class TripParameterEditorActivity extends AppCompatActivity {
     private EditText editTextTripParameterName;
     private TripParameter tripParameter;
-    private static final String TAG = "CreateTripParameterActivity";
+    private static final String TAG = "TripParameterEditorActivity";
     private boolean newTripParameter = true;
 
     @Override
@@ -94,8 +94,6 @@ public class CreateTripParameterActivity extends AppCompatActivity {
             } else {
                 PacklestApplication.getInstance().packlestData.updateTripParameter(tripParameter);
             }
-
-            // TODO update items associated with trip parameter
 
             finish();
         }

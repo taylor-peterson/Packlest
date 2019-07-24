@@ -13,7 +13,7 @@ class ItemFragment extends PacklestFragment<Item> {
 
     @Override
     void startCreateActivity() {
-        Intent intent = new Intent(getActivity(), CreateItemActivity.class);
+        Intent intent = new Intent(getActivity(), ItemEditorActivity.class);
         startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
     }
 
@@ -21,7 +21,7 @@ class ItemFragment extends PacklestFragment<Item> {
     void setListViewOnItemClickListener() {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Item item = arrayAdapter.getItem(position);
-            Intent intent = new Intent(getActivity(), CreateItemActivity.class);
+            Intent intent = new Intent(getActivity(), ItemEditorActivity.class);
             intent.putExtra("itemUuid", Objects.requireNonNull(item).uuid);
             startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
         });

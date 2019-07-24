@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme"
         android:name=".PacklestApplication">
         <activity
-            android:name=".CreateItemActivity"
+            android:name=".ItemEditorActivity"
             android:label="@string/title_activity_create_item"
             android:parentActivityName=".PacklestActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -20,7 +20,7 @@
                 android:value="com.example.packlest.PacklestActivity" />
         </activity>
         <activity
-            android:name=".CreateTripParameterActivity"
+            android:name=".TripParameterEditorActivity"
             android:label="@string/title_activity_create_trip_parameter"
             android:parentActivityName=".PacklestActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -33,7 +33,7 @@
             android:label="@string/title_activity_packing_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CreatePackingListActivity"
+            android:name=".PackingListEditorActivity"
             android:label="@string/title_activity_create_packing_list"
             android:parentActivityName=".PacklestActivity"
             android:theme="@style/AppTheme.NoActionBar">
