@@ -7,20 +7,20 @@ class PackingList {
     UUID uuid;
     public String name;
     final ArrayList<ItemInstance> itemInstances;
-    ArrayList<TripParameter> tripParameters;
+    ArrayList<UUID> tripParameterUuids;
 
     PackingList() {
         uuid = UUID.randomUUID();
         name = "";
         itemInstances = new ArrayList<>();
-        tripParameters = new ArrayList<>();
+        tripParameterUuids = new ArrayList<>();
     }
 
     PackingList(PackingList packingList) {
         uuid = packingList.uuid;
         name = packingList.name;
         itemInstances = new ArrayList<>(packingList.itemInstances);
-        tripParameters = new ArrayList<>(packingList.tripParameters);
+        tripParameterUuids = new ArrayList<>(packingList.tripParameterUuids);
     }
 
     @Override

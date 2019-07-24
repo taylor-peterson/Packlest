@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class PackingListEditorActivity extends AppCompatActivity {
@@ -20,6 +21,7 @@ public class PackingListEditorActivity extends AppCompatActivity {
     private boolean editing = false;
     private static final String TAG = "EditorActivity";
     private PackingList packingList;
+    private TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,7 @@ public class PackingListEditorActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, packingList.tripParameters);
+        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, packingList.tripParameterUuids);
         recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
 
     }
@@ -86,10 +88,22 @@ public class PackingListEditorActivity extends AppCompatActivity {
                     .show();
         } else {
             packingList.name = editText.getText().toString();
+            packingList.tripParameterUuids = tripParameterRecyclerViewAdapter.getTripParametersInUse();
 
             if (editing) {
                 PacklestApplication.getInstance().packlestData.updatePackingList(packingList);
+                // TODO add all new items affiliated with new trip parameters
             } else {
+                ArrayList<UUID> itemUuids = new ArrayList<>();
+                for (UUID tripParameterUuid : packingList.tripParameterUuids) {
+                    itemUuids.addAll(PacklestApplication.getInstance().packlestData.getItemUuidsForTripParameterUuid(tripParameterUuid));
+                }
+                for (UUID itemUuid : itemUuids) {
+                    ItemInstance itemInstance = new ItemInstance(itemUuid);
+                    // TODO only add unique items - change to set?
+                    packingList.itemInstances.add(itemInstance);
+                }
+
                 PacklestApplication.getInstance().packlestData.addPackingList(packingList);
             }
             finish();

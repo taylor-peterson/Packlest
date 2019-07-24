@@ -13,20 +13,38 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 class PacklestData {
     private static final String TAG = "PacklestData";
     private Map<UUID, PackingList> packingLists;
-    Map<UUID, Item> items; // TODO make private again
+    Map<UUID, Item> items; // TODO make private again?
     private Map<UUID, TripParameter> tripParameters;
+    private final ItemToTripParameterMap itemToTripParameterMap; // Todo remove private? Pass-through methods are silly here.
 
     PacklestData() {
         packingLists = new HashMap<>();
         items = new HashMap<>();
         tripParameters = new HashMap<>();
+        itemToTripParameterMap = new ItemToTripParameterMap();
+    }
+
+    Set<UUID> getItemUuidsForTripParameterUuid(UUID tripParameterUuid) {
+        return itemToTripParameterMap.getItemUuidsForTripParameterUuid(tripParameterUuid);
+    }
+
+    ArrayList<UUID> getTripParameterUuidsForItemUuid(UUID itemUuid) {
+        Set<UUID> tripParameterUuids = itemToTripParameterMap.getTripParameterUuidsForItemUuid(itemUuid);
+        if (tripParameterUuids != null) {
+            return new ArrayList<>(tripParameterUuids);
+        }
+        return null;
+    }
+
+    void updateTripParametersForItem(UUID itemUuid, ArrayList<UUID> tripParameterUuids) {
+        itemToTripParameterMap.put(itemUuid, tripParameterUuids);
     }
 
     String[] getTripParameterNames() {

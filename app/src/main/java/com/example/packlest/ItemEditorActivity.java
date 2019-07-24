@@ -21,7 +21,7 @@ public class ItemEditorActivity extends AppCompatActivity {
     private static final String TAG = "EditorActivity";
     private Item item;
     private UUID packingListUuid;
-    TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
+    private TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class ItemEditorActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, item.tripParameters);
+        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, PacklestApplication.getInstance().packlestData.getTripParameterUuidsForItemUuid(item.uuid));
         recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
 
     }
@@ -94,7 +94,7 @@ public class ItemEditorActivity extends AppCompatActivity {
                     .show();
         } else {
             item.name = editText.getText().toString();
-            item.tripParameters = tripParameterRecyclerViewAdapter.getTripParametersInUse();
+            PacklestApplication.getInstance().packlestData.updateTripParametersForItem(item.uuid, tripParameterRecyclerViewAdapter.getTripParametersInUse());
 
             if (!editing) {
                 ItemInstance itemInstance = new ItemInstance(item.uuid);

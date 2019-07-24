@@ -9,9 +9,7 @@ Design Thoughts:
 - Activities with a "Save" button do not have knowledge of global state and just create an object.
 
 TODO:
-- Trip parameters!
- - select parameters when create packing list
- - pre-populate packing list with all items with the selected parameters
+- Update packing list items when modify trip parameters
 - Data consistency
  - every view should reload its data whenever it is resumed/started/visited
  - whenever an item/list/parameter is touched, associated data should be updated
