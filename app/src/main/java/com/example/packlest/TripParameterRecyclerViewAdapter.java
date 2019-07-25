@@ -23,7 +23,7 @@ public class TripParameterRecyclerViewAdapter extends RecyclerView.Adapter<TripP
 
     TripParameterRecyclerViewAdapter(Context context, Set<UUID> tripParameterUuidsUsed) {
         this.layoutInflater = LayoutInflater.from(context);
-        this.tripParameters = PacklestApplication.getInstance().packlestData.getTripParameters();
+        this.tripParameters = new ArrayList<>(PacklestApplication.getInstance().packlestData.tripParameters.values());
 
         tripParametersSelectedForUse = new HashMap<>();
         for (TripParameter tripParameter : tripParameters) {

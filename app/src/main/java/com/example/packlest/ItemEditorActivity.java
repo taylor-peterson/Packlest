@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.HashSet;
 import java.util.UUID;
 
 public class ItemEditorActivity extends AppCompatActivity {
@@ -32,7 +33,8 @@ public class ItemEditorActivity extends AppCompatActivity {
 
         editText = findViewById(R.id.editTextEditeeName);
 
-        item = PacklestApplication.getInstance().packlestData.getItemForUuid((UUID) getIntent().getSerializableExtra("itemUuid"));
+        UUID itemUuid = (UUID) getIntent().getSerializableExtra("itemUuid");
+        item = PacklestApplication.getInstance().packlestData.items.get(itemUuid);
         if (item != null) {
             setTitle("Edit Item");
             editing = true;
@@ -45,8 +47,9 @@ public class ItemEditorActivity extends AppCompatActivity {
         packingListUuid = (UUID) getIntent().getSerializableExtra("packingListUuid");
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, PacklestApplication.getInstance().packlestData.getTripParameterUuidsForItemUuid(item.uuid));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, PacklestApplication.TRIP_PARAMETER_COLUMN_COUNT));
+        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(
+                this, PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForItemUuid(item.uuid));
         recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
     }
 
@@ -69,10 +72,7 @@ public class ItemEditorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.delete_item) {
             Log.v(TAG, "Deleting item");
-            if (packingListUuid != null) { // TODO move this into PacklestData - will need to delete from all packing lists (will require multimap)
-                PacklestApplication.getInstance().packlestData.removeItemFromPackingList(packingListUuid, item);
-            }
-            PacklestApplication.getInstance().packlestData.deleteItem(item);
+            PacklestApplication.getInstance().packlestData.deleteItem(item.uuid);
             finish();
         }
 
@@ -81,8 +81,11 @@ public class ItemEditorActivity extends AppCompatActivity {
 
     private void onClickButtonSave() {
         String name = editText.getText().toString();
+        boolean duplicateName = PacklestApplication.getInstance().packlestData.doesNameExist(name, PacklestApplication.getInstance().packlestData.items.values());
+        boolean renamed = (!name.equals(item.name));
         if (name.isEmpty() ||
-                (!editing && PacklestApplication.getInstance().packlestData.doesItemNameExist(name))) {
+                (!editing && duplicateName) ||
+                (editing && renamed && duplicateName)) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
                     .setMessage("Item requires unique name.")
@@ -92,19 +95,16 @@ public class ItemEditorActivity extends AppCompatActivity {
                     .show();
         } else {
             item.name = editText.getText().toString();
-            PacklestApplication.getInstance().packlestData.updateTripParametersForItem(item.uuid, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
+            HashSet<UUID> tripParametersInUse = tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse();
+            PacklestApplication.getInstance().packlestData.addOrUpdateItem(item, tripParametersInUse);
 
-            if (!editing) {
-                ItemInstance itemInstance = new ItemInstance(item.uuid);
-
-                PacklestApplication.getInstance().packlestData.addItem(item);
-                if (packingListUuid != null) {
+            if (!editing && packingListUuid != null) {
+                    // In this case, you're creating an ad-hoc item from the packing list activity.
+                    // This item may not be associated with any Trip Parameters and should be added to
+                    // that packing list directly.
+                    ItemInstance itemInstance = new ItemInstance(item.uuid);
                     PacklestApplication.getInstance().packlestData.addItemToPackingList(packingListUuid, itemInstance);
-                }
-            } else {
-                PacklestApplication.getInstance().packlestData.updateItem(item);
             }
-
             finish();
         }
     }

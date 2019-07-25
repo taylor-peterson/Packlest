@@ -22,7 +22,7 @@ class ItemFilter extends Filter {
 
             filteredPackingList.uuid = filterlist.uuid;
             filteredPackingList.name = filterlist.name;
-            for (ItemInstance itemInstance: PacklestApplication.getInstance().packlestData.getPackingListForUuid(filteredPackingList.uuid).itemInstances) {
+            for (ItemInstance itemInstance: PacklestApplication.getInstance().packlestData.packingLists.get(filteredPackingList.uuid).itemInstances) {
                 if (constraint == FILTER_STATE.ADDED_ONLY.name() && itemInstance.checkbox_state != CHECKBOX_STATE.UNADDED) {
                     filteredPackingList.itemInstances.add(itemInstance);
                 } else if (constraint == FILTER_STATE.UNCHECKED_ONLY.name() && itemInstance.checkbox_state == CHECKBOX_STATE.UNCHECKED) {

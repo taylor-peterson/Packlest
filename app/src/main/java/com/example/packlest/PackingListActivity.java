@@ -24,8 +24,8 @@ public class PackingListActivity extends AppCompatActivity {
         setContentView(R.layout.packing_list);
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        filteredPackingList = new PackingList(PacklestApplication.getInstance().packlestData.getPackingListForUuid(
-                (UUID) getIntent().getSerializableExtra("packingListUuid")));
+        UUID packingListUuid = (UUID) getIntent().getSerializableExtra("packingListUuid");
+        filteredPackingList = new PackingList(PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid));
         setTitle(filteredPackingList.name);
 
         itemListView = findViewById(R.id.listViewItems);
@@ -82,8 +82,7 @@ public class PackingListActivity extends AppCompatActivity {
                 break;
             case R.id.un_add_all_items:
                 Log.v(TAG, "Un-adding all itemInstances");
-                PacklestApplication.getInstance().packlestData.setCheckboxStateForAllItemsInPackingList(
-                        filteredPackingList.uuid, CHECKBOX_STATE.UNADDED);
+                PacklestApplication.getInstance().packlestData.unaddAllItemsInPackingList(filteredPackingList.uuid);
                 syncFilteredPackingList();
                 break;
             case R.id.uncheck_all_items:
@@ -131,7 +130,7 @@ public class PackingListActivity extends AppCompatActivity {
 
     private void syncFilteredPackingList() {
         Log.v(TAG, "Syncing filtered packing list");
-        PackingList fullPackingList = PacklestApplication.getInstance().packlestData.getPackingListForUuid(filteredPackingList.uuid);
+        PackingList fullPackingList = PacklestApplication.getInstance().packlestData.packingLists.get(filteredPackingList.uuid);
         filteredPackingList.name = fullPackingList.name;
         filteredPackingList.itemInstances.clear();
         filteredPackingList.itemInstances.addAll(fullPackingList.itemInstances);

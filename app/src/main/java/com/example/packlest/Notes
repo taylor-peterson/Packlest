@@ -14,10 +14,11 @@ TODO:
   - If you remove a trip parameter, items only associated with that trip parameter will be removed
 - Data consistency
   - whenever an item/list/parameter is touched, associated data should be updated
+
+- Deduplicate EditorActivities
 - Undo Toasts
   - for deletions
   - for checking items (e.g. oops clicked wrong thing but have filter on; want to uncheck without cycling filter)
-- Consistent data syncing strategy (e.g. items added to/removed from trip parameter)
 - Add (uniquely named) item categories
   - Display items based on category (will require adding category activity, fragment, etc.)
  ==========

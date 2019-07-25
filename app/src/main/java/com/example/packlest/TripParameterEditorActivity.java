@@ -5,9 +5,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.MultiAutoCompleteTextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -19,29 +17,23 @@ public class TripParameterEditorActivity extends AppCompatActivity {
     private EditText editTextTripParameterName;
     private TripParameter tripParameter;
     private static final String TAG = "TripParameterEditorActivity";
-    private boolean newTripParameter = true;
+    private boolean editing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_trip_paramter);
+        setContentView(R.layout.create_trip_parameter);
         setSupportActionBar(findViewById(R.id.toolbar));
         findViewById(R.id.buttonSaveTripParameter).setOnClickListener(e -> onClickButtonSave());
 
         editTextTripParameterName = findViewById(R.id.editTextTripParameterName);
 
-        MultiAutoCompleteTextView tripParameters = findViewById(R.id.multiAutoCompleteTextViewTripParameter);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, PacklestApplication.getInstance().packlestData.getTripParameterNames());
-        tripParameters.setAdapter(adapter);
-        tripParameters.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
-
-        tripParameter = PacklestApplication.getInstance().packlestData.getTripParameterForUuid(
-                (UUID) getIntent().getSerializableExtra("tripParameterUuid"));
+        UUID tripParameterUuid = (UUID) getIntent().getSerializableExtra("tripParameterUuid");
+        tripParameter = PacklestApplication.getInstance().packlestData.tripParameters.get(tripParameterUuid);
         if (tripParameter != null) {
             setTitle("Edit Trip Parameter");
-            newTripParameter = false;
+            editing = true;
             editTextTripParameterName.setText(tripParameter.name);
-            //tripParameters.setText(tripParameter.getTripParameterNames());
         } else {
             tripParameter = new TripParameter();
             setTitle("Create Trip Parameter");
@@ -57,7 +49,7 @@ public class TripParameterEditorActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!newTripParameter) {
+        if (editing) {
             menu.findItem(R.id.delete_item).setVisible(true);
         }
         return super.onPrepareOptionsMenu(menu);
@@ -67,7 +59,7 @@ public class TripParameterEditorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.delete_item) {
             Log.v(TAG, "Deleting Trip Parameter");
-            PacklestApplication.getInstance().packlestData.deleteTripParameter(tripParameter);
+            PacklestApplication.getInstance().packlestData.deleteTripParameter(tripParameter.uuid);
             finish();
         }
 
@@ -75,9 +67,12 @@ public class TripParameterEditorActivity extends AppCompatActivity {
     }
 
     private void onClickButtonSave() {
-        String tripParameterName = editTextTripParameterName.getText().toString();
-        if (tripParameterName.isEmpty() ||
-                (newTripParameter && PacklestApplication.getInstance().packlestData.doesTripParameterNameExist(tripParameterName))) {
+        String name = editTextTripParameterName.getText().toString();
+        boolean duplicateName = PacklestApplication.getInstance().packlestData.doesNameExist(name, PacklestApplication.getInstance().packlestData.tripParameters.values());
+        boolean renamed = (!name.equals(tripParameter.name));
+        if (name.isEmpty() ||
+                (!editing && duplicateName) ||
+                (editing && renamed && duplicateName)) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
                     .setMessage("Trip Parameter requires unique name.")
@@ -87,14 +82,8 @@ public class TripParameterEditorActivity extends AppCompatActivity {
                     .show();
         } else {
             tripParameter.name = editTextTripParameterName.getText().toString();
-            //tripParameter.tripParameters = PacklestApplication.getInstance().packlestData.getTripParametersForNames(Arrays.asList(tripParameters.getText().toString().split("\\s*,\\s*")));
 
-            if (newTripParameter) {
-                PacklestApplication.getInstance().packlestData.addTripParameter(tripParameter);
-            } else {
-                PacklestApplication.getInstance().packlestData.updateTripParameter(tripParameter);
-            }
-
+            PacklestApplication.getInstance().packlestData.addOrUpdateTripParameter(tripParameter);
             finish();
         }
     }

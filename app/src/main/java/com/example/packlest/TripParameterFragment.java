@@ -8,7 +8,7 @@ import java.util.Objects;
 class TripParameterFragment extends PacklestFragment<TripParameter> {
     @Override
     ArrayList<TripParameter> getArrayListItems() {
-        return PacklestApplication.getInstance().packlestData.getTripParameters();
+        return new ArrayList<>(PacklestApplication.getInstance().packlestData.tripParameters.values());
     }
 
     @Override

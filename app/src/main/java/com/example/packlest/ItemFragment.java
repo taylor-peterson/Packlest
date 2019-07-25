@@ -8,7 +8,7 @@ import java.util.Objects;
 class ItemFragment extends PacklestFragment<Item> {
     @Override
     ArrayList<Item> getArrayListItems() {
-        return PacklestApplication.getInstance().packlestData.getItems();
+        return new ArrayList<>(PacklestApplication.getInstance().packlestData.items.values());
     }
 
     @Override

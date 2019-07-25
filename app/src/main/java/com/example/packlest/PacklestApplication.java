@@ -14,6 +14,7 @@ public class PacklestApplication extends Application {
     private static final String TAG = "PacklestApplication";
     private static final String DATA_FILE = "packlest_data.json";
     static final int IGNORED_REQUEST_CODE = 0; // Request codes are required to get responses, but are not used by application logic.
+    static final int TRIP_PARAMETER_COLUMN_COUNT = 3; // Number of columns of trip parameters to display.
 
     PacklestData packlestData;
 

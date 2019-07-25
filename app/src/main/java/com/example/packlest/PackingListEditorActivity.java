@@ -13,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class PackingListEditorActivity extends AppCompatActivity {
@@ -32,8 +31,8 @@ public class PackingListEditorActivity extends AppCompatActivity {
 
         editText = findViewById(R.id.editTextEditeeName);
 
-        packingList = PacklestApplication.getInstance().packlestData.getPackingListForUuid(
-                (UUID) getIntent().getSerializableExtra("packingListUuid"));
+        UUID packingListUuid = (UUID) getIntent().getSerializableExtra("packingListUuid");
+        packingList = PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid);
         if (packingList != null) {
             setTitle("Edit Packing List");
             editing = true;
@@ -43,8 +42,9 @@ public class PackingListEditorActivity extends AppCompatActivity {
         }
 
         RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, packingList.tripParameterUuids);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, PacklestApplication.TRIP_PARAMETER_COLUMN_COUNT));
+        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(
+                this, PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForPackingListUuid(packingListUuid));
         recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
 
     }
@@ -78,7 +78,7 @@ public class PackingListEditorActivity extends AppCompatActivity {
     private void onButtonSaveClick() {
         String name = editText.getText().toString();
         if (name.isEmpty() ||
-                (!editing && PacklestApplication.getInstance().packlestData.doesPackingListNameExist(name))) {
+                (!editing && PacklestApplication.getInstance().packlestData.doesNameExist(name, PacklestApplication.getInstance().packlestData.packingLists.values()))) {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
                     .setMessage("Packing list requires unique name.")
@@ -88,24 +88,7 @@ public class PackingListEditorActivity extends AppCompatActivity {
                     .show();
         } else {
             packingList.name = editText.getText().toString();
-            packingList.tripParameterUuids = tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse();
-
-            if (editing) {
-                PacklestApplication.getInstance().packlestData.updatePackingList(packingList);
-                // TODO add all new items affiliated with new trip parameters
-            } else {
-                ArrayList<UUID> itemUuids = new ArrayList<>();
-                for (UUID tripParameterUuid : packingList.tripParameterUuids) {
-                    itemUuids.addAll(PacklestApplication.getInstance().packlestData.getItemUuidsForTripParameterUuid(tripParameterUuid));
-                }
-                for (UUID itemUuid : itemUuids) {
-                    ItemInstance itemInstance = new ItemInstance(itemUuid);
-                    // TODO only add unique items - change to set?
-                    packingList.itemInstances.add(itemInstance);
-                }
-
-                PacklestApplication.getInstance().packlestData.addPackingList(packingList);
-            }
+            PacklestApplication.getInstance().packlestData.addOrUpdatePackingList(packingList, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
             finish();
         }
     }
