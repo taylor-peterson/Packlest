@@ -10,23 +10,27 @@ Design Thoughts:
 
 TODO:
 - Update packing list items when modify trip parameters
+  - If you add trip parameters, associated items will be added
+  - If you remove a trip parameter, items only associated with that trip parameter will be removed
 - Data consistency
- - whenever an item/list/parameter is touched, associated data should be updated
-- Ability to export/import data as json
- ==========
-- Get rid of UUIDs in favor of just using names?
+  - whenever an item/list/parameter is touched, associated data should be updated
+- Undo Toasts
+  - for deletions
+  - for checking items (e.g. oops clicked wrong thing but have filter on; want to uncheck without cycling filter)
 - Consistent data syncing strategy (e.g. items added to/removed from trip parameter)
 - Add (uniquely named) item categories
-- Display items based on category (will require adding category activity, fragment, etc.)
+  - Display items based on category (will require adding category activity, fragment, etc.)
+ ==========
+- Ability to export/import data as json
 - Drag and drop to re-order items in a packing list
-- Reconsider how to uncheck items without cycling through un-added - e.g. oops clicked wrong thing but have filter on - long-press to reverse?
 - Add existing item to list without having to edit trip parameters
   - completion suggestions on item name; if user selects one or types existing name ask, load remaining details for that item?
 - Ability to share lists
-- Standardize naming (e.g. buttons, codes, ids - camelCase vs snake_case?)
-- Enhance logging
-- Testing
-- Documentation
-- Address all warnings
-- Undo Toast for deletions?
-- item quantity?
+- Code Cleanup
+  - Standardize naming (e.g. buttons, codes, ids - camelCase vs snake_case?)
+  - Enhance logging
+  - Address all warnings
+- Maintainability improvements
+  - Testing
+  - Documentation
+- Add item quantities
