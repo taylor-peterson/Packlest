@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -35,15 +36,11 @@ class PacklestData {
         return itemToTripParameterMap.getItemUuidsForTripParameterUuid(tripParameterUuid);
     }
 
-    ArrayList<UUID> getTripParameterUuidsForItemUuid(UUID itemUuid) {
-        Set<UUID> tripParameterUuids = itemToTripParameterMap.getTripParameterUuidsForItemUuid(itemUuid);
-        if (tripParameterUuids != null) {
-            return new ArrayList<>(tripParameterUuids);
-        }
-        return null;
+    Set<UUID> getTripParameterUuidsForItemUuid(UUID itemUuid) {
+        return itemToTripParameterMap.getTripParameterUuidsForItemUuid(itemUuid);
     }
 
-    void updateTripParametersForItem(UUID itemUuid, ArrayList<UUID> tripParameterUuids) {
+    void updateTripParametersForItem(UUID itemUuid, HashSet<UUID> tripParameterUuids) {
         itemToTripParameterMap.put(itemUuid, tripParameterUuids);
     }
 

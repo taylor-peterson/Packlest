@@ -92,7 +92,7 @@ public class ItemEditorActivity extends AppCompatActivity {
                     .show();
         } else {
             item.name = editText.getText().toString();
-            PacklestApplication.getInstance().packlestData.updateTripParametersForItem(item.uuid, tripParameterRecyclerViewAdapter.getTripParametersInUse());
+            PacklestApplication.getInstance().packlestData.updateTripParametersForItem(item.uuid, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
 
             if (!editing) {
                 ItemInstance itemInstance = new ItemInstance(item.uuid);

@@ -88,7 +88,7 @@ public class PackingListEditorActivity extends AppCompatActivity {
                     .show();
         } else {
             packingList.name = editText.getText().toString();
-            packingList.tripParameterUuids = tripParameterRecyclerViewAdapter.getTripParametersInUse();
+            packingList.tripParameterUuids = tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse();
 
             if (editing) {
                 PacklestApplication.getInstance().packlestData.updatePackingList(packingList);
