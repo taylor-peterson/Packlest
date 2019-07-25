@@ -105,7 +105,6 @@ public class PackingListActivity extends AppCompatActivity {
 
     private void setListViewOnItemClickListener() {
         Log.v(TAG, "Item Clicked");
-        // TODO first click triggers this?
         itemListView.setOnItemClickListener((parent, view, position, id) -> {
             ItemInstance itemInstance = dataAdapter.getItem(position);
             Item item = PacklestApplication.getInstance().packlestData.items.get(itemInstance.item_uuid);

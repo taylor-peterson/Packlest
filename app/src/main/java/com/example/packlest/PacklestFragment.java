@@ -14,10 +14,6 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
-// TODO need to refresh data adapter for all arrays on activity result
-// packing list activity can edit items, which will can touch items and parameters
-// item view can touch items and parameters
-// parameters can just touch parameters
 abstract class PacklestFragment<I> extends Fragment {
     ListView listView;
     ArrayAdapter<I> arrayAdapter;
@@ -54,6 +50,16 @@ abstract class PacklestFragment<I> extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        updateArrayListItems();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateArrayListItems();
+    }
+
+    private void updateArrayListItems() {
         arrayListItems.clear();
         arrayListItems.addAll(getArrayListItems());
         arrayAdapter.notifyDataSetChanged();

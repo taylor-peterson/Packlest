@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-
 @SuppressWarnings("WeakerAccess") // Needs to be public or the manifest complains.
 public class PacklestApplication extends Application {
     private static PacklestApplication singleton;
@@ -34,7 +33,7 @@ public class PacklestApplication extends Application {
 
     // All activities should call persistData to persist data.
     void persistData() {
-        Log.v(TAG, "Application pausing");
+        Log.v(TAG, "Persisting application data.");
         FileOutputStream outputStream;
         try {
             outputStream = openFileOutput(DATA_FILE, Context.MODE_PRIVATE);

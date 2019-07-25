@@ -32,8 +32,7 @@ public class ItemEditorActivity extends AppCompatActivity {
 
         editText = findViewById(R.id.editTextEditeeName);
 
-        item = PacklestApplication.getInstance().packlestData.getItemForUuid(
-                (UUID) getIntent().getSerializableExtra("itemUuid"));
+        item = PacklestApplication.getInstance().packlestData.getItemForUuid((UUID) getIntent().getSerializableExtra("itemUuid"));
         if (item != null) {
             setTitle("Edit Item");
             editing = true;
@@ -49,7 +48,6 @@ public class ItemEditorActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, PacklestApplication.getInstance().packlestData.getTripParameterUuidsForItemUuid(item.uuid));
         recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
-
     }
 
     @Override
@@ -71,7 +69,7 @@ public class ItemEditorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.delete_item) {
             Log.v(TAG, "Deleting item");
-            if (packingListUuid != null) {
+            if (packingListUuid != null) { // TODO move this into PacklestData - will need to delete from all packing lists (will require multimap)
                 PacklestApplication.getInstance().packlestData.removeItemFromPackingList(packingListUuid, item);
             }
             PacklestApplication.getInstance().packlestData.deleteItem(item);
