@@ -10,11 +10,6 @@ Design Thoughts:
   It does not cleanup other objects that then have nothing associated with them.
 
 TODO:
-- Update packing list items when modify trip parameters
-  - If you add trip parameters, associated items will be added
-- Data consistency
-  - whenever an item/list/parameter is touched, associated data should be updated
-
 - Deduplicate EditorActivities
 - Undo Toasts
   - for deletions

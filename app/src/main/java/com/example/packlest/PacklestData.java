@@ -124,6 +124,7 @@ class PacklestData {
     void deleteItem(UUID itemUuid) {
         items.remove(itemUuid);
         packlestDataRelationships.removeItemUuid(itemUuid);
+        // TODO something still wrong here...
     }
 
     void addOrUpdateTripParameter(TripParameter tripParameter) {
@@ -142,7 +143,7 @@ class PacklestData {
             itemUuids.addAll(packlestDataRelationships.getItemUuidsForTripParameterUuid(tripParameterUuid));
         }
 
-        // TODO UGGGGGGGLLLLLYYYYY
+        // TODO Change data structure to Set to avoid need for de-duplicating here?
         for (UUID itemUuid : itemUuids) {
             boolean repeated = false;
             for (ItemInstance itemInstance : packingList.itemInstances) {
@@ -155,9 +156,6 @@ class PacklestData {
                 packingList.itemInstances.add(itemInstance);
             }
         }
-
-        // TODO remove item associated only with removed parameters
-        // Something like foreach item, if has parameter(s) and none in list, remove
 
         packlestDataRelationships.putPackingList(packingList.uuid, tripParametersInUse);
     }
