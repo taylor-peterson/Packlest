@@ -57,7 +57,7 @@ class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
 
         ItemInstance itemInstance = packingList.itemInstances.get(itemIndex);
         viewHolder.getItemTextView().setText(itemInstance.getName());
-        viewHolder.getItemCheckbox().setState(itemInstance.checkbox_state);
+        viewHolder.getItemCheckbox().setState(itemInstance.checkboxState);
 
         return convertView;
     }
@@ -70,7 +70,7 @@ class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
 
         ItemInstance itemInstance = getItem(position);
         CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
-        itemInstance.checkbox_state = itemCheckbox.getState();
+        itemInstance.checkboxState = itemCheckbox.getState();
         PacklestApplication.getInstance().packlestData.updateItemInPackingList(packingList.uuid, itemInstance);
 
         getFilter().filter(filter_state.name());

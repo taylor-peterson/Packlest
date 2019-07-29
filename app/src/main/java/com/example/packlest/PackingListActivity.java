@@ -106,7 +106,7 @@ public class PackingListActivity extends AppCompatActivity {
         Log.v(TAG, "Item Clicked");
         itemListView.setOnItemClickListener((parent, view, position, id) -> {
             ItemInstance itemInstance = dataAdapter.getItem(position);
-            Item item = PacklestApplication.getInstance().packlestData.items.get(itemInstance.item_uuid);
+            Item item = PacklestApplication.getInstance().packlestData.items.get(itemInstance.itemUuid);
 
             Intent intent = new Intent(this, ItemEditorActivity.class);
             intent.putExtra("itemUuid", item.uuid);

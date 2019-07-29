@@ -105,14 +105,14 @@ class PacklestData {
 
     void unaddAllItemsInPackingList(UUID packingListUuid) {
         for (ItemInstance itemInstance : packingLists.get(packingListUuid).itemInstances) {
-            itemInstance.checkbox_state = CHECKBOX_STATE.UNADDED;
+            itemInstance.checkboxState = CHECKBOX_STATE.UNADDED;
         }
     }
 
     void uncheckAllCheckedItemsInPackingList(UUID packingListUuid) {
         for (ItemInstance itemInstance : packingLists.get(packingListUuid).itemInstances) {
-            if (itemInstance.checkbox_state == CHECKBOX_STATE.CHECKED) {
-                itemInstance.checkbox_state = CHECKBOX_STATE.UNCHECKED;
+            if (itemInstance.checkboxState == CHECKBOX_STATE.CHECKED) {
+                itemInstance.checkboxState = CHECKBOX_STATE.UNCHECKED;
             }
         }
     }
@@ -120,8 +120,6 @@ class PacklestData {
     void addOrUpdateItem(Item item, HashSet<UUID> tripParametersInUse) {
         items.put(item.uuid, item);
         packlestDataRelationships.putItem(item.uuid, tripParametersInUse);
-        // TODO need to then go back and update packing list item instances?
-        // Or just have the packing list check to see if there are new items and then create new instances as needed?
     }
     void deleteItem(UUID itemUuid) {
         items.remove(itemUuid);
@@ -148,7 +146,7 @@ class PacklestData {
         for (UUID itemUuid : itemUuids) {
             boolean repeated = false;
             for (ItemInstance itemInstance : packingList.itemInstances) {
-                if (itemInstance.item_uuid.equals(itemUuid)) {
+                if (itemInstance.itemUuid.equals(itemUuid)) {
                     repeated = true;
                 }
             }
@@ -169,15 +167,25 @@ class PacklestData {
 
         // Delete any items that have no parameters (i.e. that were created solely for this list).
         for (ItemInstance itemInstance : packingLists.get(packingListUuid).itemInstances) {
-            if (packlestDataRelationships.getTripParameterUuidsForItemUuid(itemInstance.item_uuid).isEmpty()) {
-                deleteItem(itemInstance.item_uuid);
+            if (packlestDataRelationships.getTripParameterUuidsForItemUuid(itemInstance.itemUuid).isEmpty()) {
+                deleteItem(itemInstance.itemUuid);
             }
         }
     }
-    void addItemToPackingList(UUID packingListUuid, ItemInstance item) {
-        packingLists.get(packingListUuid).itemInstances.add(item);
+    void addItemToPackingList(UUID packingListUuid, UUID itemUuid) {
+        // This is used to create and add a new ItemInstance if one does not already exist.
+        boolean newItem = true;
+        for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {
+            if (packingLists.get(packingListUuid).itemInstances.get(i).itemUuid.equals(itemUuid)) {
+                newItem = false;
+            }
+        }
+        if (newItem == true) {
+            packingLists.get(packingListUuid).itemInstances.add(new ItemInstance(itemUuid));
+        }
     }
     void updateItemInPackingList(UUID packingListUuid, ItemInstance modifiedItem) {
+        // This is used to update the checkbox state of an existing item.
         for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {
             if (packingLists.get(packingListUuid).itemInstances.get(i).uuid.equals(modifiedItem.uuid)) {
                 packingLists.get(packingListUuid).itemInstances.set(i, modifiedItem);
@@ -210,6 +218,19 @@ class PacklestData {
                 tripParameterUuidToItemUuidsMap.put(tripParameterUuid, new HashSet<>());
             }
             tripParameterUuidToItemUuidsMap.get(tripParameterUuid).add(itemUuid);
+
+            if (!itemUuidToPackingListUuidsMap.containsKey(itemUuid)) {
+                itemUuidToPackingListUuidsMap.put(itemUuid, new HashSet<>());
+            }
+            for (UUID packingListUuid : getPackingListUuidsForTripParameterUuid(tripParameterUuid)) {
+                itemUuidToPackingListUuidsMap.get(itemUuid).add(packingListUuid);
+
+                if (!packingListUuidToItemUuidsMap.containsKey(packingListUuid)) {
+                    packingListUuidToItemUuidsMap.put(packingListUuid, new HashSet<>());
+                }
+                packingListUuidToItemUuidsMap.get(packingListUuid).add(itemUuid);
+                PacklestApplication.getInstance().packlestData.addItemToPackingList(packingListUuid, itemUuid);
+            }
         }
 
         void putPackingList(UUID packingListUuid, HashSet<UUID> tripParameterUuids) {
@@ -250,6 +271,14 @@ class PacklestData {
             HashSet<UUID> itemUuidsForTripParameterUuid = tripParameterUuidToItemUuidsMap.get(tripParameterUuid);
             if (itemUuidsForTripParameterUuid != null) {
                 return itemUuidsForTripParameterUuid;
+            }
+            return new HashSet<>();
+        }
+
+        HashSet<UUID> getPackingListUuidsForTripParameterUuid(UUID tripParameterUuid) {
+            HashSet<UUID> packingListUuidsForTripParameterUuid = tripParameterUuidToPackingListUuidsMap.get(tripParameterUuid);
+            if (packingListUuidsForTripParameterUuid != null) {
+                return packingListUuidsForTripParameterUuid;
             }
             return new HashSet<>();
         }

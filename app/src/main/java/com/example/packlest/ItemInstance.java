@@ -7,13 +7,13 @@ import java.util.UUID;
 // This class tracks that state and links it to the global data for the item.
 class ItemInstance {
     final UUID uuid;
-    final UUID item_uuid;
-    CHECKBOX_STATE checkbox_state;
+    final UUID itemUuid;
+    CHECKBOX_STATE checkboxState;
 
     ItemInstance(UUID item_uuid) {
         uuid = UUID.randomUUID();
-        this.item_uuid = item_uuid;
-        checkbox_state = CHECKBOX_STATE.UNADDED;
+        this.itemUuid = item_uuid;
+        checkboxState = CHECKBOX_STATE.UNADDED;
     }
 
     @Override
@@ -22,6 +22,6 @@ class ItemInstance {
     }
 
     String getName() {
-        return PacklestApplication.getInstance().packlestData.items.get(item_uuid).name;
+        return PacklestApplication.getInstance().packlestData.items.get(itemUuid).name;
     }
 }
