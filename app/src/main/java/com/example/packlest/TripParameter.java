@@ -1,3 +1,3 @@
 package com.example.packlest;
 
-class TripParameter extends PacklestBaseObject {}
+class TripParameter extends AbstractBaseObject {}

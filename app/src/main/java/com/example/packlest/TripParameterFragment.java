@@ -5,7 +5,7 @@ import android.content.Intent;
 import java.util.ArrayList;
 import java.util.Objects;
 
-class TripParameterFragment extends PacklestFragment<TripParameter> {
+class TripParameterFragment extends AbstractFragment<TripParameter> {
     @Override
     ArrayList<TripParameter> getArrayListItems() {
         return new ArrayList<>(PacklestApplication.getInstance().packlestData.tripParameters.values());

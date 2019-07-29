@@ -94,9 +94,9 @@ class PacklestData {
         }
     }
 
-    boolean doesNameExist(String name, Collection<? extends PacklestBaseObject> items) {
-        for (PacklestBaseObject packlestBaseObject : items) {
-            if (name.equals(packlestBaseObject.name)) {
+    boolean doesNameExist(String name, Collection<? extends AbstractBaseObject> items) {
+        for (AbstractBaseObject abstractBaseObject : items) {
+            if (name.equals(abstractBaseObject.name)) {
                 return true;
             }
         }

@@ -2,36 +2,22 @@ package com.example.packlest;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.UUID;
 
-public class PackingListEditorActivity extends AppCompatActivity {
-    private EditText editText;
-    private boolean editing = false;
-    private static final String TAG = "EditorActivity";
+public class PackingListEditorActivity extends AbstractEditorActivity {
     private PackingList packingList;
-    private TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.editor);
-        setSupportActionBar(findViewById(R.id.toolbar));
-        findViewById(R.id.buttonSave).setOnClickListener(e -> onButtonSaveClick());
-
-        editText = findViewById(R.id.editTextEditeeName);
-
         UUID packingListUuid = (UUID) getIntent().getSerializableExtra("packingListUuid");
+        createBaseItemOrPackingListEditor(
+                PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForPackingListUuid(packingListUuid));
+
         packingList = PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid);
         if (packingList != null) {
             setTitle("Edit Packing List");
@@ -39,29 +25,8 @@ public class PackingListEditorActivity extends AppCompatActivity {
             editText.setText(packingList.name);
         } else {
             packingList = new PackingList();
+            setTitle("Create Packing List");
         }
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, PacklestApplication.TRIP_PARAMETER_COLUMN_COUNT));
-        tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(
-                this, PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForPackingListUuid(packingListUuid));
-        recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_item, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (editing) {
-            menu.findItem(R.id.delete_item).setVisible(true);
-        }
-        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -75,17 +40,8 @@ public class PackingListEditorActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    private void onButtonSaveClick() {
-        String name = editText.getText().toString();
-        if (name.isEmpty() ||
-                (!editing && PacklestApplication.getInstance().packlestData.doesNameExist(name, PacklestApplication.getInstance().packlestData.packingLists.values()))) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Error")
-                    .setMessage("Packing list requires unique name.")
-                    .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
-                    .setCancelable(false)
-                    .create()
-                    .show();
+    void onClickButtonSave() {
+        if (showAlertDialogIfNeeded(packingList.name, PacklestApplication.getInstance().packlestData.packingLists.values())) {
         } else {
             packingList.name = editText.getText().toString();
             PacklestApplication.getInstance().packlestData.addOrUpdatePackingList(packingList, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());

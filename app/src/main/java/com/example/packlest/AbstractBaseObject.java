@@ -2,18 +2,18 @@ package com.example.packlest;
 
 import java.util.UUID;
 
-abstract class PacklestBaseObject {
+abstract class AbstractBaseObject {
     UUID uuid;
     String name;
 
-    PacklestBaseObject() {
+    AbstractBaseObject() {
         uuid = UUID.randomUUID();
         name = "";
     }
 
-    PacklestBaseObject(PacklestBaseObject packlestBaseObject) {
-        uuid = packlestBaseObject.uuid;
-        name = packlestBaseObject.name;
+    AbstractBaseObject(AbstractBaseObject abstractBaseObject) {
+        uuid = abstractBaseObject.uuid;
+        name = abstractBaseObject.name;
     }
 
     @Override

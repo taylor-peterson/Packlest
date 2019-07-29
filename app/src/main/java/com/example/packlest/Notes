@@ -10,7 +10,6 @@ Design Thoughts:
   It does not cleanup other objects that then have nothing associated with them.
 
 TODO:
-- Deduplicate EditorActivities
 - Undo Toasts
   - for deletions
   - for checking items (e.g. oops clicked wrong thing but have filter on; want to uncheck without cycling filter)

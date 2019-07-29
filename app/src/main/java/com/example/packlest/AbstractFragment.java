@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
-abstract class PacklestFragment<I> extends Fragment {
+abstract class AbstractFragment<I> extends Fragment {
     ListView listView;
     ArrayAdapter<I> arrayAdapter;
     private ArrayList<I> arrayListItems;

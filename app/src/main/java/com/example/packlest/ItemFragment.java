@@ -5,7 +5,7 @@ import android.content.Intent;
 import java.util.ArrayList;
 import java.util.Objects;
 
-class ItemFragment extends PacklestFragment<Item> {
+class ItemFragment extends AbstractFragment<Item> {
     @Override
     ArrayList<Item> getArrayListItems() {
         return new ArrayList<>(PacklestApplication.getInstance().packlestData.items.values());

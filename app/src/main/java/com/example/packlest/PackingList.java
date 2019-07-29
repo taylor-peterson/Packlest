@@ -2,7 +2,7 @@ package com.example.packlest;
 
 import java.util.ArrayList;
 
-class PackingList extends PacklestBaseObject {
+class PackingList extends AbstractBaseObject {
     ArrayList<ItemInstance> itemInstances;
 
     PackingList() {
