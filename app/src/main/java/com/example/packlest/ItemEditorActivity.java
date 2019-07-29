@@ -43,18 +43,18 @@ public class ItemEditorActivity extends AbstractEditorActivity {
 
     void onClickButtonSave() {
         if (showAlertDialogIfNeeded(item.name, PacklestApplication.getInstance().packlestData.items.values())) {
-        } else {
-            item.name = editText.getText().toString();
-            PacklestApplication.getInstance().packlestData.addOrUpdateItem(item, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
-
-            if (!editing && packingListUuid != null) {
-                    // In this case, you're creating an ad-hoc item from the packing list activity.
-                    // This item may not be associated with any Trip Parameters and should be added to
-                    // that packing list directly.
-                    PacklestApplication.getInstance().packlestData.addItemToPackingList(item.uuid, packingListUuid);
-            }
-            finish();
+            return; // Alert dialog shown by call above; nothing to do.
         }
-    }
 
+        item.name = editText.getText().toString();
+        PacklestApplication.getInstance().packlestData.addOrUpdateItem(item, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
+
+        if (!editing && packingListUuid != null) {
+            // In this case, you're creating an ad-hoc item from the packing list activity.
+            // This item may not be associated with any Trip Parameters and should be added to
+            // that packing list directly.
+            PacklestApplication.getInstance().packlestData.addItemToPackingList(item.uuid, packingListUuid);
+        }
+        finish();
+    }
 }

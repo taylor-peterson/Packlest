@@ -45,12 +45,12 @@ public class TripParameterEditorActivity extends AbstractEditorActivity {
 
     void onClickButtonSave() {
         if (showAlertDialogIfNeeded(tripParameter.name, PacklestApplication.getInstance().packlestData.tripParameters.values())) {
-            // Alert dialog shown by call above; nothing to do.
-        } else {
-            tripParameter.name = editText.getText().toString();;
-            PacklestApplication.getInstance().packlestData.addOrUpdateTripParameter(tripParameter);
-            finish();
+           return; // Alert dialog shown by call above; nothing to do.
         }
+
+        tripParameter.name = editText.getText().toString();
+        PacklestApplication.getInstance().packlestData.addOrUpdateTripParameter(tripParameter);
+        finish();
     }
 
 }

@@ -16,7 +16,7 @@ import java.util.UUID;
 abstract class AbstractEditorActivity extends AppCompatActivity {
     EditText editText;
     boolean editing = false;
-    protected static final String TAG = "EditorActivity";
+    static final String TAG = "EditorActivity";
     TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
 

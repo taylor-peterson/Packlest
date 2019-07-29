@@ -42,10 +42,11 @@ public class PackingListEditorActivity extends AbstractEditorActivity {
 
     void onClickButtonSave() {
         if (showAlertDialogIfNeeded(packingList.name, PacklestApplication.getInstance().packlestData.packingLists.values())) {
-        } else {
-            packingList.name = editText.getText().toString();
-            PacklestApplication.getInstance().packlestData.addOrUpdatePackingList(packingList, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
-            finish();
+            return; // Alert dialog shown by call above; nothing to do.
         }
+
+        packingList.name = editText.getText().toString();
+        PacklestApplication.getInstance().packlestData.addOrUpdatePackingList(packingList, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
+        finish();
     }
 }
