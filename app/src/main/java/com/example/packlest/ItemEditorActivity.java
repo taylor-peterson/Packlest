@@ -102,7 +102,7 @@ public class ItemEditorActivity extends AppCompatActivity {
                     // In this case, you're creating an ad-hoc item from the packing list activity.
                     // This item may not be associated with any Trip Parameters and should be added to
                     // that packing list directly.
-                    PacklestApplication.getInstance().packlestData.addItemToPackingList(packingListUuid, item.uuid);
+                    PacklestApplication.getInstance().packlestData.addItemToPackingList(item.uuid, packingListUuid);
             }
             finish();
         }

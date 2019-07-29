@@ -6,12 +6,12 @@ Design Thoughts:
 - Trip Parameters: parameters of a trip (e.g. activities, conditions, length of outing)
  - Each item can be associated with many trip parameters.
 - We utilize "Save" buttons whenever editing primitives to provide a logical place for validation.
-- Activities with a "Save" button do not have knowledge of global state and just create an object.
+- Deleting an item/trip parameter/packing list only removes that item and associations to it.
+  It does not cleanup other objects that then have nothing associated with them.
 
 TODO:
 - Update packing list items when modify trip parameters
   - If you add trip parameters, associated items will be added
-  - If you remove a trip parameter, items only associated with that trip parameter will be removed
 - Data consistency
   - whenever an item/list/parameter is touched, associated data should be updated
 
@@ -22,6 +22,7 @@ TODO:
 - Add (uniquely named) item categories
   - Display items based on category (will require adding category activity, fragment, etc.)
  ==========
+- Removing trip parameter from activity removes items only associated with that trip parameter
 - Ability to export/import data as json
 - Drag and drop to re-order items in a packing list
 - Add existing item to list without having to edit trip parameters

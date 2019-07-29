@@ -164,24 +164,27 @@ class PacklestData {
     void deletePackingList(UUID packingListUuid) {
         packingLists.remove(packingListUuid);
         packlestDataRelationships.removePackingListUuid(packingListUuid);
-
-        // Delete any items that have no parameters (i.e. that were created solely for this list).
-        for (ItemInstance itemInstance : packingLists.get(packingListUuid).itemInstances) {
-            if (packlestDataRelationships.getTripParameterUuidsForItemUuid(itemInstance.itemUuid).isEmpty()) {
-                deleteItem(itemInstance.itemUuid);
-            }
-        }
     }
-    void addItemToPackingList(UUID packingListUuid, UUID itemUuid) {
-        // This is used to create and add a new ItemInstance if one does not already exist.
+    void addItemToPackingList(UUID itemUuid, UUID packingListUuid) {
+        // Create and add a new ItemInstance if one does not already exist.
         boolean newItem = true;
         for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {
             if (packingLists.get(packingListUuid).itemInstances.get(i).itemUuid.equals(itemUuid)) {
                 newItem = false;
             }
         }
-        if (newItem == true) {
+        if (newItem) {
             packingLists.get(packingListUuid).itemInstances.add(new ItemInstance(itemUuid));
+        }
+
+        packlestDataRelationships.relateItemToPackingList(itemUuid, packingListUuid);
+    }
+    private void removeItemFromPackingList(UUID itemUuid, UUID packingListUuid) {
+        for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {
+            if (packingLists.get(packingListUuid).itemInstances.get(i).itemUuid.equals(itemUuid)) {
+                //noinspection SuspiciousListRemoveInLoop
+                packingLists.get(packingListUuid).itemInstances.remove(i);
+            }
         }
     }
     void updateItemInPackingList(UUID packingListUuid, ItemInstance modifiedItem) {
@@ -205,10 +208,10 @@ class PacklestData {
         void putItem(UUID itemUuid, HashSet<UUID> tripParameterUuids) {
             removeItemUuid(itemUuid); // The old parameter set might differ from the new one.
             for (UUID tripParameterUuid : tripParameterUuids) {
-                putItemRelationship(itemUuid, tripParameterUuid);
+                relateItemToTripParameter(itemUuid, tripParameterUuid);
             }
         }
-        void putItemRelationship(UUID itemUuid, UUID tripParameterUuid) {
+        void relateItemToTripParameter(UUID itemUuid, UUID tripParameterUuid) {
             if (!itemUuidToTripParameterUuidsMap.containsKey(itemUuid)) {
                 itemUuidToTripParameterUuidsMap.put(itemUuid, new HashSet<>());
             }
@@ -219,27 +222,31 @@ class PacklestData {
             }
             tripParameterUuidToItemUuidsMap.get(tripParameterUuid).add(itemUuid);
 
+
+            for (UUID packingListUuid : getPackingListUuidsForTripParameterUuid(tripParameterUuid)) {
+                PacklestApplication.getInstance().packlestData.addItemToPackingList(itemUuid, packingListUuid);
+            }
+        }
+
+        void relateItemToPackingList(UUID itemUuid, UUID packingListUuid) {
             if (!itemUuidToPackingListUuidsMap.containsKey(itemUuid)) {
                 itemUuidToPackingListUuidsMap.put(itemUuid, new HashSet<>());
             }
-            for (UUID packingListUuid : getPackingListUuidsForTripParameterUuid(tripParameterUuid)) {
-                itemUuidToPackingListUuidsMap.get(itemUuid).add(packingListUuid);
+            itemUuidToPackingListUuidsMap.get(itemUuid).add(packingListUuid);
 
-                if (!packingListUuidToItemUuidsMap.containsKey(packingListUuid)) {
-                    packingListUuidToItemUuidsMap.put(packingListUuid, new HashSet<>());
-                }
-                packingListUuidToItemUuidsMap.get(packingListUuid).add(itemUuid);
-                PacklestApplication.getInstance().packlestData.addItemToPackingList(packingListUuid, itemUuid);
+            if (!packingListUuidToItemUuidsMap.containsKey(packingListUuid)) {
+                packingListUuidToItemUuidsMap.put(packingListUuid, new HashSet<>());
             }
+            packingListUuidToItemUuidsMap.get(packingListUuid).add(itemUuid);
         }
 
         void putPackingList(UUID packingListUuid, HashSet<UUID> tripParameterUuids) {
             removePackingListUuid(packingListUuid); // The old parameter set might differ from the new one.
             for (UUID tripParameterUuid : tripParameterUuids) {
-                putPackingListRelationship(packingListUuid, tripParameterUuid);
+                relatePackingListToTripParameter(packingListUuid, tripParameterUuid);
             }
         }
-        void putPackingListRelationship(UUID packingListUuid, UUID tripParameterUuid) {
+        void relatePackingListToTripParameter(UUID packingListUuid, UUID tripParameterUuid) {
             if (!packingListUuidToTripParameterUuidsMap.containsKey(packingListUuid)) {
                 packingListUuidToTripParameterUuidsMap.put(packingListUuid, new HashSet<>());
             }
@@ -294,7 +301,7 @@ class PacklestData {
             HashSet<UUID> packingListUuidsToCleanup = itemUuidToPackingListUuidsMap.remove(itemUuid);
             if (packingListUuidsToCleanup != null) {
                 for (UUID packingListUuid : packingListUuidsToCleanup) {
-                    packingLists.get(packingListUuid).itemInstances.remove(itemUuid);
+                    PacklestApplication.getInstance().packlestData.removeItemFromPackingList(itemUuid, packingListUuid);
                     packingListUuidToItemUuidsMap.get(packingListUuid).remove(itemUuid);
                 }
             }
@@ -304,7 +311,6 @@ class PacklestData {
             HashSet<UUID> itemUuidsToRemove = tripParameterUuidToItemUuidsMap.remove(tripParameterUuid);
             if (itemUuidsToRemove != null) {
                 for (UUID itemUuid : itemUuidsToRemove) {
-                    // TODO remove item if no other trip parameters?
                     itemUuidToTripParameterUuidsMap.get(itemUuid).remove(tripParameterUuid);
                 }
             }
@@ -312,7 +318,6 @@ class PacklestData {
             HashSet<UUID> packingListUuidsToCleanup = tripParameterUuidToPackingListUuidsMap.remove(tripParameterUuid);
             if (packingListUuidsToCleanup != null) {
                 for (UUID packingListUuid : packingListUuidsToCleanup) {
-                    // TODO remove items only associated with trip parameter from list
                     packingListUuidToTripParameterUuidsMap.get(packingListUuid).remove(tripParameterUuid);
                 }
             }
@@ -330,7 +335,6 @@ class PacklestData {
             if (itemUuidsToRemove != null) {
                 for (UUID itemUuid : itemUuidsToRemove) {
                     itemUuidToPackingListUuidsMap.get(itemUuid).remove(packingListUuid);
-                    // TODO remove item if it does not have trip parameters?
                 }
             }
         }
