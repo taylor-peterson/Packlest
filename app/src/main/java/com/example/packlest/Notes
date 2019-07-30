@@ -11,13 +11,9 @@ Design Thoughts:
 - Removing a trip parameter from an activity similarly does not remove items only associated with
   that trip parameter. Rather, it will only result in future items added to that trip parameter
   not being added to said trip.
+- Decided against drag & drop  and export/import for now until it proves needed.
 
 TODO:
 - Add (uniquely named) item categories
   - Display items based on category (will require adding category activity, fragment, etc.)
-- Ability to export/import data as json
- ==========
-- Drag and drop to re-order items in a packing list
-- Maintainability improvements
-  - Testing
 - Add item quantities/weights

@@ -118,7 +118,6 @@ class PacklestData {
     void deleteItem(UUID itemUuid) {
         items.remove(itemUuid);
         packlestDataRelationships.removeItemUuid(itemUuid);
-        // TODO something still wrong here...
     }
 
     void addOrUpdateTripParameter(TripParameter tripParameter) {
@@ -217,7 +216,7 @@ class PacklestData {
 
 
             for (UUID packingListUuid : getPackingListUuidsForTripParameterUuid(tripParameterUuid)) {
-                PacklestApplication.getInstance().packlestData.addItemToPackingList(itemUuid, packingListUuid);
+                addItemToPackingList(itemUuid, packingListUuid);
             }
         }
 
@@ -294,7 +293,7 @@ class PacklestData {
             HashSet<UUID> packingListUuidsToCleanup = itemUuidToPackingListUuidsMap.remove(itemUuid);
             if (packingListUuidsToCleanup != null) {
                 for (UUID packingListUuid : packingListUuidsToCleanup) {
-                    PacklestApplication.getInstance().packlestData.removeItemFromPackingList(itemUuid, packingListUuid);
+                    removeItemFromPackingList(itemUuid, packingListUuid);
                     packingListUuidToItemUuidsMap.get(packingListUuid).remove(itemUuid);
                 }
             }
