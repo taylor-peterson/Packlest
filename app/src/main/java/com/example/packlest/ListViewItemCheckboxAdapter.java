@@ -9,6 +9,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ListView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
     private static final String TAG = "PackLestListViewItemCheckboxAdapter";
     PackingList packingList;
@@ -74,6 +76,21 @@ class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
         PacklestApplication.getInstance().packlestData.updateItemInPackingList(packingList.uuid, itemInstance);
 
         getFilter().filter(filter_state.name());
+
+        if ((filter_state == FILTER_STATE.ADDED_ONLY && itemInstance.checkboxState == CHECKBOX_STATE.UNADDED)
+                || (filter_state == FILTER_STATE.UNCHECKED_ONLY && itemInstance.checkboxState == CHECKBOX_STATE.CHECKED)) {
+            Snackbar snackbar = Snackbar
+                    .make(listView, "Filtered item no longer visible...", Snackbar.LENGTH_SHORT)
+                    .setAction("UNDO", nested_lambda_view -> {
+                        // At this point, itemCheckbox will point to a different ItemInstance and filtering will take
+                        // care of updating the views, so only correct the ItemInstance itself.
+                        itemInstance.checkboxState = CheckBoxTriState.reverseCycleButtonState(itemInstance.checkboxState);
+                        PacklestApplication.getInstance().packlestData.updateItemInPackingList(packingList.uuid, itemInstance);
+                        getFilter().filter(filter_state.name());
+                    });
+            snackbar.show();
+        }
+        PacklestApplication.getInstance().persistData();
     };
 
     @Override

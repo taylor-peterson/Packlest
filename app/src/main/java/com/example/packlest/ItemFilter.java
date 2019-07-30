@@ -16,7 +16,7 @@ class ItemFilter extends Filter {
         FilterResults results = new FilterResults();
         if(constraint != null && constraint.length()>0)
         {
-            constraint=constraint.toString();
+            constraint = constraint.toString();
 
             PackingList filteredPackingList = new PackingList();
 

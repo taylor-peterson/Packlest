@@ -12,7 +12,6 @@ Design Thoughts:
 TODO:
 - Undo Toasts
   - for deletions
-  - for checking items (e.g. oops clicked wrong thing but have filter on; want to uncheck without cycling filter)
 - Add (uniquely named) item categories
   - Display items based on category (will require adding category activity, fragment, etc.)
  ==========
@@ -29,4 +28,4 @@ TODO:
 - Maintainability improvements
   - Testing
   - Documentation
-- Add item quantities
+- Add item quantities/weights
