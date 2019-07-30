@@ -5,7 +5,7 @@
     <item
         android:id="@+id/filter_items_button"
         android:icon="@drawable/ic_filter_outline"
-        android:title="Filter Items"
+        android:title="@string/filter_items"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/create_item_button"
@@ -14,18 +14,18 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/edit_packing_list"
-        android:title="Edit packing list"
+        android:title="@string/edit_packing_list"
         app:showAsAction="never" />
     <item
         android:id="@+id/delete_packing_list"
-        android:title="Delete packing list"
+        android:title="@string/delete_packing_list"
         app:showAsAction="never" />
     <item
         android:id="@+id/uncheck_all_items"
-        android:title="Uncheck all items"
+        android:title="@string/uncheck_all_items"
         app:showAsAction="never" />
     <item
         android:id="@+id/un_add_all_items"
-        android:title="Un-add all items"
+        android:title="@string/un_add_all_items"
         app:showAsAction="never" />
 </menu>

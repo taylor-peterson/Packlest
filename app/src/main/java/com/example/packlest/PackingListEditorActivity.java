@@ -1,7 +1,6 @@
 package com.example.packlest;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -33,7 +32,6 @@ public class PackingListEditorActivity extends AbstractEditorActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.delete_item) {
-            Log.v(TAG, "Deleting Packing List");
             new AlertDialog.Builder(this)
                     .setTitle("Confirm Deletion")
                     .setMessage("Do you really want to delete: " + packingList.name + "?")

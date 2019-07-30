@@ -1,7 +1,6 @@
 package com.example.packlest;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -17,9 +16,9 @@ public class TripParameterEditorActivity extends AbstractEditorActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_trip_parameter);
         setSupportActionBar(findViewById(R.id.toolbar));
-        findViewById(R.id.buttonSaveTripParameter).setOnClickListener(e -> onClickButtonSave());
+        findViewById(R.id.button_save_trip_parameter).setOnClickListener(e -> onClickButtonSave());
 
-        editText = findViewById(R.id.editTextTripParameterName);
+        editText = findViewById(R.id.edit_text_trip_parameter_name);
 
         UUID tripParameterUuid = (UUID) getIntent().getSerializableExtra("tripParameterUuid");
         tripParameter = PacklestApplication.getInstance().packlestData.tripParameters.get(tripParameterUuid);
@@ -36,7 +35,6 @@ public class TripParameterEditorActivity extends AbstractEditorActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.delete_item) {
-            Log.v(TAG, "Deleting Trip Parameter");
             new AlertDialog.Builder(this)
                     .setTitle("Confirm Deletion")
                     .setMessage("Do you really want to delete: " + tripParameter.name + "?")

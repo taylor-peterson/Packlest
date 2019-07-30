@@ -79,7 +79,7 @@ public class TripParameterRecyclerViewAdapter extends RecyclerView.Adapter<TripP
 
         TripParameterRecyclerViewViewHolder(View view) {
             super(view);
-            textView = view.findViewById(R.id.recyclerViewItemName);
+            textView = view.findViewById(R.id.recycler_view_item_name);
             textView.setOnClickListener(this);
         }
 

@@ -28,8 +28,8 @@ abstract class AbstractFragment<I> extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         arrayListItems = getArrayListItems();
-        arrayAdapter = new ArrayAdapter<>(view.getContext(), R.layout.listview, R.id.textView, arrayListItems);
-        listView = view.findViewById(R.id.fragmentList);
+        arrayAdapter = new ArrayAdapter<>(view.getContext(), R.layout.listview, R.id.text_view, arrayListItems);
+        listView = view.findViewById(R.id.fragment_list);
         listView.setAdapter(arrayAdapter);
 
         setHasOptionsMenu(true);

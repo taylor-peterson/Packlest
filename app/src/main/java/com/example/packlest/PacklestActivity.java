@@ -15,7 +15,7 @@ public class PacklestActivity extends AppCompatActivity {
         setContentView(R.layout.main);
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        ViewPager viewPager = findViewById(R.id.viewPager);
+        ViewPager viewPager = findViewById(R.id.view_pager);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
         TabLayout tabLayout = findViewById(R.id.tabs);

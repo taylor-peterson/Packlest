@@ -16,17 +16,16 @@ import java.util.UUID;
 abstract class AbstractEditorActivity extends AppCompatActivity {
     EditText editText;
     boolean editing = false;
-    static final String TAG = "EditorActivity";
     TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
     void createBaseItemOrPackingListEditor(HashSet<UUID> tripParameterUuids) {
         setContentView(R.layout.editor);
         setSupportActionBar(findViewById(R.id.toolbar));
-        findViewById(R.id.buttonSave).setOnClickListener(e -> onClickButtonSave());
+        findViewById(R.id.button_save).setOnClickListener(e -> onClickButtonSave());
 
-        editText = findViewById(R.id.editTextEditeeName);
+        editText = findViewById(R.id.edit_test_editee_name);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewPackingListTripParameters);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view_packing_list_trip_parameters);
         recyclerView.setLayoutManager(new GridLayoutManager(this, PacklestApplication.TRIP_PARAMETER_COLUMN_COUNT));
         tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, tripParameterUuids);
         recyclerView.setAdapter(tripParameterRecyclerViewAdapter);

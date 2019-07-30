@@ -3,6 +3,7 @@ package com.example.packlest;
 import java.util.ArrayList;
 
 class PackingList extends AbstractBaseObject {
+    @SuppressWarnings("CanBeFinal")
     ArrayList<ItemInstance> itemInstances;
 
     PackingList() {

@@ -1,7 +1,6 @@
 package com.example.packlest;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -12,7 +11,7 @@ import android.widget.ListView;
 import com.google.android.material.snackbar.Snackbar;
 
 class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
-    private static final String TAG = "PackLestListViewItemCheckboxAdapter";
+    @SuppressWarnings("CanBeFinal")
     PackingList packingList;
     private final Context context;
     private ItemFilter filter;
@@ -65,7 +64,6 @@ class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
     }
 
     private final View.OnClickListener listItemCheckboxListener = view -> {
-        Log.v(TAG, "Item clicked");
         View parentRow = (View) view.getParent().getParent();
         ListView listView = (ListView) parentRow.getParent();
         final int position = listView.getPositionForView(parentRow);

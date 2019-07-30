@@ -29,7 +29,7 @@
         tools:showIn="@layout/packing_list">
 
         <ListView
-            android:id="@+id/listViewItems"
+            android:id="@+id/list_view_items"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="8dp"

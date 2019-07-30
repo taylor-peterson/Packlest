@@ -8,4 +8,11 @@
     <string name="save">save</string>
     <string name="title_activity_packing_list">PackingList</string>
     <string name="title_activity_create_item">CreateItem</string>
+    <string name="filter_items">Filter Items</string>
+    <string name="edit_packing_list">Edit packing list</string>
+    <string name="delete_packing_list">Delete packing list</string>
+    <string name="uncheck_all_items">Uncheck all items</string>
+    <string name="un_add_all_items">Un-add all items</string>
+    <string name="delete_item">Delete item</string>
+    <string name="trip_parameter_name">Trip parameter name…</string>
 </resources>

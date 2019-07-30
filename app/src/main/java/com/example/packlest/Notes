@@ -8,21 +8,16 @@ Design Thoughts:
 - We utilize "Save" buttons whenever editing primitives to provide a logical place for validation.
 - Deleting an item/trip parameter/packing list only removes that item and associations to it.
   It does not cleanup other objects that then have nothing associated with them.
+- Removing a trip parameter from an activity similarly does not remove items only associated with
+  that trip parameter. Rather, it will only result in future items added to that trip parameter
+  not being added to said trip.
 
 TODO:
 - Add (uniquely named) item categories
   - Display items based on category (will require adding category activity, fragment, etc.)
 - Ability to export/import data as json
  ==========
-- Removing trip parameter from activity removes items only associated with that trip parameter
 - Drag and drop to re-order items in a packing list
-- Add existing item to list without having to edit trip parameters
-  - completion suggestions on item name; if user selects one or types existing name ask, load remaining details for that item?
-- Code Cleanup
-  - Standardize naming (e.g. buttons, codes, ids - camelCase vs snake_case?)
-  - Enhance logging
-  - Address all warnings
 - Maintainability improvements
   - Testing
-  - Documentation
 - Add item quantities/weights

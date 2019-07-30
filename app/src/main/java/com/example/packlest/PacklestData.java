@@ -1,7 +1,5 @@
 package com.example.packlest;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -18,7 +16,6 @@ import java.util.Map;
 import java.util.UUID;
 
 class PacklestData {
-    private static final String TAG = "PacklestData";
     private static final String OBJECT_DELIMITER = "OBJECT_DELIMITER";
     Map<UUID, PackingList> packingLists;
     Map<UUID, Item> items;
@@ -33,7 +30,6 @@ class PacklestData {
     }
 
     void loadPacklestDataFromFile(File file) {
-        Log.v(TAG, "Loading packlest data from file");
         StringBuilder input = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -78,14 +74,12 @@ class PacklestData {
     }
 
     void persistPacklestDataToFile(FileOutputStream outputStream) {
-        Log.v(TAG, "Persisting packlest data to file");
         Gson gson = new Gson();
         String fileContents =
                 gson.toJson(packingLists) + OBJECT_DELIMITER+
                 gson.toJson(items) + OBJECT_DELIMITER +
                 gson.toJson(tripParameters) + OBJECT_DELIMITER +
                 gson.toJson(packlestDataRelationships);
-        Log.v(TAG, "Writing:" + fileContents);
         try {
             outputStream.write(fileContents.getBytes());
             outputStream.close();
