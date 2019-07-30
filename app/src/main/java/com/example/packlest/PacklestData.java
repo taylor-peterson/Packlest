@@ -143,15 +143,16 @@ class PacklestData {
             itemUuids.addAll(packlestDataRelationships.getItemUuidsForTripParameterUuid(tripParameterUuid));
         }
 
-        // TODO Change data structure to Set to avoid need for de-duplicating here?
+        // We use ArrayLists for the item instances to allow for ordering.
+        // This means that we have to double check to make sure we don't introduce duplicates.
         for (UUID itemUuid : itemUuids) {
-            boolean repeated = false;
+            boolean alreadyPresentInPackingList = false;
             for (ItemInstance itemInstance : packingList.itemInstances) {
                 if (itemInstance.itemUuid.equals(itemUuid)) {
-                    repeated = true;
+                    alreadyPresentInPackingList = true;
                 }
             }
-            if (!repeated) {
+            if (!alreadyPresentInPackingList) {
                 ItemInstance itemInstance = new ItemInstance(itemUuid);
                 packingList.itemInstances.add(itemInstance);
             }
