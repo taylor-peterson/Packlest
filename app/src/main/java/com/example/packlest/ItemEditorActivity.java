@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+
 import java.util.UUID;
 
 public class ItemEditorActivity extends AbstractEditorActivity {
@@ -34,8 +36,15 @@ public class ItemEditorActivity extends AbstractEditorActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.delete_item) {
             Log.v(TAG, "Deleting item");
-            PacklestApplication.getInstance().packlestData.deleteItem(item.uuid);
-            finish();
+            new AlertDialog.Builder(this)
+                    .setTitle("Confirm Deletion")
+                    .setMessage("Do you really want to delete: " + item.name + "?")
+                    .setIcon(android.R.drawable.ic_menu_delete)
+                    .setPositiveButton(android.R.string.yes, (dialog, button) -> {
+                        PacklestApplication.getInstance().packlestData.deleteItem(item.uuid);
+                        finish();
+                    })
+                    .setNegativeButton(android.R.string.cancel, null).show();
         }
 
         return super.onOptionsItemSelected(menuItem);

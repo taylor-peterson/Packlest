@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import java.util.UUID;
 
@@ -33,8 +34,15 @@ public class PackingListEditorActivity extends AbstractEditorActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.delete_item) {
             Log.v(TAG, "Deleting Packing List");
-            PacklestApplication.getInstance().packlestData.deletePackingList(packingList.uuid);
-            finish();
+            new AlertDialog.Builder(this)
+                    .setTitle("Confirm Deletion")
+                    .setMessage("Do you really want to delete: " + packingList.name + "?")
+                    .setIcon(android.R.drawable.ic_menu_delete)
+                    .setPositiveButton(android.R.string.yes, (dialog, button) -> {
+                        PacklestApplication.getInstance().packlestData.deletePackingList(packingList.uuid);
+                        finish();
+                    })
+                    .setNegativeButton(android.R.string.cancel, null).show();
         }
 
         return super.onOptionsItemSelected(menuItem);

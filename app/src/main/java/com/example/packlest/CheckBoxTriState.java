@@ -18,7 +18,7 @@ class CheckBoxTriState extends AppCompatCheckBox {
         setOnCheckedChangeListener((buttonView, isChecked) -> cycleButtonState());
     }
 
-    void cycleButtonState() {
+    private void cycleButtonState() {
         switch (state) {
             case UNADDED:
                 state = CHECKBOX_STATE.UNCHECKED;

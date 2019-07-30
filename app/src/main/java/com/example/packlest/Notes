@@ -10,17 +10,14 @@ Design Thoughts:
   It does not cleanup other objects that then have nothing associated with them.
 
 TODO:
-- Undo Toasts
-  - for deletions
 - Add (uniquely named) item categories
   - Display items based on category (will require adding category activity, fragment, etc.)
+- Ability to export/import data as json
  ==========
 - Removing trip parameter from activity removes items only associated with that trip parameter
-- Ability to export/import data as json
 - Drag and drop to re-order items in a packing list
 - Add existing item to list without having to edit trip parameters
   - completion suggestions on item name; if user selects one or types existing name ask, load remaining details for that item?
-- Ability to share lists
 - Code Cleanup
   - Standardize naming (e.g. buttons, codes, ids - camelCase vs snake_case?)
   - Enhance logging

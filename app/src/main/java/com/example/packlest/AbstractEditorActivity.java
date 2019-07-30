@@ -19,7 +19,6 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
     static final String TAG = "EditorActivity";
     TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
-
     void createBaseItemOrPackingListEditor(HashSet<UUID> tripParameterUuids) {
         setContentView(R.layout.editor);
         setSupportActionBar(findViewById(R.id.toolbar));
