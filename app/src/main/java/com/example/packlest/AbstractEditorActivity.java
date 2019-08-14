@@ -18,8 +18,17 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
     boolean editing = false;
     TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
+    // TODO use visibility to get rid of the second layout
+    void createBaseItemCategoryOrTripParameterEditor() {
+        setContentView(R.layout.item_category_and_trip_parameter_editor);
+        setSupportActionBar(findViewById(R.id.toolbar));
+        findViewById(R.id.button_save).setOnClickListener(e -> onClickButtonSave());
+
+        editText = findViewById(R.id.edit_text_editee_name);
+    }
+
     void createBaseItemOrPackingListEditor(HashSet<UUID> tripParameterUuids) {
-        setContentView(R.layout.editor);
+        setContentView(R.layout.item_and_packing_list_editor);
         setSupportActionBar(findViewById(R.id.toolbar));
         findViewById(R.id.button_save).setOnClickListener(e -> onClickButtonSave());
 

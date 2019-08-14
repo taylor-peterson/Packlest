@@ -14,11 +14,7 @@ public class TripParameterEditorActivity extends AbstractEditorActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_trip_parameter);
-        setSupportActionBar(findViewById(R.id.toolbar));
-        findViewById(R.id.button_save_trip_parameter).setOnClickListener(e -> onClickButtonSave());
-
-        editText = findViewById(R.id.edit_text_trip_parameter_name);
+        createBaseItemCategoryOrTripParameterEditor();
 
         UUID tripParameterUuid = (UUID) getIntent().getSerializableExtra("tripParameterUuid");
         tripParameter = PacklestApplication.getInstance().packlestData.tripParameters.get(tripParameterUuid);

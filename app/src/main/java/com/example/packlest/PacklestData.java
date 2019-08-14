@@ -19,12 +19,14 @@ class PacklestData {
     private static final String OBJECT_DELIMITER = "OBJECT_DELIMITER";
     Map<UUID, PackingList> packingLists;
     Map<UUID, Item> items;
+    Map<UUID, ItemCategory> itemCategories;
     Map<UUID, TripParameter> tripParameters;
     PacklestDataRelationships packlestDataRelationships;
 
     PacklestData() {
         packingLists = new HashMap<>();
         items = new HashMap<>();
+        itemCategories = new HashMap<>();
         tripParameters = new HashMap<>();
         packlestDataRelationships = new PacklestDataRelationships();
     }
@@ -46,7 +48,7 @@ class PacklestData {
         String[] inputJson = input.toString().split(OBJECT_DELIMITER);
         Gson gson = new Gson();
 
-        if (inputJson.length == 4) {
+        if (inputJson.length == 5) {
             String inputPackingLists = inputJson[0];
             if (!inputPackingLists.isEmpty()) {
                 Type type = new TypeToken<HashMap<UUID, PackingList>>() {}.getType();
@@ -59,13 +61,19 @@ class PacklestData {
                 items = gson.fromJson(inputItems, type);
             }
 
-            String inputTripParameters = inputJson[2];
+            String inputItemCategories = inputJson[2];
+            if (!inputItemCategories.isEmpty()) {
+                Type type = new TypeToken<HashMap<UUID, ItemCategory>>() {}.getType();
+                itemCategories = gson.fromJson(inputItemCategories, type);
+            }
+
+            String inputTripParameters = inputJson[3];
             if (!inputTripParameters.isEmpty()) {
                 Type type = new TypeToken<HashMap<UUID, TripParameter>>() {}.getType();
                 tripParameters = gson.fromJson(inputTripParameters, type);
             }
 
-            String inputDataRelationships = inputJson[3];
+            String inputDataRelationships = inputJson[4];
             if (!inputDataRelationships.isEmpty()) {
                 Type type = new TypeToken<PacklestDataRelationships>() {}.getType();
                 packlestDataRelationships = gson.fromJson(inputDataRelationships, type);
@@ -78,6 +86,7 @@ class PacklestData {
         String fileContents =
                 gson.toJson(packingLists) + OBJECT_DELIMITER+
                 gson.toJson(items) + OBJECT_DELIMITER +
+                gson.toJson(itemCategories) + OBJECT_DELIMITER +
                 gson.toJson(tripParameters) + OBJECT_DELIMITER +
                 gson.toJson(packlestDataRelationships);
         try {
@@ -118,6 +127,14 @@ class PacklestData {
     void deleteItem(UUID itemUuid) {
         items.remove(itemUuid);
         packlestDataRelationships.removeItemUuid(itemUuid);
+    }
+
+    void addOrUpdateItemCategory(ItemCategory itemCategory) {
+        itemCategories.put(itemCategory.uuid, itemCategory);
+    }
+    void deleteItemCategory(UUID itemCategoryUuid) {
+        itemCategories.remove(itemCategoryUuid);
+        packlestDataRelationships.removeItemCategoryUuid(itemCategoryUuid);
     }
 
     void addOrUpdateTripParameter(TripParameter tripParameter) {
@@ -192,6 +209,8 @@ class PacklestData {
     class PacklestDataRelationships {
         private final Map<UUID, HashSet<UUID>> itemUuidToTripParameterUuidsMap = new HashMap<>();
         private final Map<UUID, HashSet<UUID>> itemUuidToPackingListUuidsMap = new HashMap<>();
+        private final Map<UUID, HashSet<UUID>> itemUuidToItemCategoryUuidsMap = new HashMap<>();
+        private final Map<UUID, HashSet<UUID>> itemCategoryUuidToItemUuidsMap = new HashMap<>();
         private final Map<UUID, HashSet<UUID>> tripParameterUuidToItemUuidsMap = new HashMap<>();
         private final Map<UUID, HashSet<UUID>> tripParameterUuidToPackingListUuidsMap = new HashMap<>();
         private final Map<UUID, HashSet<UUID>> packingListUuidToItemUuidsMap = new HashMap<>();
@@ -295,6 +314,15 @@ class PacklestData {
                 for (UUID packingListUuid : packingListUuidsToCleanup) {
                     removeItemFromPackingList(itemUuid, packingListUuid);
                     packingListUuidToItemUuidsMap.get(packingListUuid).remove(itemUuid);
+                }
+            }
+        }
+
+        void removeItemCategoryUuid(UUID itemCategoryUuid) {
+            HashSet<UUID> itemUuidsToRemove = itemCategoryUuidToItemUuidsMap.remove(itemCategoryUuid);
+            if (itemUuidsToRemove != null) {
+                for (UUID itemUuid : itemUuidsToRemove) {
+                    itemUuidToItemCategoryUuidsMap.get(itemUuid).remove(itemCategoryUuid);
                 }
             }
         }

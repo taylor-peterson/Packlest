@@ -22,6 +22,15 @@
                 android:value="com.example.packlest.PacklestActivity" />
         </activity>
         <activity
+            android:name=".ItemCategoryEditorActivity"
+            android:label="@string/title_activity_create_item_category"
+            android:parentActivityName=".PacklestActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.packlest.PacklestActivity" />
+        </activity>
+        <activity
             android:name=".TripParameterEditorActivity"
             android:label="@string/title_activity_create_trip_parameter"
             android:parentActivityName=".PacklestActivity"

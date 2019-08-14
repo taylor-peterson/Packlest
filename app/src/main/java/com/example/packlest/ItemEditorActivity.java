@@ -2,10 +2,14 @@ package com.example.packlest;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class ItemEditorActivity extends AbstractEditorActivity {
@@ -17,6 +21,16 @@ public class ItemEditorActivity extends AbstractEditorActivity {
         super.onCreate(savedInstanceState);
         UUID itemUuid = (UUID) getIntent().getSerializableExtra("itemUuid");
         createBaseItemOrPackingListEditor(PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForItemUuid(itemUuid));
+
+        Spinner spinner = findViewById(R.id.spinner_item_categories);
+        spinner.setVisibility(View.VISIBLE);
+        ArrayAdapter<ItemCategory> arrayAdapter = new ArrayAdapter<>(
+                this,
+                R.layout.support_simple_spinner_dropdown_item,
+                new ArrayList<>(PacklestApplication.getInstance().packlestData.itemCategories.values()));
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(new NothingSelectedSpinnerAdapter(
+                arrayAdapter, R.layout.category_spinner_row_nothing_selected, this));
 
         item = PacklestApplication.getInstance().packlestData.items.get(itemUuid);
         if (item != null) {
@@ -54,7 +68,10 @@ public class ItemEditorActivity extends AbstractEditorActivity {
         }
 
         item.name = editText.getText().toString();
-        PacklestApplication.getInstance().packlestData.addOrUpdateItem(item, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
+        PacklestApplication.getInstance().packlestData.addOrUpdateItem(
+                item, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
+
+        // TODO handle item categories.
 
         if (!editing && packingListUuid != null) {
             // In this case, you're creating an ad-hoc item from the packing list activity.

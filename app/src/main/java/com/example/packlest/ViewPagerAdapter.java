@@ -18,6 +18,8 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
         } else if (position == 1) {
             fragment = new ItemFragment();
         } else if (position == 2) {
+            fragment = new ItemCategoryFragment();
+        } else if (position == 3) {
             fragment = new TripParameterFragment();
         }
         return fragment;
@@ -25,7 +27,7 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -36,7 +38,9 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
         } else if (position == 1) {
             title = "Items";
         } else if (position == 2) {
-            title = "Parameters";
+            title = "Types"; // TODO if stick with these names, persist them across the app.
+        } else if (position == 3) {
+            title = "Tags";
         }
         return title;
     }

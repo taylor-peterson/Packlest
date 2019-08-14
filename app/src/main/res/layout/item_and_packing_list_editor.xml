@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PackingListEditorActivity">
@@ -25,7 +26,19 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".PackingListEditorActivity"
-        tools:showIn="@layout/editor">
+        tools:showIn="@layout/item_and_packing_list_editor">
+
+        <TextView
+            android:id="@+id/text_view_name_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:paddingBottom="8dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <EditText
             android:id="@+id/edit_test_editee_name"
@@ -35,18 +48,32 @@
             android:layout_marginTop="8dp"
             android:ems="10"
             android:hint="@string/editee_name"
+            android:importantForAutofill="no"
             android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="Autofill"
-            android:importantForAutofill="no" />
+            app:layout_constraintTop_toBottomOf="@+id/text_view_name_label"
+            tools:ignore="Autofill" />
+
+        <Spinner
+            android:id="@+id/spinner_item_categories"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/recycler_view_packing_list_trip_parameters"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_test_editee_name" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_packing_list_trip_parameters"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/button_save"
-            app:layout_constraintTop_toBottomOf="@+id/edit_test_editee_name" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinner_item_categories" />
 
         <Button
             android:id="@+id/button_save"
