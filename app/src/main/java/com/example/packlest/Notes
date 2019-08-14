@@ -14,6 +14,8 @@ Design Thoughts:
 - Decided against drag & drop  and export/import for now until it proves needed.
 
 TODO:
-- Add (uniquely named) item categories
-  - Display items based on category (will require adding category activity, fragment, etc.)
+- Extend border formatting to all views
+- Layout visibility toggling?
+- Update item categories when editing items
+- Display items based on category
 - Add item quantities/weights
