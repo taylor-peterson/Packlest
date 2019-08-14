@@ -23,7 +23,7 @@ public class ItemEditorActivity extends AbstractEditorActivity {
         createBaseItemOrPackingListEditor(PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForItemUuid(itemUuid));
 
         Spinner spinner = findViewById(R.id.spinner_item_categories);
-        spinner.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.VISIBLE); // TODO need to do this at the layout level, not just for the spinner (e.g. border and title)
         ArrayAdapter<ItemCategory> arrayAdapter = new ArrayAdapter<>(
                 this,
                 R.layout.support_simple_spinner_dropdown_item,
