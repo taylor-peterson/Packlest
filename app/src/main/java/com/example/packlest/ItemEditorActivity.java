@@ -19,7 +19,7 @@ public class ItemEditorActivity extends AbstractEditorActivity {
         createBaseEditor();
         addTripParameterSelector(
                 PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForItemUuid(itemUuid));
-        addItemCategorySelector();
+        addItemCategorySelector(PacklestApplication.getInstance().packlestData.packlestDataRelationships.getItemCategoryUuidForItemUuid(itemUuid));
 
         item = PacklestApplication.getInstance().packlestData.items.get(itemUuid);
         if (item != null) {
@@ -58,9 +58,9 @@ public class ItemEditorActivity extends AbstractEditorActivity {
 
         item.name = editText.getText().toString();
         PacklestApplication.getInstance().packlestData.addOrUpdateItem(
-                item, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
-
-        // TODO handle item categories.
+                item,
+                tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse(),
+                (ItemCategory) spinner.getSelectedItem());
 
         if (!editing && packingListUuid != null) {
             // In this case, you're creating an ad-hoc item from the packing list activity.

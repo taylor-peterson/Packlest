@@ -23,6 +23,7 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
     EditText editText;
     boolean editing = false;
     TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
+    Spinner spinner;
 
     void createBaseEditor() {
         setContentView(R.layout.editor);
@@ -42,18 +43,20 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
         recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
     }
 
-    void addItemCategorySelector() {
+    void addItemCategorySelector(UUID itemCategoryUuid) {
         RelativeLayout relativeLayout = findViewById(R.id.layout_spinner_item_categories);
         relativeLayout.setVisibility(View.VISIBLE);
 
-        Spinner spinner = findViewById(R.id.spinner_item_categories);
+        spinner = findViewById(R.id.spinner_item_categories);
         ArrayAdapter<ItemCategory> arrayAdapter = new ArrayAdapter<>(
                 this,
                 R.layout.support_simple_spinner_dropdown_item,
                 new ArrayList<>(PacklestApplication.getInstance().packlestData.itemCategories.values()));
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner.setAdapter(new NothingSelectedSpinnerAdapter(
-                arrayAdapter, R.layout.category_spinner_row_nothing_selected, this));
+        spinner.setAdapter(arrayAdapter);
+
+        ItemCategory itemCategory = PacklestApplication.getInstance().packlestData.itemCategories.get(itemCategoryUuid);
+        spinner.setSelection(arrayAdapter.getPosition(itemCategory));
     }
 
     abstract void onClickButtonSave();

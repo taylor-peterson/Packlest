@@ -2,7 +2,7 @@ Design Thoughts:
 - Item: a discrete thing to be brought on a trip
 - Item Categories: general item classification (e.g. clothing, climbing gear, overnight gear)
   - Think of this as the logical grouping you'd use when laying everything out to pack.
-  - Each item is associated with *one* category.
+  - Each item is associated with precisely one category.
 - Trip Parameters: parameters of a trip (e.g. activities, conditions, length of outing)
  - Each item can be associated with many trip parameters.
 - We utilize "Save" buttons whenever editing primitives to provide a logical place for validation.
@@ -14,8 +14,5 @@ Design Thoughts:
 - Decided against drag & drop  and export/import for now until it proves needed.
 
 TODO:
-- Extend border formatting to all views
-- Layout visibility toggling?
-- Update item categories when editing items
 - Display items based on category
 - Add item quantities/weights
