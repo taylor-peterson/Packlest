@@ -15,7 +15,8 @@ public class PackingListEditorActivity extends AbstractEditorActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID packingListUuid = (UUID) getIntent().getSerializableExtra("packingListUuid");
-        createBaseItemOrPackingListEditor(
+        createBaseEditor();
+        addTripParameterSelector(
                 PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForPackingListUuid(packingListUuid));
 
         packingList = PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid);

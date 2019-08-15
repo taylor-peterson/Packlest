@@ -13,14 +13,14 @@ import android.widget.SpinnerAdapter;
  * displayed instead of the first choice in the Adapter.
  * https://stackoverflow.com/questions/867518/how-to-make-an-android-spinner-with-initial-text-select-one
  */
-public class NothingSelectedSpinnerAdapter implements SpinnerAdapter, ListAdapter {
+class NothingSelectedSpinnerAdapter implements SpinnerAdapter, ListAdapter {
 
-    protected static final int EXTRA = 1;
-    protected SpinnerAdapter adapter;
-    protected Context context;
-    protected int nothingSelectedLayout;
-    protected int nothingSelectedDropdownLayout;
-    protected LayoutInflater layoutInflater;
+    private static final int EXTRA = 1;
+    private final SpinnerAdapter adapter;
+    private final Context context;
+    private final int nothingSelectedLayout;
+    private final int nothingSelectedDropdownLayout;
+    private final LayoutInflater layoutInflater;
 
     /**
      * Use this constructor to have NO 'Select One...' item, instead use
@@ -28,7 +28,7 @@ public class NothingSelectedSpinnerAdapter implements SpinnerAdapter, ListAdapte
      * @param spinnerAdapter wrapped Adapter.
      * @param nothingSelectedLayout layout for nothing selected, perhaps
      * you want text grayed out like a prompt...
-     * @param context
+     * @param context Context
      */
     public NothingSelectedSpinnerAdapter(
             SpinnerAdapter spinnerAdapter,
@@ -47,10 +47,10 @@ public class NothingSelectedSpinnerAdapter implements SpinnerAdapter, ListAdapte
      * text grayed out like a prompt...
      * @param nothingSelectedDropdownLayout layout for your 'Select an Item...' in
      * the dropdown.
-     * @param context
+     * @param context Context
      */
-    public NothingSelectedSpinnerAdapter(SpinnerAdapter spinnerAdapter,
-                                         int nothingSelectedLayout, int nothingSelectedDropdownLayout, Context context) {
+    private NothingSelectedSpinnerAdapter(SpinnerAdapter spinnerAdapter,
+                                          int nothingSelectedLayout, int nothingSelectedDropdownLayout, Context context) {
         this.adapter = spinnerAdapter;
         this.context = context;
         this.nothingSelectedLayout = nothingSelectedLayout;
@@ -70,12 +70,11 @@ public class NothingSelectedSpinnerAdapter implements SpinnerAdapter, ListAdapte
     }
 
     /**
-     * View to show in Spinner with Nothing Selected
      * Override this to do something dynamic... e.g. "37 Options Found"
-     * @param parent
-     * @return
+     * @param parent Parent
+     * @return View to show in Spinner with Nothing Selected
      */
-    protected View getNothingSelectedView(ViewGroup parent) {
+    private View getNothingSelectedView(ViewGroup parent) {
         return layoutInflater.inflate(nothingSelectedLayout, parent, false);
     }
 
@@ -96,10 +95,10 @@ public class NothingSelectedSpinnerAdapter implements SpinnerAdapter, ListAdapte
     /**
      * Override this to do something dynamic... For example, "Pick your favorite
      * of these 37".
-     * @param parent
-     * @return
+     * @param parent Parent
+     * @return View to show in dropdown menu
      */
-    protected View getNothingSelectedDropdownView(ViewGroup parent) {
+    private View getNothingSelectedDropdownView(ViewGroup parent) {
         return layoutInflater.inflate(nothingSelectedDropdownLayout, parent, false);
     }
 

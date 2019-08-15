@@ -2,14 +2,10 @@ package com.example.packlest;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class ItemEditorActivity extends AbstractEditorActivity {
@@ -20,17 +16,10 @@ public class ItemEditorActivity extends AbstractEditorActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID itemUuid = (UUID) getIntent().getSerializableExtra("itemUuid");
-        createBaseItemOrPackingListEditor(PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForItemUuid(itemUuid));
-
-        Spinner spinner = findViewById(R.id.spinner_item_categories);
-        spinner.setVisibility(View.VISIBLE); // TODO need to do this at the layout level, not just for the spinner (e.g. border and title)
-        ArrayAdapter<ItemCategory> arrayAdapter = new ArrayAdapter<>(
-                this,
-                R.layout.support_simple_spinner_dropdown_item,
-                new ArrayList<>(PacklestApplication.getInstance().packlestData.itemCategories.values()));
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner.setAdapter(new NothingSelectedSpinnerAdapter(
-                arrayAdapter, R.layout.category_spinner_row_nothing_selected, this));
+        createBaseEditor();
+        addTripParameterSelector(
+                PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForItemUuid(itemUuid));
+        addItemCategorySelector();
 
         item = PacklestApplication.getInstance().packlestData.items.get(itemUuid);
         if (item != null) {

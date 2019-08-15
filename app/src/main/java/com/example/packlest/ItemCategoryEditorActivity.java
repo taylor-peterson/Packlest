@@ -15,7 +15,7 @@ public class ItemCategoryEditorActivity extends AbstractEditorActivity {
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             UUID itemCategoryUuid = (UUID) getIntent().getSerializableExtra("itemCategoryUuid");
-            createBaseItemCategoryOrTripParameterEditor();
+            createBaseEditor();
 
             itemCategory = PacklestApplication.getInstance().packlestData.itemCategories.get(itemCategoryUuid);
             if (itemCategory != null) {

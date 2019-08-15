@@ -14,7 +14,7 @@ public class TripParameterEditorActivity extends AbstractEditorActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createBaseItemCategoryOrTripParameterEditor();
+        createBaseEditor();
 
         UUID tripParameterUuid = (UUID) getIntent().getSerializableExtra("tripParameterUuid");
         tripParameter = PacklestApplication.getInstance().packlestData.tripParameters.get(tripParameterUuid);

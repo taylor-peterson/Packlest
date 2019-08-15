@@ -1,7 +1,7 @@
 package com.example.packlest;
 
 class Item extends AbstractBaseObject {
-    ItemCategory itemCategory;
+    private ItemCategory itemCategory;
 
     Item() {
         super();
@@ -9,6 +9,6 @@ class Item extends AbstractBaseObject {
 
     Item(Item item) {
         super(item);
-        itemCategory = item.itemCategory;
+        itemCategory = item.itemCategory; // TODO can abstract this into the relationship data object
     }
 }

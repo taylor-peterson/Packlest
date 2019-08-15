@@ -2,13 +2,19 @@ package com.example.packlest;
 
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
@@ -18,26 +24,36 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
     boolean editing = false;
     TripParameterRecyclerViewAdapter tripParameterRecyclerViewAdapter;
 
-    // TODO use visibility to get rid of the second layout
-    void createBaseItemCategoryOrTripParameterEditor() {
-        setContentView(R.layout.item_category_and_trip_parameter_editor);
+    void createBaseEditor() {
+        setContentView(R.layout.editor);
         setSupportActionBar(findViewById(R.id.toolbar));
         findViewById(R.id.button_save).setOnClickListener(e -> onClickButtonSave());
 
         editText = findViewById(R.id.edit_text_editee_name);
     }
 
-    void createBaseItemOrPackingListEditor(HashSet<UUID> tripParameterUuids) {
-        setContentView(R.layout.item_and_packing_list_editor);
-        setSupportActionBar(findViewById(R.id.toolbar));
-        findViewById(R.id.button_save).setOnClickListener(e -> onClickButtonSave());
-
-        editText = findViewById(R.id.edit_test_editee_name);
+    void addTripParameterSelector(HashSet<UUID> tripParameterUuids) {
+        LinearLayout linearLayout = findViewById(R.id.layout_trip_parameters);
+        linearLayout.setVisibility(View.VISIBLE);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view_packing_list_trip_parameters);
         recyclerView.setLayoutManager(new GridLayoutManager(this, PacklestApplication.TRIP_PARAMETER_COLUMN_COUNT));
         tripParameterRecyclerViewAdapter = new TripParameterRecyclerViewAdapter(this, tripParameterUuids);
         recyclerView.setAdapter(tripParameterRecyclerViewAdapter);
+    }
+
+    void addItemCategorySelector() {
+        RelativeLayout relativeLayout = findViewById(R.id.layout_spinner_item_categories);
+        relativeLayout.setVisibility(View.VISIBLE);
+
+        Spinner spinner = findViewById(R.id.spinner_item_categories);
+        ArrayAdapter<ItemCategory> arrayAdapter = new ArrayAdapter<>(
+                this,
+                R.layout.support_simple_spinner_dropdown_item,
+                new ArrayList<>(PacklestApplication.getInstance().packlestData.itemCategories.values()));
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(new NothingSelectedSpinnerAdapter(
+                arrayAdapter, R.layout.category_spinner_row_nothing_selected, this));
     }
 
     abstract void onClickButtonSave();
