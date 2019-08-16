@@ -158,6 +158,7 @@ class PacklestDataRelationships {
         if (itemUuidsToRemove != null) {
             for (UUID itemUuid : itemUuidsToRemove) {
                 itemUuidToItemCategoryUuidMap.remove(itemUuid);
+                relateItemToItemCategory(itemUuid, defaultItemCategoryUuid);
             }
         }
     }

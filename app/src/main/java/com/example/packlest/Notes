@@ -15,5 +15,4 @@ Design Thoughts:
 
 TODO:
 - Display items based on category
-- Need to add logic to prevent "uncategorized" from being deleted and to make sure all items have a category when others are deleted
 - Add item quantities/weights
