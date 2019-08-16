@@ -7,15 +7,15 @@ import java.util.UUID;
 
 // Derived from https://stackoverflow.com/questions/31498785/data-structure-to-represent-many-to-many-relationship
 class PacklestDataRelationships {
-    Map<UUID, HashSet<UUID>> itemUuidToTripParameterUuidsMap = new HashMap<>();
-    Map<UUID, HashSet<UUID>> itemUuidToPackingListUuidsMap = new HashMap<>();
-    Map<UUID, UUID> itemUuidToItemCategoryUuidMap = new HashMap<>();
-    Map<UUID, HashSet<UUID>> itemCategoryUuidToItemUuidsMap = new HashMap<>();
-    Map<UUID, HashSet<UUID>> tripParameterUuidToItemUuidsMap = new HashMap<>();
-    Map<UUID, HashSet<UUID>> tripParameterUuidToPackingListUuidsMap = new HashMap<>();
-    Map<UUID, HashSet<UUID>> packingListUuidToItemUuidsMap = new HashMap<>();
-    Map<UUID, HashSet<UUID>> packingListUuidToTripParameterUuidsMap = new HashMap<>();
-    UUID defaultItemCategoryUuid;
+    private final Map<UUID, HashSet<UUID>> itemUuidToTripParameterUuidsMap = new HashMap<>();
+    private final Map<UUID, HashSet<UUID>> itemUuidToPackingListUuidsMap = new HashMap<>();
+    private final Map<UUID, UUID> itemUuidToItemCategoryUuidMap = new HashMap<>();
+    private final Map<UUID, HashSet<UUID>> itemCategoryUuidToItemUuidsMap = new HashMap<>();
+    private final Map<UUID, HashSet<UUID>> tripParameterUuidToItemUuidsMap = new HashMap<>();
+    private final Map<UUID, HashSet<UUID>> tripParameterUuidToPackingListUuidsMap = new HashMap<>();
+    private final Map<UUID, HashSet<UUID>> packingListUuidToItemUuidsMap = new HashMap<>();
+    private final Map<UUID, HashSet<UUID>> packingListUuidToTripParameterUuidsMap = new HashMap<>();
+    private final UUID defaultItemCategoryUuid;
 
     PacklestDataRelationships(UUID itemCategoryUuid) {
         defaultItemCategoryUuid = itemCategoryUuid;
@@ -34,7 +34,7 @@ class PacklestDataRelationships {
     }
 
     // Returns the set of PackingLists associated with this TripParameter that need to contain this Item.
-    HashSet<UUID> relateItemToTripParameter(UUID itemUuid, UUID tripParameterUuid) {
+    private HashSet<UUID> relateItemToTripParameter(UUID itemUuid, UUID tripParameterUuid) {
         if (!itemUuidToTripParameterUuidsMap.containsKey(itemUuid)) {
             itemUuidToTripParameterUuidsMap.put(itemUuid, new HashSet<>());
         }
@@ -48,7 +48,7 @@ class PacklestDataRelationships {
         return getPackingListUuidsForTripParameterUuid(tripParameterUuid);
     }
 
-    void relateItemToItemCategory(UUID itemUuid, UUID itemCategoryUuid) {
+    private void relateItemToItemCategory(UUID itemUuid, UUID itemCategoryUuid) {
         itemUuidToItemCategoryUuidMap.put(itemUuid, itemCategoryUuid);
 
         if (!itemCategoryUuidToItemUuidsMap.containsKey(itemCategoryUuid)) {
@@ -78,7 +78,7 @@ class PacklestDataRelationships {
             relateItemToPackingList(itemUuid, packingListUuid);
         }
     }
-    void relatePackingListToTripParameter(UUID packingListUuid, UUID tripParameterUuid) {
+    private void relatePackingListToTripParameter(UUID packingListUuid, UUID tripParameterUuid) {
         if (!packingListUuidToTripParameterUuidsMap.containsKey(packingListUuid)) {
             packingListUuidToTripParameterUuidsMap.put(packingListUuid, new HashSet<>());
         }
@@ -114,7 +114,7 @@ class PacklestDataRelationships {
         return new HashSet<>();
     }
 
-    HashSet<UUID> getPackingListUuidsForTripParameterUuid(UUID tripParameterUuid) {
+    private HashSet<UUID> getPackingListUuidsForTripParameterUuid(UUID tripParameterUuid) {
         HashSet<UUID> packingListUuidsForTripParameterUuid = tripParameterUuidToPackingListUuidsMap.get(tripParameterUuid);
         if (packingListUuidsForTripParameterUuid != null) {
             return packingListUuidsForTripParameterUuid;
@@ -123,7 +123,7 @@ class PacklestDataRelationships {
     }
 
     UUID getItemCategoryUuidForItemUuid(UUID itemUuid) {
-        if (itemUuidToItemCategoryUuidMap != null || !itemUuidToItemCategoryUuidMap.containsKey(itemUuid)) {
+        if (itemUuidToItemCategoryUuidMap.containsKey(itemUuid)) {
             // We can query this when no item categories exist/before one has been assigned.
             return itemUuidToItemCategoryUuidMap.get(itemUuid);
         } else {
@@ -145,7 +145,7 @@ class PacklestDataRelationships {
         return packingListUuidsToCleanup;
     }
 
-    void removeItemToTripParameterAssociations(UUID itemUuid) {
+    private void removeItemToTripParameterAssociations(UUID itemUuid) {
         HashSet<UUID> tripParameterUuidsToCleanup = itemUuidToTripParameterUuidsMap.remove(itemUuid);
         if (tripParameterUuidsToCleanup != null) {
             for (UUID tripParameterUuid : tripParameterUuidsToCleanup) {
