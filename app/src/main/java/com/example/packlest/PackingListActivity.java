@@ -27,6 +27,7 @@ public class PackingListActivity extends AppCompatActivity {
         filteredPackingList = new PackingList(PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid));
         setTitle(filteredPackingList.name);
 
+        // TODO: Display items based on category
         listView = findViewById(R.id.list_view_items);
         dataAdapter = new ListViewItemCheckboxAdapter(this, filteredPackingList);
         listView.setAdapter(dataAdapter);

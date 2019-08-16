@@ -89,7 +89,7 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle("Error")
                     .setMessage("Unique name required.")
-                    .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
                     .setCancelable(false)
                     .create()
                     .show();

@@ -36,7 +36,7 @@ public class ItemCategoryEditorActivity extends AbstractEditorActivity {
                             .setTitle("Deletion Error")
                             .setIcon(android.R.drawable.ic_menu_info_details)
                             .setMessage("'Uncategorized' cannot be deleted.")
-                            .setPositiveButton("Ok", (dialog, which) -> dialog.dismiss())
+                            .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
                             .setCancelable(false)
                             .create()
                             .show();
