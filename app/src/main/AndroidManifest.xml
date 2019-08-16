@@ -14,6 +14,7 @@
         android:name=".PacklestApplication">
         <activity
             android:name=".ItemEditorActivity"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_create_item"
             android:parentActivityName=".PacklestActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -23,6 +24,7 @@
         </activity>
         <activity
             android:name=".ItemCategoryEditorActivity"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_create_item_category"
             android:parentActivityName=".PacklestActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -32,6 +34,7 @@
         </activity>
         <activity
             android:name=".TripParameterEditorActivity"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_create_trip_parameter"
             android:parentActivityName=".PacklestActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -45,6 +48,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PackingListEditorActivity"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_create_packing_list"
             android:parentActivityName=".PacklestActivity"
             android:theme="@style/AppTheme.NoActionBar">

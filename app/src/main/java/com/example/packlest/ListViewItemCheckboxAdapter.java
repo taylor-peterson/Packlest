@@ -78,7 +78,7 @@ class ListViewItemCheckboxAdapter extends BaseAdapter implements Filterable {
         if ((filter_state == FILTER_STATE.ADDED_ONLY && itemInstance.checkboxState == CHECKBOX_STATE.UNADDED)
                 || (filter_state == FILTER_STATE.UNCHECKED_ONLY && itemInstance.checkboxState == CHECKBOX_STATE.CHECKED)) {
             Snackbar snackbar = Snackbar
-                    .make(listView, "Filtered item no longer visible...", Snackbar.LENGTH_SHORT)
+                    .make(listView, "Filtered item no longer visible...", Snackbar.LENGTH_LONG)
                     .setAction("UNDO", nested_lambda_view -> {
                         // At this point, itemCheckbox will point to a different ItemInstance and filtering will take
                         // care of updating the views, so only correct the ItemInstance itself.

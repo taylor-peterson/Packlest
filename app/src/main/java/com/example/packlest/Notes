@@ -11,8 +11,7 @@ Design Thoughts:
 - Removing a trip parameter from an activity similarly does not remove items only associated with
   that trip parameter. Rather, it will only result in future items added to that trip parameter
   not being added to said trip.
-- Decided against drag & drop  and export/import for now until it proves needed.
+- Decided against drag & drop, weights/quantities, and export/import for now until it proves needed.
 
 TODO:
 - Display items based on category
-- Add item quantities/weights
