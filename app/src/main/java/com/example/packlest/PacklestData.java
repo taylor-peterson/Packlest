@@ -28,11 +28,12 @@ class PacklestData {
         items = new HashMap<>();
         itemCategories = new HashMap<>();
         tripParameters = new HashMap<>();
-        packlestDataRelationships = new PacklestDataRelationships();
 
         ItemCategory defaultItemCategory = new ItemCategory();
         defaultItemCategory.name = "Uncategorized";
         itemCategories.put(defaultItemCategory.uuid, defaultItemCategory);
+
+        packlestDataRelationships = new PacklestDataRelationships(defaultItemCategory.uuid);
     }
 
     void loadPacklestDataFromFile(File file) {
@@ -126,11 +127,21 @@ class PacklestData {
 
     void addOrUpdateItem(Item item, HashSet<UUID> tripParametersInUse, ItemCategory itemCategory) {
         items.put(item.uuid, item);
-        packlestDataRelationships.putItem(item.uuid, tripParametersInUse, itemCategory.uuid);
+        HashSet<UUID> packingListUuids = packlestDataRelationships.putItem(item.uuid, tripParametersInUse, itemCategory.uuid);
+
+        for (UUID packingListUuid : packingListUuids) {
+            addItemToPackingList(item.uuid, packingListUuid);
+        }
     }
     void deleteItem(UUID itemUuid) {
         items.remove(itemUuid);
-        packlestDataRelationships.removeItemUuid(itemUuid);
+
+        HashSet<UUID> packingListUuidsToCleanup = packlestDataRelationships.removeItemUuid(itemUuid);
+        if (packingListUuidsToCleanup != null) {
+            for (UUID packingListUuid : packingListUuidsToCleanup) {
+                removeItemFromPackingList(itemUuid, packingListUuid);
+            }
+        }
     }
 
     void addOrUpdateItemCategory(ItemCategory itemCategory) {
@@ -152,14 +163,14 @@ class PacklestData {
     void addOrUpdatePackingList(PackingList packingList, HashSet<UUID> tripParametersInUse) {
         packingLists.put(packingList.uuid, packingList);
 
-        HashSet<UUID> itemUuids = new HashSet<>();
+        HashSet<UUID> itemsFromTripParameters = new HashSet<>();
         for (UUID tripParameterUuid : tripParametersInUse) {
-            itemUuids.addAll(packlestDataRelationships.getItemUuidsForTripParameterUuid(tripParameterUuid));
+            itemsFromTripParameters.addAll(packlestDataRelationships.getItemUuidsForTripParameterUuid(tripParameterUuid));
         }
 
         // We use ArrayLists for the item instances to allow for ordering.
         // This means that we have to double check to make sure we don't introduce duplicates.
-        for (UUID itemUuid : itemUuids) {
+        for (UUID itemUuid : itemsFromTripParameters) {
             boolean alreadyPresentInPackingList = false;
             for (ItemInstance itemInstance : packingList.itemInstances) {
                 if (itemInstance.itemUuid.equals(itemUuid)) {
@@ -172,7 +183,7 @@ class PacklestData {
             }
         }
 
-        packlestDataRelationships.putPackingList(packingList.uuid, tripParametersInUse);
+        packlestDataRelationships.putPackingList(packingList.uuid, tripParametersInUse, itemsFromTripParameters);
     }
     void deletePackingList(UUID packingListUuid) {
         packingLists.remove(packingListUuid);
@@ -205,179 +216,6 @@ class PacklestData {
         for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {
             if (packingLists.get(packingListUuid).itemInstances.get(i).uuid.equals(modifiedItem.uuid)) {
                 packingLists.get(packingListUuid).itemInstances.set(i, modifiedItem);
-            }
-        }
-    }
-
-    // Derived from https://stackoverflow.com/questions/31498785/data-structure-to-represent-many-to-many-relationship
-    class PacklestDataRelationships {
-        Map<UUID, HashSet<UUID>> itemUuidToTripParameterUuidsMap = new HashMap<>();
-        Map<UUID, HashSet<UUID>> itemUuidToPackingListUuidsMap = new HashMap<>();
-        Map<UUID, UUID> itemUuidToItemCategoryUuidMap = new HashMap<>();
-        Map<UUID, HashSet<UUID>> itemCategoryUuidToItemUuidsMap = new HashMap<>();
-        Map<UUID, HashSet<UUID>> tripParameterUuidToItemUuidsMap = new HashMap<>();
-        Map<UUID, HashSet<UUID>> tripParameterUuidToPackingListUuidsMap = new HashMap<>();
-        Map<UUID, HashSet<UUID>> packingListUuidToItemUuidsMap = new HashMap<>();
-        Map<UUID, HashSet<UUID>> packingListUuidToTripParameterUuidsMap = new HashMap<>();
-
-        void putItem(UUID itemUuid, HashSet<UUID> tripParameterUuids, UUID itemCategoryUuid) {
-            removeItemUuid(itemUuid); // The old parameter set might differ from the new one.
-            for (UUID tripParameterUuid : tripParameterUuids) {
-                relateItemToTripParameter(itemUuid, tripParameterUuid);
-            }
-            relateItemToItemCategory(itemUuid, itemCategoryUuid);
-        }
-        void relateItemToTripParameter(UUID itemUuid, UUID tripParameterUuid) {
-            if (!itemUuidToTripParameterUuidsMap.containsKey(itemUuid)) {
-                itemUuidToTripParameterUuidsMap.put(itemUuid, new HashSet<>());
-            }
-            itemUuidToTripParameterUuidsMap.get(itemUuid).add(tripParameterUuid);
-
-            if (!tripParameterUuidToItemUuidsMap.containsKey(tripParameterUuid)) {
-                tripParameterUuidToItemUuidsMap.put(tripParameterUuid, new HashSet<>());
-            }
-            tripParameterUuidToItemUuidsMap.get(tripParameterUuid).add(itemUuid);
-
-
-            for (UUID packingListUuid : getPackingListUuidsForTripParameterUuid(tripParameterUuid)) {
-                addItemToPackingList(itemUuid, packingListUuid);
-            }
-        }
-
-        void relateItemToItemCategory(UUID itemUuid, UUID itemCategoryUuid) {
-            itemUuidToItemCategoryUuidMap.put(itemUuid, itemCategoryUuid);
-
-            if (!itemCategoryUuidToItemUuidsMap.containsKey(itemCategoryUuid)) {
-                itemCategoryUuidToItemUuidsMap.put(itemCategoryUuid, new HashSet<>());
-            }
-            itemCategoryUuidToItemUuidsMap.get(itemCategoryUuid).add(itemUuid);
-        }
-
-        void relateItemToPackingList(UUID itemUuid, UUID packingListUuid) {
-            if (!itemUuidToPackingListUuidsMap.containsKey(itemUuid)) {
-                itemUuidToPackingListUuidsMap.put(itemUuid, new HashSet<>());
-            }
-            itemUuidToPackingListUuidsMap.get(itemUuid).add(packingListUuid);
-
-            if (!packingListUuidToItemUuidsMap.containsKey(packingListUuid)) {
-                packingListUuidToItemUuidsMap.put(packingListUuid, new HashSet<>());
-            }
-            packingListUuidToItemUuidsMap.get(packingListUuid).add(itemUuid);
-        }
-
-        void putPackingList(UUID packingListUuid, HashSet<UUID> tripParameterUuids) {
-            removePackingListUuid(packingListUuid); // The old parameter set might differ from the new one.
-            for (UUID tripParameterUuid : tripParameterUuids) {
-                relatePackingListToTripParameter(packingListUuid, tripParameterUuid);
-            }
-        }
-        void relatePackingListToTripParameter(UUID packingListUuid, UUID tripParameterUuid) {
-            if (!packingListUuidToTripParameterUuidsMap.containsKey(packingListUuid)) {
-                packingListUuidToTripParameterUuidsMap.put(packingListUuid, new HashSet<>());
-            }
-            packingListUuidToTripParameterUuidsMap.get(packingListUuid).add(tripParameterUuid);
-
-            if (!tripParameterUuidToPackingListUuidsMap.containsKey(tripParameterUuid)) {
-                tripParameterUuidToPackingListUuidsMap.put(tripParameterUuid, new HashSet<>());
-            }
-            tripParameterUuidToPackingListUuidsMap.get(tripParameterUuid).add(packingListUuid);
-        }
-
-        HashSet<UUID> getTripParameterUuidsForItemUuid(UUID itemUuid) {
-            HashSet<UUID> tripParameterUuidsForItemUuid = itemUuidToTripParameterUuidsMap.get(itemUuid);
-            if (tripParameterUuidsForItemUuid != null) {
-                return tripParameterUuidsForItemUuid;
-            }
-            return new HashSet<>();
-        }
-
-        HashSet<UUID> getTripParameterUuidsForPackingListUuid(UUID packingListUuid) {
-            HashSet<UUID> tripParameterUuidsForPackingListUuid = packingListUuidToTripParameterUuidsMap.get(packingListUuid);
-            if (tripParameterUuidsForPackingListUuid != null) {
-                return tripParameterUuidsForPackingListUuid;
-            }
-            return new HashSet<>();
-        }
-
-        HashSet<UUID> getItemUuidsForTripParameterUuid(UUID tripParameterUuid) {
-            HashSet<UUID> itemUuidsForTripParameterUuid = tripParameterUuidToItemUuidsMap.get(tripParameterUuid);
-            if (itemUuidsForTripParameterUuid != null) {
-                return itemUuidsForTripParameterUuid;
-            }
-            return new HashSet<>();
-        }
-
-        HashSet<UUID> getPackingListUuidsForTripParameterUuid(UUID tripParameterUuid) {
-            HashSet<UUID> packingListUuidsForTripParameterUuid = tripParameterUuidToPackingListUuidsMap.get(tripParameterUuid);
-            if (packingListUuidsForTripParameterUuid != null) {
-                return packingListUuidsForTripParameterUuid;
-            }
-            return new HashSet<>();
-        }
-
-        UUID getItemCategoryUuidForItemUuid(UUID itemUuid) {
-            if (itemUuidToItemCategoryUuidMap != null) {
-                // We can query this when no item categories exist.
-                return itemUuidToItemCategoryUuidMap.get(itemUuid);
-            }
-            return null;
-        }
-
-        void removeItemUuid(UUID itemUuid) {
-            HashSet<UUID> tripParameterUuidsToCleanup = itemUuidToTripParameterUuidsMap.remove(itemUuid);
-            if (tripParameterUuidsToCleanup != null) {
-                for (UUID tripParameterUuid : tripParameterUuidsToCleanup) {
-                    tripParameterUuidToItemUuidsMap.get(tripParameterUuid).remove(itemUuid);
-                }
-            }
-
-            HashSet<UUID> packingListUuidsToCleanup = itemUuidToPackingListUuidsMap.remove(itemUuid);
-            if (packingListUuidsToCleanup != null) {
-                for (UUID packingListUuid : packingListUuidsToCleanup) {
-                    removeItemFromPackingList(itemUuid, packingListUuid);
-                    packingListUuidToItemUuidsMap.get(packingListUuid).remove(itemUuid);
-                }
-            }
-        }
-
-        void removeItemCategoryUuid(UUID itemCategoryUuid) {
-            HashSet<UUID> itemUuidsToRemove = itemCategoryUuidToItemUuidsMap.remove(itemCategoryUuid);
-            if (itemUuidsToRemove != null) {
-                for (UUID itemUuid : itemUuidsToRemove) {
-                    itemUuidToItemCategoryUuidMap.remove(itemUuid);
-                }
-            }
-        }
-
-        void removeTripParameterUuid(UUID tripParameterUuid) {
-            HashSet<UUID> itemUuidsToRemove = tripParameterUuidToItemUuidsMap.remove(tripParameterUuid);
-            if (itemUuidsToRemove != null) {
-                for (UUID itemUuid : itemUuidsToRemove) {
-                    itemUuidToTripParameterUuidsMap.get(itemUuid).remove(tripParameterUuid);
-                }
-            }
-
-            HashSet<UUID> packingListUuidsToCleanup = tripParameterUuidToPackingListUuidsMap.remove(tripParameterUuid);
-            if (packingListUuidsToCleanup != null) {
-                for (UUID packingListUuid : packingListUuidsToCleanup) {
-                    packingListUuidToTripParameterUuidsMap.get(packingListUuid).remove(tripParameterUuid);
-                }
-            }
-        }
-
-        void removePackingListUuid(UUID packingListUuid) {
-            HashSet<UUID> tripParameterUuidsToCleanup = packingListUuidToTripParameterUuidsMap.remove(packingListUuid);
-            if (tripParameterUuidsToCleanup != null) {
-                for (UUID tripParameterUuid : tripParameterUuidsToCleanup) {
-                    tripParameterUuidToPackingListUuidsMap.get(tripParameterUuid).remove(packingListUuid);
-                }
-            }
-
-            HashSet<UUID> itemUuidsToRemove = packingListUuidToItemUuidsMap.remove(packingListUuid);
-            if (itemUuidsToRemove != null) {
-                for (UUID itemUuid : itemUuidsToRemove) {
-                    itemUuidToPackingListUuidsMap.get(itemUuid).remove(packingListUuid);
-                }
             }
         }
     }
