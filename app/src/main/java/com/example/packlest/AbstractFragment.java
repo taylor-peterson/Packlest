@@ -13,14 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-abstract class AbstractFragment<I> extends Fragment {
+abstract class AbstractFragment extends Fragment {
     ListView listView;
-    ArrayAdapter<I> arrayAdapter;
-    private ArrayList<I> arrayListItems;
+    ArrayAdapter<AbstractBaseObject> arrayAdapter;
+    private ArrayList<AbstractBaseObject> arrayListItems;
 
     abstract void startCreateActivity();
-    abstract ArrayList<I> getArrayListItems();
+    abstract ArrayList<AbstractBaseObject> getArrayListItems();
     abstract void setListViewOnItemClickListener();
 
     @Override
@@ -62,6 +63,7 @@ abstract class AbstractFragment<I> extends Fragment {
     private void updateArrayListItems() {
         arrayListItems.clear();
         arrayListItems.addAll(getArrayListItems());
+        Collections.sort(arrayListItems);
         arrayAdapter.notifyDataSetChanged();
         PacklestApplication.getInstance().persistData();
     }

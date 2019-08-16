@@ -15,12 +15,9 @@ public class ItemEditorActivity extends AbstractEditorActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UUID itemUuid = (UUID) getIntent().getSerializableExtra("itemUuid");
         createBaseEditor();
-        addTripParameterSelector(
-                PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForItemUuid(itemUuid));
-        addItemCategorySelector(PacklestApplication.getInstance().packlestData.packlestDataRelationships.getItemCategoryUuidForItemUuid(itemUuid));
 
+        UUID itemUuid = (UUID) getIntent().getSerializableExtra("itemUuid");
         item = PacklestApplication.getInstance().packlestData.items.get(itemUuid);
         if (item != null) {
             setTitle("Edit Item");
@@ -30,6 +27,11 @@ public class ItemEditorActivity extends AbstractEditorActivity {
             item = new Item();
             setTitle("Create Item");
         }
+
+        // Do these after checking the item since item can be null otherwise.
+        addTripParameterSelector(
+                PacklestApplication.getInstance().packlestData.packlestDataRelationships.getTripParameterUuidsForItemUuid(item.uuid));
+        addItemCategorySelector(PacklestApplication.getInstance().packlestData.packlestDataRelationships.getItemCategoryUuidForItemUuid(item.uuid));
 
         packingListUuid = (UUID) getIntent().getSerializableExtra("packingListUuid");
     }

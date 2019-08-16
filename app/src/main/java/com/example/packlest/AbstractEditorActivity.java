@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -48,10 +49,12 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
         relativeLayout.setVisibility(View.VISIBLE);
 
         spinner = findViewById(R.id.spinner_item_categories);
+        ArrayList<ItemCategory> itemCategories = new ArrayList<>(PacklestApplication.getInstance().packlestData.itemCategories.values());
+        Collections.sort(itemCategories);
         ArrayAdapter<ItemCategory> arrayAdapter = new ArrayAdapter<>(
                 this,
                 R.layout.support_simple_spinner_dropdown_item,
-                new ArrayList<>(PacklestApplication.getInstance().packlestData.itemCategories.values()));
+                itemCategories);
         arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
 

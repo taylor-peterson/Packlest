@@ -5,9 +5,9 @@ import android.content.Intent;
 import java.util.ArrayList;
 import java.util.Objects;
 
-class TripParameterFragment extends AbstractFragment<TripParameter> {
+class TripParameterFragment extends AbstractFragment {
     @Override
-    ArrayList<TripParameter> getArrayListItems() {
+    ArrayList<AbstractBaseObject> getArrayListItems() {
         return new ArrayList<>(PacklestApplication.getInstance().packlestData.tripParameters.values());
     }
 
@@ -21,7 +21,7 @@ class TripParameterFragment extends AbstractFragment<TripParameter> {
     @Override
     void setListViewOnItemClickListener() {
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            TripParameter tripParameter = arrayAdapter.getItem(position);
+            TripParameter tripParameter = (TripParameter) arrayAdapter.getItem(position);
             Intent intent = new Intent(getActivity(), TripParameterEditorActivity.class);
             intent.putExtra("tripParameterUuid", Objects.requireNonNull(tripParameter).uuid);
             startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);

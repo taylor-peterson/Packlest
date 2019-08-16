@@ -5,9 +5,9 @@ import android.content.Intent;
 import java.util.ArrayList;
 import java.util.Objects;
 
-class ItemCategoryFragment extends AbstractFragment<ItemCategory> {
+class ItemCategoryFragment extends AbstractFragment {
     @Override
-    ArrayList<ItemCategory> getArrayListItems() {
+    ArrayList<AbstractBaseObject> getArrayListItems() {
         return new ArrayList<>(PacklestApplication.getInstance().packlestData.itemCategories.values());
     }
 
@@ -20,7 +20,7 @@ class ItemCategoryFragment extends AbstractFragment<ItemCategory> {
     @Override
     void setListViewOnItemClickListener() {
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            ItemCategory itemCategory = arrayAdapter.getItem(position);
+            ItemCategory itemCategory = (ItemCategory) arrayAdapter.getItem(position);
             Intent intent = new Intent(getActivity(), ItemCategoryEditorActivity.class);
             intent.putExtra("itemCategoryUuid", Objects.requireNonNull(itemCategory).uuid);
             startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);

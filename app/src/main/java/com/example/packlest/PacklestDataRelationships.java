@@ -124,7 +124,6 @@ class PacklestDataRelationships {
 
     UUID getItemCategoryUuidForItemUuid(UUID itemUuid) {
         if (itemUuidToItemCategoryUuidMap.containsKey(itemUuid)) {
-            // We can query this when no item categories exist/before one has been assigned.
             return itemUuidToItemCategoryUuidMap.get(itemUuid);
         } else {
             relateItemToItemCategory(itemUuid, defaultItemCategoryUuid);
