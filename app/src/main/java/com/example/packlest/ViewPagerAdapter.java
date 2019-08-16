@@ -38,9 +38,9 @@ class ViewPagerAdapter extends FragmentPagerAdapter {
         } else if (position == 1) {
             title = "Items";
         } else if (position == 2) {
-            title = "Types"; // TODO if stick with these names, persist them across the app.
+            title = "Item Categories";
         } else if (position == 3) {
-            title = "Tags";
+            title = "Trip Params";
         }
         return title;
     }
