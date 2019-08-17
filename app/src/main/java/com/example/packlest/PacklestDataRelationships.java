@@ -3,6 +3,7 @@ package com.example.packlest;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 // Derived from https://stackoverflow.com/questions/31498785/data-structure-to-represent-many-to-many-relationship
@@ -38,12 +39,12 @@ class PacklestDataRelationships {
         if (!itemUuidToTripParameterUuidsMap.containsKey(itemUuid)) {
             itemUuidToTripParameterUuidsMap.put(itemUuid, new HashSet<>());
         }
-        itemUuidToTripParameterUuidsMap.get(itemUuid).add(tripParameterUuid);
+        Objects.requireNonNull(itemUuidToTripParameterUuidsMap.get(itemUuid)).add(tripParameterUuid);
 
         if (!tripParameterUuidToItemUuidsMap.containsKey(tripParameterUuid)) {
             tripParameterUuidToItemUuidsMap.put(tripParameterUuid, new HashSet<>());
         }
-        tripParameterUuidToItemUuidsMap.get(tripParameterUuid).add(itemUuid);
+        Objects.requireNonNull(tripParameterUuidToItemUuidsMap.get(tripParameterUuid)).add(itemUuid);
 
         return getPackingListUuidsForTripParameterUuid(tripParameterUuid);
     }
@@ -54,19 +55,19 @@ class PacklestDataRelationships {
         if (!itemCategoryUuidToItemUuidsMap.containsKey(itemCategoryUuid)) {
             itemCategoryUuidToItemUuidsMap.put(itemCategoryUuid, new HashSet<>());
         }
-        itemCategoryUuidToItemUuidsMap.get(itemCategoryUuid).add(itemUuid);
+        Objects.requireNonNull(itemCategoryUuidToItemUuidsMap.get(itemCategoryUuid)).add(itemUuid);
     }
 
     void relateItemToPackingList(UUID itemUuid, UUID packingListUuid) {
         if (!itemUuidToPackingListUuidsMap.containsKey(itemUuid)) {
             itemUuidToPackingListUuidsMap.put(itemUuid, new HashSet<>());
         }
-        itemUuidToPackingListUuidsMap.get(itemUuid).add(packingListUuid);
+        Objects.requireNonNull(itemUuidToPackingListUuidsMap.get(itemUuid)).add(packingListUuid);
 
         if (!packingListUuidToItemUuidsMap.containsKey(packingListUuid)) {
             packingListUuidToItemUuidsMap.put(packingListUuid, new HashSet<>());
         }
-        packingListUuidToItemUuidsMap.get(packingListUuid).add(itemUuid);
+        Objects.requireNonNull(packingListUuidToItemUuidsMap.get(packingListUuid)).add(itemUuid);
     }
 
     void putPackingList(UUID packingListUuid, HashSet<UUID> tripParameterUuids, HashSet<UUID> itemUuidsFromTripParameters) {
@@ -82,12 +83,12 @@ class PacklestDataRelationships {
         if (!packingListUuidToTripParameterUuidsMap.containsKey(packingListUuid)) {
             packingListUuidToTripParameterUuidsMap.put(packingListUuid, new HashSet<>());
         }
-        packingListUuidToTripParameterUuidsMap.get(packingListUuid).add(tripParameterUuid);
+        Objects.requireNonNull(packingListUuidToTripParameterUuidsMap.get(packingListUuid)).add(tripParameterUuid);
 
         if (!tripParameterUuidToPackingListUuidsMap.containsKey(tripParameterUuid)) {
             tripParameterUuidToPackingListUuidsMap.put(tripParameterUuid, new HashSet<>());
         }
-        tripParameterUuidToPackingListUuidsMap.get(tripParameterUuid).add(packingListUuid);
+        Objects.requireNonNull(tripParameterUuidToPackingListUuidsMap.get(tripParameterUuid)).add(packingListUuid);
     }
 
     HashSet<UUID> getTripParameterUuidsForItemUuid(UUID itemUuid) {
@@ -138,7 +139,7 @@ class PacklestDataRelationships {
         HashSet<UUID> packingListUuidsToCleanup = itemUuidToPackingListUuidsMap.remove(itemUuid);
         if (packingListUuidsToCleanup != null) {
             for (UUID packingListUuid : packingListUuidsToCleanup) {
-                packingListUuidToItemUuidsMap.get(packingListUuid).remove(itemUuid);
+                Objects.requireNonNull(packingListUuidToItemUuidsMap.get(packingListUuid)).remove(itemUuid);
             }
         }
         return packingListUuidsToCleanup;
@@ -148,7 +149,7 @@ class PacklestDataRelationships {
         HashSet<UUID> tripParameterUuidsToCleanup = itemUuidToTripParameterUuidsMap.remove(itemUuid);
         if (tripParameterUuidsToCleanup != null) {
             for (UUID tripParameterUuid : tripParameterUuidsToCleanup) {
-                tripParameterUuidToItemUuidsMap.get(tripParameterUuid).remove(itemUuid);
+                Objects.requireNonNull(tripParameterUuidToItemUuidsMap.get(tripParameterUuid)).remove(itemUuid);
             }
         }
     }
@@ -167,14 +168,14 @@ class PacklestDataRelationships {
         HashSet<UUID> itemUuidsToRemove = tripParameterUuidToItemUuidsMap.remove(tripParameterUuid);
         if (itemUuidsToRemove != null) {
             for (UUID itemUuid : itemUuidsToRemove) {
-                itemUuidToTripParameterUuidsMap.get(itemUuid).remove(tripParameterUuid);
+                Objects.requireNonNull(itemUuidToTripParameterUuidsMap.get(itemUuid)).remove(tripParameterUuid);
             }
         }
 
         HashSet<UUID> packingListUuidsToCleanup = tripParameterUuidToPackingListUuidsMap.remove(tripParameterUuid);
         if (packingListUuidsToCleanup != null) {
             for (UUID packingListUuid : packingListUuidsToCleanup) {
-                packingListUuidToTripParameterUuidsMap.get(packingListUuid).remove(tripParameterUuid);
+                Objects.requireNonNull(packingListUuidToTripParameterUuidsMap.get(packingListUuid)).remove(tripParameterUuid);
             }
         }
     }
@@ -183,14 +184,14 @@ class PacklestDataRelationships {
         HashSet<UUID> tripParameterUuidsToCleanup = packingListUuidToTripParameterUuidsMap.remove(packingListUuid);
         if (tripParameterUuidsToCleanup != null) {
             for (UUID tripParameterUuid : tripParameterUuidsToCleanup) {
-                tripParameterUuidToPackingListUuidsMap.get(tripParameterUuid).remove(packingListUuid);
+                Objects.requireNonNull(tripParameterUuidToPackingListUuidsMap.get(tripParameterUuid)).remove(packingListUuid);
             }
         }
 
         HashSet<UUID> itemUuidsToRemove = packingListUuidToItemUuidsMap.remove(packingListUuid);
         if (itemUuidsToRemove != null) {
             for (UUID itemUuid : itemUuidsToRemove) {
-                itemUuidToPackingListUuidsMap.get(itemUuid).remove(packingListUuid);
+                Objects.requireNonNull(itemUuidToPackingListUuidsMap.get(itemUuid)).remove(packingListUuid);
             }
         }
     }

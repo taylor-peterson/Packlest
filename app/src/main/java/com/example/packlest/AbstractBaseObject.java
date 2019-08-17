@@ -18,6 +18,7 @@ abstract class AbstractBaseObject implements Comparable<AbstractBaseObject> {
         name = abstractBaseObject.name;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return this.name;

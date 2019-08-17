@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class PackingListActivity extends AppCompatActivity {
@@ -104,7 +105,7 @@ public class PackingListActivity extends AppCompatActivity {
             Item item = PacklestApplication.getInstance().packlestData.items.get(itemInstance.itemUuid);
 
             Intent intent = new Intent(this, ItemEditorActivity.class);
-            intent.putExtra("itemUuid", item.uuid);
+            intent.putExtra("itemUuid", Objects.requireNonNull(item).uuid);
             intent.putExtra("packingListUuid", filteredPackingList.uuid);
             startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
         });
@@ -118,7 +119,7 @@ public class PackingListActivity extends AppCompatActivity {
 
     private void syncFilteredPackingList() {
         PackingList fullPackingList = PacklestApplication.getInstance().packlestData.packingLists.get(filteredPackingList.uuid);
-        filteredPackingList.name = fullPackingList.name;
+        filteredPackingList.name = Objects.requireNonNull(fullPackingList).name;
         filteredPackingList.itemInstances.clear();
         filteredPackingList.itemInstances.addAll(fullPackingList.itemInstances);
         setTitle(filteredPackingList.name);

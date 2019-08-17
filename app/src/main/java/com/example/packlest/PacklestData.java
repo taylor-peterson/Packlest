@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 class PacklestData {
@@ -112,13 +113,13 @@ class PacklestData {
     }
 
     void unaddAllItemsInPackingList(UUID packingListUuid) {
-        for (ItemInstance itemInstance : packingLists.get(packingListUuid).itemInstances) {
+        for (ItemInstance itemInstance : Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances) {
             itemInstance.checkboxState = CHECKBOX_STATE.UNADDED;
         }
     }
 
     void uncheckAllCheckedItemsInPackingList(UUID packingListUuid) {
-        for (ItemInstance itemInstance : packingLists.get(packingListUuid).itemInstances) {
+        for (ItemInstance itemInstance : Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances) {
             if (itemInstance.checkboxState == CHECKBOX_STATE.CHECKED) {
                 itemInstance.checkboxState = CHECKBOX_STATE.UNCHECKED;
             }
@@ -192,30 +193,30 @@ class PacklestData {
     void addItemToPackingList(UUID itemUuid, UUID packingListUuid) {
         // Create and add a new ItemInstance if one does not already exist.
         boolean newItem = true;
-        for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {
-            if (packingLists.get(packingListUuid).itemInstances.get(i).itemUuid.equals(itemUuid)) {
+        for (int i = 0; i < Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.size(); i++) {
+            if (Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.get(i).itemUuid.equals(itemUuid)) {
                 newItem = false;
             }
         }
         if (newItem) {
-            packingLists.get(packingListUuid).itemInstances.add(new ItemInstance(itemUuid));
+            Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.add(new ItemInstance(itemUuid));
         }
 
         packlestDataRelationships.relateItemToPackingList(itemUuid, packingListUuid);
     }
     private void removeItemFromPackingList(UUID itemUuid, UUID packingListUuid) {
-        for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {
-            if (packingLists.get(packingListUuid).itemInstances.get(i).itemUuid.equals(itemUuid)) {
+        for (int i = 0; i < Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.size(); i++) {
+            if (Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.get(i).itemUuid.equals(itemUuid)) {
                 //noinspection SuspiciousListRemoveInLoop
-                packingLists.get(packingListUuid).itemInstances.remove(i);
+                Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.remove(i);
             }
         }
     }
     void updateItemInPackingList(UUID packingListUuid, ItemInstance modifiedItem) {
         // This is used to update the checkbox state of an existing item.
-        for (int i = 0; i < packingLists.get(packingListUuid).itemInstances.size(); i++) {
-            if (packingLists.get(packingListUuid).itemInstances.get(i).uuid.equals(modifiedItem.uuid)) {
-                packingLists.get(packingListUuid).itemInstances.set(i, modifiedItem);
+        for (int i = 0; i < Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.size(); i++) {
+            if (Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.get(i).uuid.equals(modifiedItem.uuid)) {
+                Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.set(i, modifiedItem);
             }
         }
     }

@@ -1,5 +1,8 @@
 package com.example.packlest;
 
+import androidx.annotation.NonNull;
+
+import java.util.Objects;
 import java.util.UUID;
 
 // Items may be used in multiple packing lists.
@@ -16,12 +19,13 @@ class ItemInstance {
         checkboxState = CHECKBOX_STATE.UNADDED;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return getName();
     }
 
     String getName() {
-        return PacklestApplication.getInstance().packlestData.items.get(itemUuid).name;
+        return Objects.requireNonNull(PacklestApplication.getInstance().packlestData.items.get(itemUuid)).name;
     }
 }
