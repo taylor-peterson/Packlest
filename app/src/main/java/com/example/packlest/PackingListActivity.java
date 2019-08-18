@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -14,9 +15,10 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class PackingListActivity extends AppCompatActivity {
-    private ListView listView;
-    private ListViewItemCheckboxAdapter dataAdapter;
-    private PackingList filteredPackingList;
+    private ExpandableListView expandableListView;
+    private PackingListAdapter dataAdapter;
+    private String packingListName;
+    private UUID packingListUuid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +26,18 @@ public class PackingListActivity extends AppCompatActivity {
         setContentView(R.layout.packing_list);
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        UUID packingListUuid = (UUID) getIntent().getSerializableExtra("packingListUuid");
-        filteredPackingList = new PackingList(PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid));
-        setTitle(filteredPackingList.name);
+        packingListUuid = (UUID) getIntent().getSerializableExtra("packingListUuid");
+        PackingList packingList = new PackingList(PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid));
+        packingListName = packingList.name;
+        setTitle(packingListName);
 
-        // TODO: Display items based on category
-        listView = findViewById(R.id.list_view_items);
-        dataAdapter = new ListViewItemCheckboxAdapter(this, filteredPackingList);
-        listView.setAdapter(dataAdapter);
+        expandableListView = findViewById(R.id.list_view_items);
+        dataAdapter = new PackingListAdapter(this, packingList);
+        expandableListView.setAdapter(dataAdapter);
+
+        for (int i = 0; i < dataAdapter.getGroupCount(); i++) {
+            expandableListView.expandGroup(i);
+        }
 
         setListViewOnItemClickListener();
     }
@@ -47,7 +53,7 @@ public class PackingListActivity extends AppCompatActivity {
         switch (menuItem.getItemId()) {
             case R.id.create_item_button:
                 Intent intent = new Intent(this, ItemEditorActivity.class);
-                intent.putExtra("packingListUuid", filteredPackingList.uuid);
+                intent.putExtra("packingListUuid", packingListUuid);
                 startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
                 break;
             case R.id.filter_items_button:
@@ -62,31 +68,30 @@ public class PackingListActivity extends AppCompatActivity {
                     menuItem.setIcon(R.drawable.ic_filter_outline);
                 }
                 dataAdapter.getFilter().filter(dataAdapter.filter_state.name());
-                dataAdapter.notifyDataSetChanged();
                 break;
             case R.id.edit_packing_list:
                 intent = new Intent(this, PackingListEditorActivity.class);
-                intent.putExtra("packingListUuid", filteredPackingList.uuid);
+                intent.putExtra("packingListUuid", packingListUuid);
                 startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
                 break;
             case R.id.delete_packing_list:
                 new AlertDialog.Builder(this)
                         .setTitle("Confirm Deletion")
-                        .setMessage("Do you really want to delete: " + filteredPackingList.name + "?")
+                        .setMessage("Do you really want to delete: " + packingListName + "?")
                         .setIcon(android.R.drawable.ic_menu_delete)
                         .setPositiveButton(android.R.string.yes, (dialog, button) -> {
-                            PacklestApplication.getInstance().packlestData.deletePackingList(filteredPackingList.uuid);
+                            PacklestApplication.getInstance().packlestData.deletePackingList(packingListUuid);
                             finish();
                         })
                         .setNegativeButton(android.R.string.cancel, null).show();
                 break;
             case R.id.un_add_all_items:
-                PacklestApplication.getInstance().packlestData.unaddAllItemsInPackingList(filteredPackingList.uuid);
-                syncFilteredPackingList();
+                PacklestApplication.getInstance().packlestData.unaddAllItemsInPackingList(packingListUuid);
+                syncPackingList();
                 break;
             case R.id.uncheck_all_items:
-                PacklestApplication.getInstance().packlestData.uncheckAllCheckedItemsInPackingList(filteredPackingList.uuid);
-                syncFilteredPackingList();
+                PacklestApplication.getInstance().packlestData.uncheckAllCheckedItemsInPackingList(packingListUuid);
+                syncPackingList();
                 break;
         }
 
@@ -96,18 +101,20 @@ public class PackingListActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        syncFilteredPackingList();
+        syncPackingList();
     }
 
     private void setListViewOnItemClickListener() {
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            ItemInstance itemInstance = dataAdapter.getItem(position);
-            Item item = PacklestApplication.getInstance().packlestData.items.get(itemInstance.itemUuid);
+        expandableListView.setOnChildClickListener((parent, view, groupPosition, childPosition, id) -> {
+            UUID itemInstanceUuid = (UUID) dataAdapter.getChild(groupPosition, childPosition);
+            Item item = PacklestApplication.getInstance().packlestData.items.get(itemInstanceUuid);
 
             Intent intent = new Intent(this, ItemEditorActivity.class);
             intent.putExtra("itemUuid", Objects.requireNonNull(item).uuid);
-            intent.putExtra("packingListUuid", filteredPackingList.uuid);
+            intent.putExtra("packingListUuid", packingListUuid);
             startActivityForResult(intent, PacklestApplication.IGNORED_REQUEST_CODE);
+
+            return false;
         });
     }
 
@@ -117,13 +124,10 @@ public class PackingListActivity extends AppCompatActivity {
         PacklestApplication.getInstance().persistData();
     }
 
-    private void syncFilteredPackingList() {
-        PackingList fullPackingList = PacklestApplication.getInstance().packlestData.packingLists.get(filteredPackingList.uuid);
-        filteredPackingList.name = Objects.requireNonNull(fullPackingList).name;
-        filteredPackingList.itemInstances.clear();
-        filteredPackingList.itemInstances.addAll(fullPackingList.itemInstances);
-        setTitle(filteredPackingList.name);
-        dataAdapter.notifyDataSetChanged();
+    private void syncPackingList() {
+        packingListName = PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid).name;
+        setTitle(packingListName);
+        dataAdapter.getFilter().filter(dataAdapter.filter_state.name());
         PacklestApplication.getInstance().persistData();
     }
 

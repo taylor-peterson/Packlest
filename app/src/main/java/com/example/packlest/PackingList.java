@@ -1,18 +1,20 @@
 package com.example.packlest;
 
-import java.util.ArrayList;
+
+import java.util.HashMap;
+import java.util.UUID;
 
 class PackingList extends AbstractBaseObject {
     @SuppressWarnings("CanBeFinal")
-    ArrayList<ItemInstance> itemInstances;
+    HashMap<UUID, ItemInstance> itemInstances;
 
     PackingList() {
         super();
-        itemInstances = new ArrayList<>();
+        itemInstances = new HashMap<>();
     }
 
     PackingList(PackingList packingList) {
         super(packingList);
-        itemInstances = new ArrayList<>(packingList.itemInstances);
+        itemInstances = new HashMap<>(packingList.itemInstances);
     }
 }

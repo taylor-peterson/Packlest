@@ -3,13 +3,14 @@ package com.example.packlest;
 import android.widget.Filter;
 
 import java.util.Objects;
+import java.util.UUID;
 
 class ItemFilter extends Filter {
-    private final PackingList filterlist;
-    private final ListViewItemCheckboxAdapter adapter;
+    private final UUID packingListUuid;
+    private final PackingListAdapter adapter;
 
-    ItemFilter(PackingList filterList, ListViewItemCheckboxAdapter adapter) {
-        this.filterlist = filterList;
+    ItemFilter(UUID packingListUuid, PackingListAdapter adapter) {
+        this.packingListUuid = packingListUuid;
         this.adapter = adapter;
     }
 
@@ -22,15 +23,14 @@ class ItemFilter extends Filter {
 
             PackingList filteredPackingList = new PackingList();
 
-            filteredPackingList.uuid = filterlist.uuid;
-            filteredPackingList.name = filterlist.name;
-            for (ItemInstance itemInstance: Objects.requireNonNull(PacklestApplication.getInstance().packlestData.packingLists.get(filteredPackingList.uuid)).itemInstances) {
+            filteredPackingList.uuid = packingListUuid;
+            for (ItemInstance itemInstance: Objects.requireNonNull(PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid)).itemInstances.values()) {
                 if (constraint == FILTER_STATE.ADDED_ONLY.name() && itemInstance.checkboxState != CHECKBOX_STATE.UNADDED) {
-                    filteredPackingList.itemInstances.add(itemInstance);
+                    filteredPackingList.itemInstances.put(itemInstance.itemUuid, itemInstance);
                 } else if (constraint == FILTER_STATE.UNCHECKED_ONLY.name() && itemInstance.checkboxState == CHECKBOX_STATE.UNCHECKED) {
-                    filteredPackingList.itemInstances.add(itemInstance);
+                    filteredPackingList.itemInstances.put(itemInstance.itemUuid, itemInstance);
                 } else if (constraint == FILTER_STATE.NONE.name()) {
-                    filteredPackingList.itemInstances.add(itemInstance);
+                    filteredPackingList.itemInstances.put(itemInstance.itemUuid, itemInstance);
                 }
             }
 
@@ -38,7 +38,7 @@ class ItemFilter extends Filter {
             results.values=filteredPackingList;
         } else {
             results.count=1;
-            results.values=filterlist;
+            results.values= packingListUuid;
         }
 
         return results;
@@ -47,8 +47,8 @@ class ItemFilter extends Filter {
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
         PackingList filteredPackingList = (PackingList) results.values;
-        adapter.packingList.itemInstances.clear();
-        adapter.packingList.itemInstances.addAll(filteredPackingList.itemInstances);
+        adapter.listData.clear();
+        adapter.convertPackingListToListData(filteredPackingList);
         adapter.notifyDataSetChanged();
     }
 }

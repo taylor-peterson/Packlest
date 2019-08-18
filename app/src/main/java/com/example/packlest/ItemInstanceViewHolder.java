@@ -5,11 +5,11 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-class ListViewItemViewHolder extends RecyclerView.ViewHolder {
+class ItemInstanceViewHolder extends RecyclerView.ViewHolder {
     private CheckBoxTriState itemCheckbox;
     private TextView itemTextView;
 
-    ListViewItemViewHolder(View itemView) {
+    ItemInstanceViewHolder(View itemView) {
         super(itemView);
     }
 
