@@ -191,16 +191,16 @@ class PacklestData {
         packlestDataRelationships.removePackingListUuid(packingListUuid);
     }
     void addItemToPackingList(UUID itemUuid, UUID packingListUuid) {
-        if (!packingLists.get(packingListUuid).itemInstances.containsKey(itemUuid)) {
-            packingLists.get(packingListUuid).itemInstances.put(itemUuid, new ItemInstance(itemUuid));
+        if (!Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.containsKey(itemUuid)) {
+            Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.put(itemUuid, new ItemInstance(itemUuid));
         }
 
         packlestDataRelationships.relateItemToPackingList(itemUuid, packingListUuid);
     }
     private void removeItemFromPackingList(UUID itemUuid, UUID packingListUuid) {
-        packingLists.get(packingListUuid).itemInstances.remove(itemUuid);
+        Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.remove(itemUuid);
     }
     void updateItemInPackingList(UUID packingListUuid, ItemInstance modifiedItem) {
-        packingLists.get(packingListUuid).itemInstances.put(modifiedItem.itemUuid, modifiedItem);
+        Objects.requireNonNull(packingLists.get(packingListUuid)).itemInstances.put(modifiedItem.itemUuid, modifiedItem);
     }
 }

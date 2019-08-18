@@ -64,6 +64,8 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
 
     abstract void onClickButtonSave();
 
+    // TODO save and another
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

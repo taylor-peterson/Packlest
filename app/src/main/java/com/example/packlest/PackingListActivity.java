@@ -128,7 +128,7 @@ public class PackingListActivity extends AppCompatActivity {
     }
 
     private void syncPackingList() {
-        packingListName = PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid).name;
+        packingListName = Objects.requireNonNull(PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid)).name;
         setTitle(packingListName);
         dataAdapter.getFilter().filter(dataAdapter.filter_state.name());
         PacklestApplication.getInstance().persistData();

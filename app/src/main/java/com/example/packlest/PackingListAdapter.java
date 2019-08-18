@@ -11,17 +11,20 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 
+@SuppressWarnings("SuspiciousMethodCalls")
 class PackingListAdapter extends BaseExpandableListAdapter implements Filterable {
     private final Context context;
     private ItemFilter filter;
     FILTER_STATE filter_state = FILTER_STATE.NONE;
-    SortedMap<UUID, SortedSet<UUID>> listData;
+    final SortedMap<UUID, SortedSet<UUID>> listData;
+    @SuppressWarnings("CanBeFinal")
     private UUID packingListUuid;
 
     // TODO persist group fold state
@@ -38,7 +41,7 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
             if (!listData.containsKey(itemCategoryUUID)) {
                 listData.put(itemCategoryUUID, new TreeSet<>());
             }
-            listData.get(itemCategoryUUID).add(itemInstance.itemUuid);
+            Objects.requireNonNull(listData.get(itemCategoryUUID)).add(itemInstance.itemUuid);
         }
     }
 
@@ -49,7 +52,7 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
 
     @Override
     public Object getGroup(int groupPosition) {
-        return listData.keySet().toArray()[groupPosition];
+        return Objects.requireNonNull(listData.keySet().toArray())[groupPosition];
     }
 
     @Override
@@ -69,14 +72,15 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
         }
 
         TextView textView = view.findViewById(R.id.list_view_category_name);
-        textView.setText(PacklestApplication.getInstance().packlestData.itemCategories.get(getGroup(groupPosition)).name);
+        //noinspection SuspiciousMethodCalls
+        textView.setText(Objects.requireNonNull(PacklestApplication.getInstance().packlestData.itemCategories.get(getGroup(groupPosition))).name);
 
         return view;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return listData.get(getGroup(groupPosition)).toArray()[childPosition];
+        return Objects.requireNonNull(Objects.requireNonNull(listData.get(getGroup(groupPosition))).toArray())[childPosition];
     }
 
     @Override
@@ -105,8 +109,8 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
 
         UUID itemUuid = (UUID) getChild(groupPosition, childPosition);
         PackingList packingList = PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid);
-        ItemInstance itemInstance = packingList.itemInstances.get(itemUuid);
-        viewHolder.getItemTextView().setText(itemInstance.getName());
+        ItemInstance itemInstance = Objects.requireNonNull(packingList).itemInstances.get(itemUuid);
+        viewHolder.getItemTextView().setText(Objects.requireNonNull(itemInstance).getName());
         viewHolder.getItemCheckbox().setState(itemInstance.checkboxState);
 
         return view;
@@ -114,7 +118,7 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return listData.get(getGroup(groupPosition)).size();
+        return Objects.requireNonNull(listData.get(getGroup(groupPosition))).size();
     }
 
     @Override
@@ -127,9 +131,9 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
         ExpandableListView expandableListView = (ExpandableListView) parentRow.getParent();
         final int position = expandableListView.getPositionForView(parentRow);
 
-        ItemInstance itemInstance = PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid).itemInstances.get(expandableListView.getItemAtPosition(position));
+        ItemInstance itemInstance = Objects.requireNonNull(PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid)).itemInstances.get(expandableListView.getItemAtPosition(position));
         CheckBoxTriState itemCheckbox = view.findViewById(R.id.list_view_item_checkbox);
-        itemInstance.checkboxState = itemCheckbox.getState();
+        Objects.requireNonNull(itemInstance).checkboxState = itemCheckbox.getState();
         PacklestApplication.getInstance().packlestData.updateItemInPackingList(packingListUuid, itemInstance);
 
         getFilter().filter(filter_state.name());

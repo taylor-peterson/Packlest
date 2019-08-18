@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class ItemEditorActivity extends AbstractEditorActivity {
@@ -69,7 +70,7 @@ public class ItemEditorActivity extends AbstractEditorActivity {
             // This item may not be associated with any Trip Parameters and should be added to
             // that packing list directly.
             PacklestApplication.getInstance().packlestData.addItemToPackingList(item.uuid, packingListUuid);
-            PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid).itemInstances.get(item.uuid).checkboxState = CHECKBOX_STATE.UNCHECKED;
+            Objects.requireNonNull(Objects.requireNonNull(PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid)).itemInstances.get(item.uuid)).checkboxState = CHECKBOX_STATE.UNCHECKED;
         }
         finish();
     }
