@@ -69,6 +69,7 @@ public class ItemEditorActivity extends AbstractEditorActivity {
             // This item may not be associated with any Trip Parameters and should be added to
             // that packing list directly.
             PacklestApplication.getInstance().packlestData.addItemToPackingList(item.uuid, packingListUuid);
+            PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid).itemInstances.get(item.uuid).checkboxState = CHECKBOX_STATE.UNCHECKED;
         }
         finish();
     }
