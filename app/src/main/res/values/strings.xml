@@ -18,4 +18,5 @@
     <string name="trip_parameters">Trip Parameters:</string>
     <string name="item_category">Item Category:</string>
     <string name="name">Name:</string>
+    <string name="save_and_create_another">Save and Create Another</string>
 </resources>

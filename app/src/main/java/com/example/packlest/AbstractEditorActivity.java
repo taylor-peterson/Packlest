@@ -30,6 +30,7 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
         setContentView(R.layout.editor);
         setSupportActionBar(findViewById(R.id.toolbar));
         findViewById(R.id.button_save).setOnClickListener(e -> onClickButtonSave());
+        findViewById(R.id.button_save_and_create_another).setOnClickListener(e -> onClickButtonSaveAndCreateAnother());
 
         editText = findViewById(R.id.edit_text_editee_name);
     }
@@ -64,7 +65,10 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
 
     abstract void onClickButtonSave();
 
-    // TODO save and another
+    private void onClickButtonSaveAndCreateAnother() {
+        onClickButtonSave();
+        startActivity(getIntent());
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

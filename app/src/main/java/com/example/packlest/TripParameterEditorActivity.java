@@ -2,6 +2,7 @@ package com.example.packlest;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -25,6 +26,7 @@ public class TripParameterEditorActivity extends AbstractEditorActivity {
         } else {
             tripParameter = new TripParameter();
             setTitle("Create Trip Parameter");
+            findViewById(R.id.button_save_and_create_another).setVisibility(View.VISIBLE);
         }
     }
 

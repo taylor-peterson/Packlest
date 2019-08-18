@@ -2,6 +2,7 @@ package com.example.packlest;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -27,6 +28,7 @@ public class PackingListEditorActivity extends AbstractEditorActivity {
         } else {
             packingList = new PackingList();
             setTitle("Create Packing List");
+            findViewById(R.id.button_save_and_create_another).setVisibility(View.VISIBLE);
         }
     }
 

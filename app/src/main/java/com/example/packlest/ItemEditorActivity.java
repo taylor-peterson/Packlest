@@ -2,6 +2,7 @@ package com.example.packlest;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -27,6 +28,7 @@ public class ItemEditorActivity extends AbstractEditorActivity {
         } else {
             item = new Item();
             setTitle("Create Item");
+            findViewById(R.id.button_save_and_create_another).setVisibility(View.VISIBLE);
         }
 
         // Do these after checking the item since item can be null otherwise.
