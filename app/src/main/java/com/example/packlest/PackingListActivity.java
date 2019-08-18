@@ -60,12 +60,15 @@ public class PackingListActivity extends AppCompatActivity {
                 if (dataAdapter.filter_state == FILTER_STATE.NONE) {
                     menuItem.setIcon(R.drawable.ic_filter);
                     dataAdapter.filter_state = FILTER_STATE.ADDED_ONLY;
+                    Toast.makeText(this, "Filtering out un-added items.", Toast.LENGTH_SHORT).show();
                 } else if (dataAdapter.filter_state == FILTER_STATE.ADDED_ONLY) {
                     dataAdapter.filter_state = FILTER_STATE.UNCHECKED_ONLY;
                     menuItem.setIcon(R.drawable.ic_filter_remove);
+                    Toast.makeText(this, "Filtering out packed items.", Toast.LENGTH_SHORT).show();
                 } else if (dataAdapter.filter_state == FILTER_STATE.UNCHECKED_ONLY){
                     dataAdapter.filter_state = FILTER_STATE.NONE;
                     menuItem.setIcon(R.drawable.ic_filter_outline);
+                    Toast.makeText(this, "Removing filter.", Toast.LENGTH_SHORT).show();
                 }
                 dataAdapter.getFilter().filter(dataAdapter.filter_state.name());
                 break;
