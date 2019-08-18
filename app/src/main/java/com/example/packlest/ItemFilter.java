@@ -14,6 +14,9 @@ class ItemFilter extends Filter {
         this.adapter = adapter;
     }
 
+    // TODO highlight items that are added back in after filter/new items that are created
+    // basically, just make it clear what's new
+
     @Override
     protected FilterResults performFiltering(CharSequence constraint) {
         FilterResults results = new FilterResults();
