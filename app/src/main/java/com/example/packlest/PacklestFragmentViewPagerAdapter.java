@@ -4,9 +4,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-class ViewPagerAdapter extends FragmentPagerAdapter {
+class PacklestFragmentViewPagerAdapter extends FragmentPagerAdapter {
 
-    ViewPagerAdapter(FragmentManager fragmentManager) {
+    PacklestFragmentViewPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
 

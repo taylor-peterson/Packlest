@@ -51,7 +51,7 @@ public class TripParameterRecyclerViewAdapter extends RecyclerView.Adapter<TripP
     @Override
     @NonNull
     public TripParameterRecyclerViewViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.recyclerview_item, parent, false);
+        View view = layoutInflater.inflate(R.layout.recyclerview_trip_parameter, parent, false);
         return new TripParameterRecyclerViewViewHolder(view);
     }
 

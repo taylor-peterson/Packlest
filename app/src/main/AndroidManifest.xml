@@ -57,10 +57,6 @@
                 android:value=".PacklestActivity" />
         </activity>
         <activity
-            android:name=".Listview"
-            android:label="@string/title_activity_listview"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".PacklestActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
