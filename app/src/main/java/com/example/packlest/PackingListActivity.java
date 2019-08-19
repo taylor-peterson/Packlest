@@ -35,10 +35,6 @@ public class PackingListActivity extends AppCompatActivity {
         dataAdapter = new PackingListAdapter(this, packingList);
         expandableListView.setAdapter(dataAdapter);
 
-        for (int i = 0; i < dataAdapter.getGroupCount(); i++) {
-            expandableListView.expandGroup(i);
-        }
-
         setListViewOnItemClickListener();
     }
 

@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -24,15 +26,20 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
     private ItemFilter filter;
     FILTER_STATE filter_state = FILTER_STATE.NONE;
     final SortedMap<UUID, SortedSet<UUID>> listData;
+    private final Map<UUID, Boolean> groupCollapseState;
     @SuppressWarnings("CanBeFinal")
     private UUID packingListUuid;
 
-    // TODO persist group fold state
     PackingListAdapter(Context context, PackingList packingList) {
         this.context = context;
         listData = new TreeMap<>();
         packingListUuid = packingList.uuid;
         convertPackingListToListData(packingList);
+
+        groupCollapseState = new HashMap<>();
+        for (UUID uuid : listData.keySet()) {
+            groupCollapseState.put(uuid, false);
+        }
     }
 
     void convertPackingListToListData(PackingList packingList) {
@@ -43,6 +50,18 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
             }
             Objects.requireNonNull(listData.get(itemCategoryUUID)).add(itemInstance.itemUuid);
         }
+    }
+
+    @Override
+    public void onGroupExpanded(int groupPosition) {
+        super.onGroupExpanded(groupPosition);
+        groupCollapseState.put((UUID) getGroup(groupPosition), false);
+    }
+
+    @Override
+    public void onGroupCollapsed(int groupPosition) {
+        super.onGroupCollapsed(groupPosition);
+        groupCollapseState.put((UUID) getGroup(groupPosition), true);
     }
 
     @Override
@@ -69,6 +88,12 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
     public View getGroupView(int groupPosition, boolean isLastChild, View view, ViewGroup parent) {
         if (view == null) {
             view = View.inflate(context, R.layout.packing_list_category, null);
+        }
+
+        if (Objects.requireNonNull(groupCollapseState.get(getGroup(groupPosition)))) {
+            ((ExpandableListView) parent).collapseGroup(groupPosition);
+        } else {
+            ((ExpandableListView) parent).expandGroup(groupPosition);
         }
 
         TextView textView = view.findViewById(R.id.list_view_category_name);
