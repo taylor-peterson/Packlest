@@ -56,9 +56,10 @@ public class ItemEditorActivity extends AbstractEditorActivity {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    void onClickButtonSave() {
+    @Override
+    boolean onClickButtonSave() {
         if (showAlertDialogIfNeeded(item.name, PacklestApplication.getInstance().packlestData.items.values())) {
-            return; // Alert dialog shown by call above; nothing to do.
+            return false; // Alert dialog shown by call above; nothing to do.
         }
 
         item.name = editText.getText().toString();
@@ -75,5 +76,6 @@ public class ItemEditorActivity extends AbstractEditorActivity {
             Objects.requireNonNull(Objects.requireNonNull(PacklestApplication.getInstance().packlestData.packingLists.get(packingListUuid)).itemInstances.get(item.uuid)).checkboxState = CHECKBOX_STATE.UNCHECKED;
         }
         finish();
+        return true;
     }
 }

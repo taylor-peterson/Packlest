@@ -58,13 +58,15 @@ public class ItemCategoryEditorActivity extends AbstractEditorActivity {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    void onClickButtonSave() {
+    @Override
+    boolean onClickButtonSave() {
         if (showAlertDialogIfNeeded(itemCategory.name, PacklestApplication.getInstance().packlestData.itemCategories.values())) {
-            return; // Alert dialog shown by call above; nothing to do.
+            return false; // Alert dialog shown by call above; nothing to do.
         }
 
         itemCategory.name = editText.getText().toString();
         PacklestApplication.getInstance().packlestData.addOrUpdateItemCategory(itemCategory);
         finish();
+        return true;
     }
 }

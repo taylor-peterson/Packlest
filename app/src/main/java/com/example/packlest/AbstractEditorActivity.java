@@ -63,11 +63,12 @@ abstract class AbstractEditorActivity extends AppCompatActivity {
         spinner.setSelection(arrayAdapter.getPosition(itemCategory));
     }
 
-    abstract void onClickButtonSave();
+    abstract boolean onClickButtonSave(); // true if successful; false if validation failed.
 
     private void onClickButtonSaveAndCreateAnother() {
-        onClickButtonSave();
-        startActivity(getIntent());
+        if (onClickButtonSave()) {
+            startActivity(getIntent());
+        }
     }
 
     @Override

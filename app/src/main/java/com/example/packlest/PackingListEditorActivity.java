@@ -49,13 +49,15 @@ public class PackingListEditorActivity extends AbstractEditorActivity {
         return super.onOptionsItemSelected(menuItem);
     }
 
-    void onClickButtonSave() {
+    @Override
+    boolean onClickButtonSave() {
         if (showAlertDialogIfNeeded(packingList.name, PacklestApplication.getInstance().packlestData.packingLists.values())) {
-            return; // Alert dialog shown by call above; nothing to do.
+            return false; // Alert dialog shown by call above; nothing to do.
         }
 
         packingList.name = editText.getText().toString();
         PacklestApplication.getInstance().packlestData.addOrUpdatePackingList(packingList, tripParameterRecyclerViewAdapter.getTripParametersSelectedForUse());
         finish();
+        return true;
     }
 }
