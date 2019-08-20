@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
@@ -24,6 +25,7 @@ public class TripParameterRecyclerViewAdapter extends RecyclerView.Adapter<TripP
     TripParameterRecyclerViewAdapter(Context context, Set<UUID> tripParameterUuidsUsed) {
         this.layoutInflater = LayoutInflater.from(context);
         this.tripParameters = new ArrayList<>(PacklestApplication.getInstance().packlestData.tripParameters.values());
+        Collections.sort(this.tripParameters);
 
         tripParametersSelectedForUse = new HashMap<>();
         for (TripParameter tripParameter : tripParameters) {
