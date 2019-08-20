@@ -94,7 +94,7 @@ public class PacklestActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Future possibilities")
                 .setIcon(android.R.drawable.ic_menu_info_details)
-                .setMessage("Drag & drop? Weights/quantities? Export/import?")
+                .setMessage("Drag & drop? Weights/quantities? Export/import? Highlight changes?")
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
                 .create()

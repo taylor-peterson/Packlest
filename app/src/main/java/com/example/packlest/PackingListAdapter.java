@@ -25,7 +25,7 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
     private final Context context;
     private ItemFilter filter;
     FILTER_STATE filter_state = FILTER_STATE.NONE;
-    final SortedMap<UUID, SortedSet<UUID>> listData;
+    private final SortedMap<UUID, SortedSet<UUID>> listData;
     private final Map<UUID, Boolean> groupCollapseState;
     @SuppressWarnings("CanBeFinal")
     private UUID packingListUuid;
@@ -43,6 +43,7 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
     }
 
     void convertPackingListToListData(PackingList packingList) {
+        listData.clear();
         for (ItemInstance itemInstance : packingList.itemInstances.values()) {
             UUID itemCategoryUUID = PacklestApplication.getInstance().packlestData.packlestDataRelationships.getItemCategoryUuidForItemUuid(itemInstance.itemUuid);
             if (!listData.containsKey(itemCategoryUUID)) {
@@ -50,6 +51,7 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
             }
             Objects.requireNonNull(listData.get(itemCategoryUUID)).add(itemInstance.itemUuid);
         }
+        notifyDataSetChanged();
     }
 
     @Override
