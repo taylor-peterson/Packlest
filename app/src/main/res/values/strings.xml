@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Packlest</string>
-    <string name="title_activity_listview">Listview</string>
     <string name="create_packing_list">Create Packing List</string>
     <string name="title_activity_create_packing_list">Create Packing List</string>
     <string name="title_activity_create_trip_parameter">Create Trip Parameter</string>
