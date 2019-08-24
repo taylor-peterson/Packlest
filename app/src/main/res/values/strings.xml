@@ -13,7 +13,7 @@
     <string name="delete_packing_list">Delete packing list</string>
     <string name="uncheck_all_items">Uncheck all items</string>
     <string name="un_add_all_items">Un-add all items</string>
-    <string name="delete_item">Delete item</string>
+    <string name="delete">Delete</string>
     <string name="trip_parameters">Trip Parameters:</string>
     <string name="item_category">Item Category:</string>
     <string name="name">Name:</string>

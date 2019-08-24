@@ -4,7 +4,7 @@
     tools:context="com.example.packlest.PacklestActivity">
     <item
         android:id="@+id/delete_item"
-        android:title="@string/delete_item"
+        android:title="@string/delete"
         app:showAsAction="never"
         android:visible="false" />
 </menu>
