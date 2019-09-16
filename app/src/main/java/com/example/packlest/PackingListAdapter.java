@@ -32,7 +32,9 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
 
     PackingListAdapter(Context context, PackingList packingList) {
         this.context = context;
-        listData = new TreeMap<>();
+        listData = new TreeMap<>((first, second) -> Objects.requireNonNull(PacklestApplication.getInstance().packlestData.itemCategories.get(first)).name.compareTo(
+                Objects.requireNonNull(PacklestApplication.getInstance().packlestData.itemCategories.get(second)).name));
+
         packingListUuid = packingList.uuid;
         convertPackingListToListData(packingList);
 
@@ -47,7 +49,8 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
         for (ItemInstance itemInstance : packingList.itemInstances.values()) {
             UUID itemCategoryUUID = PacklestApplication.getInstance().packlestData.packlestDataRelationships.getItemCategoryUuidForItemUuid(itemInstance.itemUuid);
             if (!listData.containsKey(itemCategoryUUID)) {
-                listData.put(itemCategoryUUID, new TreeSet<>());
+                listData.put(itemCategoryUUID, new TreeSet<>((first, second) -> Objects.requireNonNull(PacklestApplication.getInstance().packlestData.items.get(first)).name.compareTo(
+                        Objects.requireNonNull(PacklestApplication.getInstance().packlestData.items.get(second)).name)));
             }
             Objects.requireNonNull(listData.get(itemCategoryUUID)).add(itemInstance.itemUuid);
         }
