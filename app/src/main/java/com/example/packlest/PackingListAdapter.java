@@ -47,12 +47,12 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
     void convertPackingListToListData(PackingList packingList) {
         listData.clear();
         for (ItemInstance itemInstance : packingList.itemInstances.values()) {
-            UUID itemCategoryUUID = PacklestApplication.getInstance().packlestData.packlestDataRelationships.getItemCategoryUuidForItemUuid(itemInstance.itemUuid);
-            if (!listData.containsKey(itemCategoryUUID)) {
-                listData.put(itemCategoryUUID, new TreeSet<>((first, second) -> Objects.requireNonNull(PacklestApplication.getInstance().packlestData.items.get(first)).name.compareTo(
+            UUID itemCategoryUuid = PacklestApplication.getInstance().packlestData.packlestDataRelationships.getItemCategoryUuidForItemUuid(itemInstance.itemUuid);
+            if (!listData.containsKey(itemCategoryUuid)) {
+                listData.put(itemCategoryUuid, new TreeSet<>((first, second) -> Objects.requireNonNull(PacklestApplication.getInstance().packlestData.items.get(first)).name.compareTo(
                         Objects.requireNonNull(PacklestApplication.getInstance().packlestData.items.get(second)).name)));
             }
-            Objects.requireNonNull(listData.get(itemCategoryUUID)).add(itemInstance.itemUuid);
+            Objects.requireNonNull(listData.get(itemCategoryUuid)).add(itemInstance.itemUuid);
         }
         notifyDataSetChanged();
     }
@@ -95,7 +95,16 @@ class PackingListAdapter extends BaseExpandableListAdapter implements Filterable
             view = View.inflate(context, R.layout.packing_list_category, null);
         }
 
-        if (Objects.requireNonNull(groupCollapseState.get(getGroup(groupPosition)))) {
+        UUID itemCategoryUuid = (UUID) getGroup(groupPosition);
+
+        if (!groupCollapseState.containsKey(itemCategoryUuid)) {
+            // Item Categories are initialized in onCreate; if a new item is added that introduces
+            // a new item category, we need to make sure it gets added to the groupCollapseState object.
+            groupCollapseState.put(itemCategoryUuid, false);
+        }
+
+        //noinspection ConstantConditions
+        if (groupCollapseState.get(itemCategoryUuid)) {
             ((ExpandableListView) parent).collapseGroup(groupPosition);
         } else {
             ((ExpandableListView) parent).expandGroup(groupPosition);
