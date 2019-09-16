@@ -19,6 +19,7 @@ public class PackingListActivity extends AppCompatActivity {
     private PackingListAdapter dataAdapter;
     private String packingListName;
     private UUID packingListUuid;
+    private final String KEY_FILTER_STATE = "filterState";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,18 @@ public class PackingListActivity extends AppCompatActivity {
         dataAdapter = new PackingListAdapter(this, packingList);
         expandableListView.setAdapter(dataAdapter);
 
+        if (savedInstanceState != null) {
+            dataAdapter.filter_state = (FILTER_STATE) savedInstanceState.getSerializable(KEY_FILTER_STATE);
+            dataAdapter.getFilter().filter(dataAdapter.filter_state.name());
+        }
+
         setListViewOnItemClickListener();
+    }
+    
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(KEY_FILTER_STATE, dataAdapter.filter_state);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
